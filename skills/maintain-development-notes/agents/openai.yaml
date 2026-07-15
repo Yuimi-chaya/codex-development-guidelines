@@ -1,0 +1,7 @@
+interface:
+  display_name: "维护开发笔记"
+  short_description: "在复杂多分支项目中自动创建并持续维护可恢复的开发笔记"
+  default_prompt: "Use $maintain-development-notes to assess this project and maintain an accurate development note."
+
+policy:
+  allow_implicit_invocation: true
