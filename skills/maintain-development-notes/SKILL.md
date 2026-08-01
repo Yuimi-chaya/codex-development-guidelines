@@ -1,15 +1,27 @@
 ---
 name: maintain-development-notes
-description: Create and maintain durable development notes for context recovery. Use automatically when a workspace or thread has multiple active features, branches, worktrees, PRs, repositories, risky local installations, repeated task switching, long-running investigations, or state that must survive compaction and handoff; also use when an existing development note needs synchronization. Do not use for ordinary chat, one-off questions, simple single-task or single-file changes, or short read-only exploration with no continuing project state.
+description: Read, reconcile, create, and maintain durable development notes for context recovery. Use automatically when a workspace or thread has multiple active features, branches, worktrees, PRs, repositories, risky local installations, repeated task switching, long-running investigations, or state that must survive compaction and handoff; whenever an applicable note exists, also use it before diagnosing problems, planning, choosing an approach, resuming work, or changing direction so prior similar scenarios, user preferences, rejected approaches, overall direction, evidence, and open risks guide the work. Do not create or update notes for ordinary chat, unrelated one-off questions, simple self-contained changes with no continuing state, or short read-only exploration that produces no durable decision or risk.
 ---
 
 # Maintain Development Notes
 
-Preserve verified project reality so a future agent can resume without repeating investigations, confusing branches, or losing safety constraints.
+Preserve verified project reality so the current agent and future agents can recover context without repeating investigations, ignoring user preferences, retrying rejected approaches, confusing branches, or losing safety constraints. Treat a development note as operational memory: read it before it should influence work, then update it when verified reality meaningfully changes.
 
-## Apply the complexity gate
+## Apply separate read and write gates
 
-Assess the gate silently before creating a note.
+Apply the read gate before the write gate.
+
+### Read gate
+
+When an applicable development note exists, read the relevant parts before diagnosing, planning, choosing a solution, implementing, resuming work, changing direction, installing, releasing, or handing off.
+
+The read gate applies even when the current task is small and will not justify a note update. A small task can still depend on old decisions, user preferences, or a rejected approach.
+
+Skip reading only for casual conversation, general advice, or work clearly unrelated to the note's scope.
+
+### Write gate
+
+Assess the write gate silently before creating or updating a note.
 
 Create or adopt a development note when any hard trigger applies:
 
@@ -28,7 +40,7 @@ Otherwise, create a note only when at least two complexity signals apply:
 - The conversation is long enough that compaction or handoff is likely to lose operational context.
 - Different artifacts have different ownership, safety boundaries, or release plans.
 
-Do not create a note for:
+Do not create or update a note solely for:
 
 - Casual conversation or general advice.
 - A one-off question with no continuing implementation state.
@@ -36,15 +48,25 @@ Do not create a note for:
 - Short read-only exploration that produces no durable decision or risk.
 - Routine command output that is already captured adequately by source control or CI.
 
-If the gate is not met, continue the task without mentioning development notes.
+If the write gate is not met, continue without creating or updating a note. Still use any context recovered through the read gate.
 
-## Discover before creating
+## Discover and read before acting
 
 1. Search the workspace for existing files such as `DEVELOPMENT_NOTES.md`, `DEV_NOTES.md`, `CODEX_DEV_NOTES.md`, `HANDOFF.md`, or a clearly equivalent project record.
-2. Read applicable `AGENTS.md` instructions and the current snapshot sections of existing notes.
-3. Reuse the authoritative note. Do not create a competing note merely because its filename differs from the preferred name.
-4. If multiple notes exist, identify their responsibilities. Synchronize them only when their documented roles require it.
-5. If authority is ambiguous or notes contradict each other, verify reality before editing. Ask the user only when repository evidence cannot resolve ownership safely.
+2. Read applicable `AGENTS.md` instructions, then read the note's current snapshot, non-negotiable constraints, active workstreams, known risks, and immediate next actions.
+3. Search the note for terms connected to the current task: symptoms, error text, feature names, paths, symbols, branches, tools, protocols, or user language.
+4. Recover six kinds of operational memory before choosing an approach:
+   - the same or a related problem or scenario;
+   - user preferences and non-negotiable constraints;
+   - rejected, failed, superseded, or unsafe approaches and why they were rejected;
+   - the overall product, architecture, and release direction;
+   - the last verified authoritative state and supporting evidence;
+   - unresolved risks, pending validation, and ordered next actions.
+5. Reuse the authoritative note. Do not create a competing note merely because its filename differs from the preferred name.
+6. If multiple notes exist, identify their responsibilities and read the authoritative source for each relevant fact. Synchronize them only when their documented roles require it.
+7. If authority is ambiguous or notes contradict each other, verify reality before acting. Ask the user only when repository evidence cannot resolve ownership safely.
+
+For long notes, start with the current snapshot and use targeted search. Do not load or repeat the entire history when only a small section is relevant.
 
 ## Choose the note topology
 
@@ -55,13 +77,16 @@ If the gate is not met, continue the task without mentioning development notes.
 
 Read [references/note-schema.md](references/note-schema.md) before creating a new note or substantially restructuring an existing one.
 
-## Verify reality before writing
+## Reconcile memory with reality before acting or writing
 
-Treat conversation history as a lead, not as authoritative state.
+Treat conversation history and development notes as leads, not as substitutes for current evidence.
 
 - Verify relevant repository path, branch, HEAD, dirty state, remotes, and worktree role.
 - Verify PR, issue, CI, release, installation, version, backup, or hash state when it matters and tools permit.
 - Distinguish `implemented`, `tested`, `human-validated`, `published`, `merged`, `installed`, `pending`, and `superseded`.
+- Compare a proposed approach with previously rejected or superseded approaches. Do not repeat one unless a relevant premise changed, and record that changed premise.
+- Honor recorded user preferences and overall direction unless the user has changed them or verified reality makes them impossible.
+- If live evidence invalidates the note, correct the current snapshot before relying on it for downstream decisions.
 - Record uncertainty explicitly. Never turn an assumption into a completed status.
 - Never copy secrets, API keys, auth files, tokens, private prompt history, or unnecessary personal data into notes.
 

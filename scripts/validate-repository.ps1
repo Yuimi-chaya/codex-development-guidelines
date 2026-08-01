@@ -80,6 +80,21 @@ if (Test-Path -LiteralPath $skillPath) {
     if ($skill -notmatch '(?m)^description: .+$') {
         $failures.Add('Skill description is missing.')
     }
+
+    foreach ($requiredPhrase in @(
+        'Apply separate read and write gates',
+        'Discover and read before acting',
+        'the same or a related problem or scenario',
+        'user preferences and non-negotiable constraints',
+        'rejected, failed, superseded, or unsafe approaches',
+        'the overall product, architecture, and release direction',
+        'the last verified authoritative state and supporting evidence',
+        'unresolved risks, pending validation, and ordered next actions'
+    )) {
+        if (-not $skill.Contains($requiredPhrase)) {
+            $failures.Add("Skill is missing read-before-act gate: $requiredPhrase")
+        }
+    }
 }
 
 $requiredQuestionIds = @(

@@ -17,7 +17,7 @@ Use these IDs when discussing adoption and updates. They identify behavior, not 
 | WRITE-001 | 21 | Keep final write ownership explicit and exploration read-only by default | General |
 | RES-001 | 22 | Apply the user-selected per-command worker policy only to supported tools | Tool- and preference-specific |
 | RES-002 | 23-26 | Limit simultaneous heavy work, reuse compatible caches, and clean up processes | Preference-specific |
-| NOTES-001 | 27 | Apply the development-note complexity gate without creating ceremonial notes | Requires installed Skill |
+| NOTES-001 | 27 | Read applicable development memory before acting, then apply a separate write gate without creating ceremonial notes | Requires installed Skill |
 
 ## Semantic Comparison Rules
 
