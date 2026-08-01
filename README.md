@@ -11,7 +11,7 @@
 - [`workflows/UPDATE.md`](workflows/UPDATE.md)：参考规范升级后的重新审阅流程。
 - [`references/interview-schema.md`](references/interview-schema.md)：不可跳过的逐项访谈问题。
 - [`references/rule-catalog.md`](references/rule-catalog.md)：稳定规则 ID、适用条件和来源映射。
-- [`skills/maintain-development-notes`](skills/maintain-development-notes)：可独立安装的开发笔记 Skill。
+- [`skills/maintain-development-notes`](skills/maintain-development-notes)：先读取既有项目记忆、再维护状态的开发笔记 Skill。
 
 ## 使用方式
 
@@ -36,6 +36,7 @@ workflows/ADOPT.md 和 references/interview-schema.md 与我逐项讨论。
 - **二次确认**：访谈确认不等于写入确认；写入前必须展示最终 diff。
 - **最小修改**：保留用户现有内容、编码、BOM、换行和文件结构。
 - **能力诚实**：平台不支持指定子代理模型或推理档位时，必须说明，不能声称已经配置。
+- **先读后做**：遇到问题、选方案或恢复工作时，先检索既有笔记中的相同场景、用户偏好、已否决方案、总体方向和权威状态，再调查和修改。
 
 ## Skill 安装
 
