@@ -1,7 +1,7 @@
 interface:
   display_name: "维护开发笔记"
-  short_description: "先读取既有项目记忆，再维护复杂项目的可恢复开发笔记"
-  default_prompt: "Use $maintain-development-notes to read applicable development notes before acting, reconcile them with current evidence, and maintain an accurate recovery record."
+  short_description: "每个项目回合先读取既有项目记忆，再维护可恢复开发笔记"
+  default_prompt: "Use $maintain-development-notes at the start of this project-work turn to read the latest applicable instructions and recovery notes, reconcile them with current evidence, and maintain an accurate record when reality changes."
 
 policy:
   allow_implicit_invocation: true
