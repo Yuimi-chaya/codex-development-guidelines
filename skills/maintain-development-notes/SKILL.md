@@ -1,6 +1,6 @@
 ---
 name: maintain-development-notes
-description: Read, reconcile, create, and maintain durable development notes for context recovery. Use automatically when a workspace or thread has multiple active features, branches, worktrees, PRs, repositories, risky local installations, repeated task switching, long-running investigations, or state that must survive compaction and handoff; whenever an applicable note exists, also use it before diagnosing problems, planning, choosing an approach, resuming work, or changing direction so prior similar scenarios, user preferences, rejected approaches, overall direction, evidence, and open risks guide the work. Do not create or update notes for ordinary chat, unrelated one-off questions, simple self-contained changes with no continuing state, or short read-only exploration that produces no durable decision or risk.
+description: Read, reconcile, create, and maintain durable development notes for context recovery. Use automatically when a workspace or thread has multiple active features, branches, worktrees, PRs, repositories, risky local installations, repeated task switching, long-running investigations, or state that must survive compaction and handoff; at the start of each project-work turn, whenever an applicable note exists, also use it before diagnosing problems, planning, choosing an approach, resuming work, or changing direction so prior similar scenarios, user preferences, rejected approaches, overall direction, evidence, and open risks guide the work. Do not create or update notes for ordinary chat, unrelated one-off questions, simple self-contained changes with no continuing state, or short read-only exploration that produces no durable decision or risk.
 ---
 
 # Maintain Development Notes
@@ -13,7 +13,7 @@ Apply the read gate before the write gate.
 
 ### Read gate
 
-When an applicable development note exists, read the relevant parts before diagnosing, planning, choosing a solution, implementing, resuming work, changing direction, installing, releasing, or handing off.
+At the start of every project-work turn, re-read the latest applicable `AGENTS.md` and the relevant parts of any development or handoff note before diagnosing, planning, choosing a solution, implementing, testing, resuming work, changing direction, installing, releasing, or handing off.
 
 The read gate applies even when the current task is small and will not justify a note update. A small task can still depend on old decisions, user preferences, or a rejected approach.
 
@@ -66,7 +66,7 @@ If the write gate is not met, continue without creating or updating a note. Stil
 6. If multiple notes exist, identify their responsibilities and read the authoritative source for each relevant fact. Synchronize them only when their documented roles require it.
 7. If authority is ambiguous or notes contradict each other, verify reality before acting. Ask the user only when repository evidence cannot resolve ownership safely.
 
-For long notes, start with the current snapshot and use targeted search. Do not load or repeat the entire history when only a small section is relevant.
+For long notes, start with the current snapshot and use targeted search (`rg` when available). Do not load or repeat the entire history when only a small section is relevant.
 
 ## Choose the note topology
 

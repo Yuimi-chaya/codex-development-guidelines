@@ -11,6 +11,13 @@ For every question, record the selected value, any custom wording, and the user'
 - Explain: user-level rules affect many projects; project-level rules are narrower and safer for experimentation.
 - Ask: Which `AGENTS.md` scope and exact target path should receive the adopted rules?
 
+## WORKFLOW-01 - Per-Turn Project Preflight
+
+- Requirement: `required`
+- Detect first: current shell, working directory, repository status, branch, HEAD, and available instruction/recovery-note discovery mechanisms.
+- Explain: a per-turn preflight prevents work in the wrong shell, directory, branch, or stale context, but adds a small fixed cost to every project-work turn.
+- Ask: Should every project-work turn require a Shell/CWD/scope check, Git status/branch/HEAD check when applicable, and a read of the latest instructions and relevant recovery notes before diagnosis, planning, writing, or testing?
+
 ## PLATFORM-01 - Platform Target
 
 - Requirement: `required`
@@ -79,11 +86,11 @@ For every question, record the selected value, any custom wording, and the user'
 ## SUBAGENT-02 - Model and Reasoning Strategy
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Detect first: whether the harness exposes model and reasoning controls; list only verified available controls.
+- Detect first: whether the harness exposes model and reasoning controls; list only verified available controls and never assume reference names such as `luna`, `terra`, or `sol` exist.
 - Explain choices:
   - Efficiency/cost first: prefer faster, lower-cost models and lower reasoning for bounded exploration.
   - Quality first: prefer higher-capability models and higher reasoning, accepting greater latency and cost.
-  - Tiered: use lower tiers for searches, file scans, and log summaries; use higher tiers for security, architecture, complex logic, and difficult bugs.
+  - Tiered: use lower tiers for searches, file scans, and log summaries; use higher tiers for security, architecture, complex logic, and difficult bugs. Map reference model names to verified equivalent capabilities only after user confirmation.
 - Ask: Which subagent model/reasoning strategy should be used?
 
 ## SUBAGENT-03 - Subagent Concurrency
@@ -101,14 +108,33 @@ For every question, record the selected value, any custom wording, and the user'
 ## SUBAGENT-05 - Write Ownership
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Explain: multiple writers can be faster on isolated modules but create conflict and ownership ambiguity; a single writer is easier to audit.
-- Ask: Must exploratory subagents remain read-only, and who may perform final file writes?
+- Explain: multiple writers can be faster on isolated modules but create conflict and ownership ambiguity; reviewer roles should remain read-only, while a verified throughput/browser role may perform explicitly authorized low-risk writes.
+- Ask: Which verified roles may read, browse, write, or handle media, and who owns final file writes and acceptance?
 
 ## SUBAGENT-06 - Unsupported Controls
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
 - Explain: some harnesses cannot choose a subagent model or reasoning level even when the policy requests one.
 - Ask: If requested model/reasoning controls are unavailable, should the Agent use the harness default after disclosure, avoid subagents, or stop and ask again?
+
+## SUBAGENT-07 - Mandatory Escalation Threshold
+
+- Requirement: `required_if SUBAGENT-01 enables subagents`
+- Explain: early delegation protects context and speeds broad discovery, while over-delegating small tasks adds coordination cost.
+- Ask: After how much primary-agent preflight must delegation become mandatory for cross-module/file work, long searches, lifecycle/state/race analysis, browser/media tasks, unknown root causes, or failed rework?
+
+## SUBAGENT-08 - Capability and Tool Routing
+
+- Requirement: `required_if SUBAGENT-01 enables subagents`
+- Detect first: verified models, reasoning levels, browser access, write access, media handling, and whether the primary agent can call those tools directly.
+- Explain: the reference routes fast throughput/browser/authorized low-risk writes, medium review, and high-risk independent review to different roles; exact names must be mapped or omitted when unavailable.
+- Ask: What role-to-capability routing should apply for throughput, browser/media work, authorized writing, ordinary review, and high-risk architecture/security review?
+
+## SUBAGENT-09 - Retry, Takeover, and Closure
+
+- Requirement: `required_if SUBAGENT-01 enables subagents`
+- Explain: unlimited retries waste cost and hide weak results; immediate takeover can discard an easily corrected first pass.
+- Ask: How many directed retries are allowed before the primary Agent takes over, and what evidence, risks, and shutdown steps must be reported when closing agents?
 
 ## INSTALL-01 - Dependencies and Tools
 
@@ -131,8 +157,26 @@ For every question, record the selected value, any custom wording, and the user'
 ## GIT-01 - Publication Authority
 
 - Requirement: `required`
-- Explain: committing is local and reversible; pushing, opening a PR, merging, and releasing change external state and visibility.
-- Ask: Which Git and forge actions may the Agent perform without a new confirmation, and which always require one?
+- Explain: pushing, opening a PR, merging, and releasing change external state and visibility; local recovery checkpoints are handled separately.
+- Ask: Which remote Git and forge actions may the Agent perform without a new confirmation, and which always require one?
+
+## GIT-02 - Recovery Point Triggers
+
+- Requirement: `required`
+- Explain: checkpoints before accepted-feature changes, media/state/configuration edits, multi-file logic, or rework improve recovery but create extra local history or backup artifacts.
+- Ask: Which changes and milestones must have a verified recovery point before work continues?
+
+## GIT-03 - Checkpoint Storage and Scope
+
+- Requirement: `required`
+- Explain: a task-scoped local commit is easy to restore; when unrelated changes exist or committing is unsuitable, an external `git diff --binary` patch or exact backup avoids mixing user work.
+- Ask: Should checkpoints prefer task-only local commits, external binary patches/exact backups, or a context-dependent combination, and where may backups be stored?
+
+## GIT-04 - Rollback and Stash Safety
+
+- Requirement: `required`
+- Explain: whole-worktree stash and destructive reset/checkout can hide or erase unrelated work; safe rollback requires an exact target, backup, and file scope.
+- Ask: What stash, destructive-command, and rollback restrictions must the Agent follow?
 
 ## NOTES-01 - Development Note Trigger
 
@@ -145,6 +189,19 @@ For every question, record the selected value, any custom wording, and the user'
 - Requirement: `required`
 - Explain: committed notes aid team recovery but may expose local paths or operational context; private notes avoid publication but are less shareable.
 - Ask: Should development notes be committed, kept private, decided per project, or placed at a custom location?
+
+## NOTES-03 - Read Gate and Refresh Cadence
+
+- Requirement: `required`
+- Explain: re-reading the latest instructions and relevant note snapshot each project-work turn prevents stale assumptions; targeted search keeps long-note overhead small.
+- Ask: At what cadence and for which project tasks must the Agent re-read applicable `AGENTS.md` and existing development or handoff notes before acting?
+
+## MEDIA-01 - Visual Review Transfer Budget
+
+- Requirement: `required`
+- Detect first: available image tools, transparency/detail needs, common source dimensions, and whether media leaves the local machine.
+- Explain: compressed review copies reduce latency, cost, and context pressure; lossless crops remain necessary for transparency or pixel-level inspection.
+- Ask: What maximum dimensions, preferred formats/quality, per-batch size limit, original-retention rule, lossless exceptions, and base64/thread restrictions should apply to visual material sent to tools or subagents?
 
 ## COMMUNICATION-01 - Response Language and Detail
 

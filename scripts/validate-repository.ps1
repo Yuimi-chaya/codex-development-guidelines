@@ -83,13 +83,15 @@ if (Test-Path -LiteralPath $skillPath) {
 
     foreach ($requiredPhrase in @(
         'Apply separate read and write gates',
+        'At the start of every project-work turn',
         'Discover and read before acting',
         'the same or a related problem or scenario',
         'user preferences and non-negotiable constraints',
         'rejected, failed, superseded, or unsafe approaches',
         'the overall product, architecture, and release direction',
         'the last verified authoritative state and supporting evidence',
-        'unresolved risks, pending validation, and ordered next actions'
+        'unresolved risks, pending validation, and ordered next actions',
+        'targeted search (`rg` when available)'
     )) {
         if (-not $skill.Contains($requiredPhrase)) {
             $failures.Add("Skill is missing read-before-act gate: $requiredPhrase")
@@ -99,6 +101,7 @@ if (Test-Path -LiteralPath $skillPath) {
 
 $requiredQuestionIds = @(
     'SCOPE-01',
+    'WORKFLOW-01',
     'PLATFORM-01',
     'SHELL-01',
     'SHELL-02',
@@ -113,12 +116,20 @@ $requiredQuestionIds = @(
     'SUBAGENT-04',
     'SUBAGENT-05',
     'SUBAGENT-06',
+    'SUBAGENT-07',
+    'SUBAGENT-08',
+    'SUBAGENT-09',
     'INSTALL-01',
     'ENCODING-01',
     'SAFETY-01',
     'GIT-01',
+    'GIT-02',
+    'GIT-03',
+    'GIT-04',
     'NOTES-01',
     'NOTES-02',
+    'NOTES-03',
+    'MEDIA-01',
     'COMMUNICATION-01'
 )
 
@@ -132,16 +143,91 @@ if (Test-Path -LiteralPath $interviewPath) {
     }
 }
 
+$referencePath = Join-Path $rootPath 'reference/AGENTS.md'
+$referenceRuleCount = 0
+if (Test-Path -LiteralPath $referencePath) {
+    $reference = [System.IO.File]::ReadAllText($referencePath, $strictUtf8)
+    $referenceRuleCount = [regex]::Matches($reference, '(?m)^\d+\. ').Count
+    if ($referenceRuleCount -ne 15) {
+        $failures.Add("Reference AGENTS.md must contain exactly 15 numbered rules; found $referenceRuleCount.")
+    }
+
+    foreach ($requiredPhrase in @(
+        '每个涉及项目工作的回合',
+        '每轮开始前必须阅读最近的',
+        'git status --short',
+        'git diff --binary',
+        '`luna`',
+        '`terra`',
+        '`sol high`',
+        '2048px',
+        '12MB',
+        '图片 base64',
+        'Cargo 默认 `-j 2`'
+    )) {
+        if (-not $reference.Contains($requiredPhrase)) {
+            $failures.Add("Reference AGENTS.md is missing current-policy phrase: $requiredPhrase")
+        }
+    }
+}
+
+$catalogPath = Join-Path $rootPath 'references/rule-catalog.md'
+if (Test-Path -LiteralPath $catalogPath) {
+    $catalog = [System.IO.File]::ReadAllText($catalogPath, $strictUtf8)
+    foreach ($ruleId in @(
+        'START-001', 'START-002',
+        'GIT-001', 'GIT-002', 'GIT-003',
+        'SUB-004', 'SUB-005', 'SUB-006',
+        'MEDIA-001', 'NOTES-001'
+    )) {
+        if ($catalog -notmatch "(?m)^\| $([regex]::Escape($ruleId)) \|") {
+            $failures.Add("Rule catalog is missing current-policy ID: $ruleId")
+        }
+    }
+
+    foreach ($line in ($catalog -split "`n")) {
+        if ($line -match '^\|\s*[A-Z0-9-]+\s*\|\s*([0-9,\-]+)\s*\|') {
+            foreach ($numberMatch in [regex]::Matches($Matches[1], '\d+')) {
+                if ([int]$numberMatch.Value -gt $referenceRuleCount) {
+                    $failures.Add("Rule catalog references missing AGENTS rule $($numberMatch.Value): $line")
+                }
+            }
+        }
+    }
+}
+
 $adoptPath = Join-Path $rootPath 'workflows/ADOPT.md'
 if (Test-Path -LiteralPath $adoptPath) {
     $adopt = [System.IO.File]::ReadAllText($adoptPath, $strictUtf8)
     foreach ($requiredPhrase in @(
         'Ask exactly one question ID at a time.',
         'Do not use timeouts, defaults, or silence as consent.',
-        'Show the final diff and obtain a separate, explicit confirmation.'
+        'Show the final diff and obtain a separate, explicit confirmation.',
+        'git status --short',
+        'DEVELOPMENT_NOTES.md',
+        'recovery point',
+        'git diff --binary',
+        'capability routing',
+        'visual/media transfer budget'
     )) {
         if (-not $adopt.Contains($requiredPhrase)) {
             $failures.Add("ADOPT workflow is missing gate: $requiredPhrase")
+        }
+    }
+}
+
+$updatePath = Join-Path $rootPath 'workflows/UPDATE.md'
+if (Test-Path -LiteralPath $updatePath) {
+    $update = [System.IO.File]::ReadAllText($updatePath, $strictUtf8)
+    foreach ($requiredPhrase in @(
+        'Git status, branch, HEAD',
+        'development notes',
+        'recovery-point plan',
+        'capability fallbacks',
+        'media-budget questions'
+    )) {
+        if (-not $update.Contains($requiredPhrase)) {
+            $failures.Add("UPDATE workflow is missing current-policy gate: $requiredPhrase")
         }
     }
 }
