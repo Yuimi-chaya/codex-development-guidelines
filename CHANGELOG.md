@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Detect the operating system, version, architecture, and related platform facts automatically instead of asking installers to confirm them.
+- Keep primary-terminal and network/mirror policy as explicit user decisions.
+
 ## 0.2.0 - 2026-08-10
 
 - Synchronize the reference policy with the current 15-rule `AGENTS.md`.

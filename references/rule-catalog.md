@@ -16,7 +16,7 @@ Use these IDs when discussing adoption and updates. They identify behavior, not 
 | SUB-005 | 7 | Route throughput, browser/write, review, and high-risk work only to verified capabilities; named models are examples, not assumed availability | Capability- and preference-specific |
 | SUB-006 | 9 | Retry an inadequate subagent at most once, then return control to the primary agent and summarize evidence and risk | Requires subagent support |
 | MEDIA-001 | 10 | Preserve originals and send compressed, bounded review copies; use lossless crops for transparency or pixel detail and never place image base64 in the thread | Visual/media workflows |
-| ENV-001 | 11 | Assume mainland China and Windows only when selected | Environment-specific |
+| ENV-001 | 11 | Apply detected platform facts and user-selected network policy without asking users to confirm a verifiable OS | Environment-specific |
 | SHELL-001 | 11 | Detect the current shell and use its supported syntax | General; wording is shell-specific |
 | SHELL-002 | 11 | Quote command paths, especially paths with spaces or non-ASCII characters | General |
 | NET-001 | 12 | Use command-scoped mirrors/proxies and require approval for new tools or broader configuration changes | Preference-specific |

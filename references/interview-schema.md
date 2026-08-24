@@ -1,6 +1,6 @@
 # Mandatory Adoption Interview
 
-This schema defines decisions the installing Agent must obtain from the user. Ask exactly one question ID at a time. Detection supplies context; it never supplies consent.
+This schema defines decisions the installing Agent must obtain from the user. Ask exactly one question ID at a time. Detect objective environment facts such as the operating system, version, architecture, WSL or remote-environment presence, and available shells without asking the user to confirm facts the Agent can verify; detection never supplies consent for preference or policy decisions.
 
 For every question, record the selected value, any custom wording, and the user's stated reason when it affects later decisions.
 
@@ -17,13 +17,6 @@ For every question, record the selected value, any custom wording, and the user'
 - Detect first: current shell, working directory, repository status, branch, HEAD, and available instruction/recovery-note discovery mechanisms.
 - Explain: a per-turn preflight prevents work in the wrong shell, directory, branch, or stale context, but adds a small fixed cost to every project-work turn.
 - Ask: Should every project-work turn require a Shell/CWD/scope check, Git status/branch/HEAD check when applicable, and a read of the latest instructions and relevant recovery notes before diagnosis, planning, writing, or testing?
-
-## PLATFORM-01 - Platform Target
-
-- Requirement: `required`
-- Detect first: current OS, version, architecture, and whether WSL or remote environments are present.
-- Explain: targeting only the current platform gives precise commands; portable rules require conditional wording.
-- Ask: Should the policy target only the detected platform, or remain portable across additional platforms?
 
 ## SHELL-01 - Primary Shell
 

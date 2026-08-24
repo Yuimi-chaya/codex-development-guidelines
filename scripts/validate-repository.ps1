@@ -102,7 +102,6 @@ if (Test-Path -LiteralPath $skillPath) {
 $requiredQuestionIds = @(
     'SCOPE-01',
     'WORKFLOW-01',
-    'PLATFORM-01',
     'SHELL-01',
     'SHELL-02',
     'NETWORK-01',
@@ -139,6 +138,18 @@ if (Test-Path -LiteralPath $interviewPath) {
     foreach ($questionId in $requiredQuestionIds) {
         if ($interview -notmatch "(?m)^## $([regex]::Escape($questionId))\b") {
             $failures.Add("Missing interview question: $questionId")
+        }
+    }
+    if ($interview -match '(?m)^## PLATFORM-01\b') {
+        $failures.Add('Operating system/platform must be detected as an objective fact, not asked as a mandatory interview question.')
+    }
+    foreach ($requiredPhrase in @(
+        'operating system, version, architecture',
+        '## SHELL-01 - Primary Shell',
+        '## NETWORK-01 - Network and Mirrors'
+    )) {
+        if (-not $interview.Contains($requiredPhrase)) {
+            $failures.Add("Interview schema is missing environment-detection or retained-preference coverage: $requiredPhrase")
         }
     }
 }
@@ -207,6 +218,7 @@ if (Test-Path -LiteralPath $adoptPath) {
         'DEVELOPMENT_NOTES.md',
         'recovery point',
         'git diff --binary',
+        'Report the detected platform as a fact; do not turn it into an interview question when it can be verified.',
         'capability routing',
         'visual/media transfer budget'
     )) {
