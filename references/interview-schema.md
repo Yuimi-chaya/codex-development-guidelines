@@ -1,6 +1,6 @@
 # Mandatory Adoption Interview
 
-This schema defines decisions the installing Agent must obtain from the user. Ask exactly one question ID at a time. Detect objective environment facts such as the operating system, version, architecture, WSL or remote-environment presence, and available shells without asking the user to confirm facts the Agent can verify; detection never supplies consent for preference or policy decisions.
+This schema defines decisions the installing Agent must obtain from the user. Ask exactly one question ID at a time. Detect objective environment facts such as the operating system, version, architecture, WSL or remote-environment presence, available shells, hardware, and exposed capabilities without asking the user to confirm facts the Agent can verify; detection never supplies consent for preference or policy decisions. Concrete model names are never assumed from this repository.
 
 For every question, record the selected value, any custom wording, and the user's stated reason when it affects later decisions.
 
@@ -10,6 +10,13 @@ For every question, record the selected value, any custom wording, and the user'
 - Detect first: applicable user-level and project-level instruction files.
 - Explain: user-level rules affect many projects; project-level rules are narrower and safer for experimentation.
 - Ask: Which `AGENTS.md` scope and exact target path should receive the adopted rules?
+
+## LANGUAGE-01 - Generated Policy Language
+
+- Requirement: `required`
+- Detect first: the languages of the target instructions and the available localized reference files.
+- Explain: one language keeps the installed policy concise; embedding duplicate translations increases context use and can create translation drift. A separate companion translation can improve human review without duplicating runtime instructions.
+- Ask: Which language should the installed or updated `AGENTS.md` use, and should a separate companion translation be maintained?
 
 ## WORKFLOW-01 - Per-Turn Project Preflight
 
@@ -21,7 +28,7 @@ For every question, record the selected value, any custom wording, and the user'
 ## SHELL-01 - Primary Shell
 
 - Requirement: `required`
-- Detect first: active shell plus installed PowerShell, Windows PowerShell, Git Bash, WSL shells, Command Prompt, and their versions when available.
+- Detect first: active shell plus installed shells and their versions when available.
 - Explain: the active shell is only a fact about this session; it does not reveal the user's preferred shell for future commands.
 - Ask: Which shell and version is the primary terminal whose syntax the Agent should prefer?
 
@@ -36,7 +43,7 @@ For every question, record the selected value, any custom wording, and the user'
 
 - Requirement: `required`
 - Detect first: only non-sensitive network facts already available; do not probe private network configuration unnecessarily.
-- Explain: mainland China may require temporary mirrors, while global configuration changes can break other projects or expose traffic unexpectedly.
+- Explain: regional networks may require temporary mirrors, while global configuration changes can break other projects or expose traffic unexpectedly.
 - Ask: What network region and temporary mirror/proxy policy should apply to downloads and dependency installation?
 
 ## RESOURCE-01 - Overall Resource Strategy
@@ -79,12 +86,13 @@ For every question, record the selected value, any custom wording, and the user'
 ## SUBAGENT-02 - Model and Reasoning Strategy
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Detect first: whether the harness exposes model and reasoning controls; list only verified available controls and never assume reference names such as `luna`, `terra`, or `sol` exist.
+- Detect first: the actual list of selectable models, reasoning levels, per-agent overrides, and cost/latency information exposed by the harness.
 - Explain choices:
-  - Efficiency/cost first: prefer faster, lower-cost models and lower reasoning for bounded exploration.
-  - Quality first: prefer higher-capability models and higher reasoning, accepting greater latency and cost.
-  - Tiered: use lower tiers for searches, file scans, and log summaries; use higher tiers for security, architecture, complex logic, and difficult bugs. Map reference model names to verified equivalent capabilities only after user confirmation.
-- Ask: Which subagent model/reasoning strategy should be used?
+  - Efficiency/cost first: favor faster or lower-cost verified choices for bounded exploration.
+  - Quality first: favor higher-capability verified choices and deeper reasoning for difficult work.
+  - Tiered: use different verified choices for exploration, ordinary review, and high-risk work.
+  - Harness default: keep runtime selection when concrete overrides are unavailable or undesirable.
+- Ask: Which overall model and reasoning strategy should guide selection from the verified choices?
 
 ## SUBAGENT-03 - Subagent Concurrency
 
@@ -95,13 +103,13 @@ For every question, record the selected value, any custom wording, and the user'
 ## SUBAGENT-04 - Delegation Depth
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Explain: allowing subagents to create more subagents increases autonomy but makes scope, cost, and shutdown harder to control.
+- Explain: allowing subagents to create child agents increases autonomy but makes scope, cost, and shutdown harder to control.
 - Ask: May subagents create child agents, or may only the primary Agent delegate?
 
 ## SUBAGENT-05 - Write Ownership
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Explain: multiple writers can be faster on isolated modules but create conflict and ownership ambiguity; reviewer roles should remain read-only, while a verified throughput/browser role may perform explicitly authorized low-risk writes.
+- Explain: multiple writers can be faster on isolated modules but create conflict and ownership ambiguity; reviewers should remain read-only unless a verified role is explicitly authorized to write.
 - Ask: Which verified roles may read, browse, write, or handle media, and who owns final file writes and acceptance?
 
 ## SUBAGENT-06 - Unsupported Controls
@@ -110,23 +118,23 @@ For every question, record the selected value, any custom wording, and the user'
 - Explain: some harnesses cannot choose a subagent model or reasoning level even when the policy requests one.
 - Ask: If requested model/reasoning controls are unavailable, should the Agent use the harness default after disclosure, avoid subagents, or stop and ask again?
 
-## SUBAGENT-07 - Mandatory Escalation Threshold
+## SUBAGENT-07 - Delegation Trigger and Simple-Task Policy
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Explain: early delegation protects context and speeds broad discovery, while over-delegating small tasks adds coordination cost.
-- Ask: After how much primary-agent preflight must delegation become mandatory for cross-module/file work, long searches, lifecycle/state/race analysis, browser/media tasks, unknown root causes, or failed rework?
+- Explain: rigid numeric thresholds can force ceremonial delegation, while a task-sensitive rule protects context and avoids unnecessary coordination.
+- Ask: Which signals should make delegation worthwhile, and when should the primary Agent proceed alone even if delegation is available?
 
-## SUBAGENT-08 - Capability and Tool Routing
+## SUBAGENT-08 - Capability and Role Mapping
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Detect first: verified models, reasoning levels, browser access, write access, media handling, and whether the primary agent can call those tools directly.
-- Explain: the reference routes fast throughput/browser/authorized low-risk writes, medium review, and high-risk independent review to different roles; exact names must be mapped or omitted when unavailable.
-- Ask: What role-to-capability routing should apply for throughput, browser/media work, authorized writing, ordinary review, and high-risk architecture/security review?
+- Detect first: verified models, reasoning levels, browser access, write access, media handling, and whether the primary Agent can call those tools directly.
+- Explain: role descriptions remain stable while concrete model names and permissions vary by harness; map only verified choices and leave unsupported roles unconfigured.
+- Ask: For each enabled role—throughput/exploration, browser/media or authorized writing, ordinary review, and high-risk architecture/security review—which exact verified model, reasoning level, and tool permissions should apply?
 
 ## SUBAGENT-09 - Retry, Takeover, and Closure
 
 - Requirement: `required_if SUBAGENT-01 enables subagents`
-- Explain: unlimited retries waste cost and hide weak results; immediate takeover can discard an easily corrected first pass.
+- Explain: unlimited retries waste cost and hide weak results; a bounded retry policy gives the primary Agent a clear takeover point.
 - Ask: How many directed retries are allowed before the primary Agent takes over, and what evidence, risks, and shutdown steps must be reported when closing agents?
 
 ## INSTALL-01 - Dependencies and Tools
@@ -138,7 +146,7 @@ For every question, record the selected value, any custom wording, and the user'
 ## ENCODING-01 - Unknown Encoding
 
 - Requirement: `required`
-- Explain: guessing UTF-8, GBK, or CP936 can corrupt Chinese content; byte-preserving edits may still be unsafe without a reliable decoder.
+- Explain: guessing a legacy or regional encoding can corrupt existing content; byte-preserving edits may still be unsafe without a reliable decoder.
 - Ask: When encoding is uncertain, must the Agent stop, or may it proceed only after the user specifies the encoding?
 
 ## SAFETY-01 - Destructive and Broad Changes
@@ -191,15 +199,15 @@ For every question, record the selected value, any custom wording, and the user'
 
 ## MEDIA-01 - Visual Review Transfer Budget
 
-- Requirement: `required`
-- Detect first: available image tools, transparency/detail needs, common source dimensions, and whether media leaves the local machine.
-- Explain: compressed review copies reduce latency, cost, and context pressure; lossless crops remain necessary for transparency or pixel-level inspection.
+- Requirement: `required_if visual or media tools/workflows are enabled`
+- Detect first: available media tools, transparency/detail needs, common source dimensions, and whether media leaves the local machine.
+- Explain: compressed review copies reduce latency, cost, and context pressure; lossless crops remain necessary for transparency or pixel-level inspection. Fixed numbers should be selected for the tool and task, not assumed from this repository.
 - Ask: What maximum dimensions, preferred formats/quality, per-batch size limit, original-retention rule, lossless exceptions, and base64/thread restrictions should apply to visual material sent to tools or subagents?
 
 ## COMMUNICATION-01 - Response Language and Detail
 
 - Requirement: `required`
-- Explain: concise replies reduce noise; more detail can help unfamiliar tasks. Language preference cannot be inferred reliably from repository content alone.
+- Explain: concise replies reduce noise; more detail can help unfamiliar tasks. Response language is separate from the language of the installed policy file.
 - Ask: What response language and default level of detail should the Agent use?
 
 ## Completion Check

@@ -1,6 +1,6 @@
 interface:
-  display_name: "维护开发笔记"
-  short_description: "每个项目回合先读取既有项目记忆，再维护可恢复开发笔记"
+  display_name: "Maintain Development Notes"
+  short_description: "Read project memory before maintaining durable notes"
   default_prompt: "Use $maintain-development-notes at the start of this project-work turn to read the latest applicable instructions and recovery notes, reconcile them with current evidence, and maintain an accurate record when reality changes."
 
 policy:

@@ -4,6 +4,9 @@
 
 - Detect the operating system, version, architecture, and related platform facts automatically instead of asking installers to confirm them.
 - Keep primary-terminal and network/mirror policy as explicit user decisions.
+- Make the public entry point English-first with a maintained Simplified Chinese companion and a bilingual reference-policy pair.
+- Remove provider-specific model names and fixed media/resource numbers from the portable baseline; let the installer map verified capabilities and user-selected budgets.
+- Replace mandatory numeric delegation thresholds with a task-sensitive, user-selected delegation policy.
 
 ## 0.2.0 - 2026-08-10
 

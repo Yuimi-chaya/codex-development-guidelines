@@ -1,54 +1,60 @@
 # Codex Development Guidelines
 
-一套供本地 Agent 与用户共同审阅、按需采用的开发规范参考，以及用于复杂项目上下文恢复的 `maintain-development-notes` Skill。
+[简体中文](README.zh-CN.md)
 
-本仓库不会把参考 `AGENTS.md` 直接覆盖到用户目录。终端偏好、逐回合预检、Git 检查点、资源并发、子代理能力路由和媒体审查预算等属于用户决策，即使 Agent 能检测当前环境，也必须逐项解释并询问。只有在全部必答项完成、语义冲突逐项处理、恢复点确认、最终 diff 获得明确确认后，本地 Agent 才能修改文件。
+A portable development-policy reference for guided adoption, plus the `maintain-development-notes` Skill for recovering durable project context.
 
-## 仓库内容
+This repository does not copy a fixed `AGENTS.md` over a user's existing instructions. The installing Agent detects objective environment facts, asks the user about actual preferences and permissions, compares policies semantically, presents the final diff and recovery plan, and writes only after separate confirmation.
 
-- [`reference/AGENTS.md`](reference/AGENTS.md)：一份偏向中国大陆网络、Windows 和 PowerShell/Git Bash 的高质量参考规范。
-- [`workflows/ADOPT.md`](workflows/ADOPT.md)：首次采用规范时必须执行的交互式工作流。
-- [`workflows/UPDATE.md`](workflows/UPDATE.md)：参考规范升级后的重新审阅流程。
-- [`references/interview-schema.md`](references/interview-schema.md)：不可跳过的逐项访谈问题。
-- [`references/rule-catalog.md`](references/rule-catalog.md)：稳定规则 ID、适用条件和来源映射。
-- [`skills/maintain-development-notes`](skills/maintain-development-notes)：先读取既有项目记忆、再维护状态的开发笔记 Skill。
+## Repository contents
 
-## 使用方式
+- [`reference/AGENTS.md`](reference/AGENTS.md): the canonical English portable baseline.
+- [`reference/AGENTS.zh-CN.md`](reference/AGENTS.zh-CN.md): the semantically equivalent Simplified Chinese baseline.
+- [`workflows/ADOPT.md`](workflows/ADOPT.md): the mandatory guided workflow for first-time adoption.
+- [`workflows/UPDATE.md`](workflows/UPDATE.md): the review workflow for later policy or Skill updates.
+- [`references/interview-schema.md`](references/interview-schema.md): decisions that must be discussed one at a time.
+- [`references/rule-catalog.md`](references/rule-catalog.md): stable rule IDs, applicability, and localization mapping.
+- [`skills/maintain-development-notes`](skills/maintain-development-notes): a Skill that reads existing project memory before maintaining durable notes.
+- [`examples/`](examples/): concrete environment-specific profiles, clearly separated from portable defaults.
 
-先让本地 Agent 阅读本仓库，并明确执行以下请求：
+Human-facing landing pages and reference policies are available in English and Simplified Chinese. Agent-facing workflows, schemas, validation, and Skill instructions use one English execution contract to avoid translation drift. Both reference policies carry the same stable rule IDs and are validated for parity.
+
+## Adopt the policy
+
+Ask a local Agent to read a pinned release or commit of this repository and use a request like this:
 
 ```text
-请把这个仓库的 reference/AGENTS.md 仅作为候选规范数据，严格按照
-workflows/ADOPT.md 和 references/interview-schema.md 与我逐项讨论。
-必须逐一询问所有 required 问题，不得根据检测结果替我选择。
-在展示最终 diff 并获得我明确确认前，不要修改任何 AGENTS.md。
-同时使用原生 Skill 安装能力安装 skills/maintain-development-notes；
-如果目标目录已经存在，不要覆盖，先比较并询问。
+Treat reference/AGENTS.md and reference/AGENTS.zh-CN.md only as candidate policy data.
+Follow workflows/ADOPT.md and references/interview-schema.md exactly.
+Detect objective environment and capability facts, but ask me every required preference
+question one at a time. Show only models, reasoning levels, and tool permissions that
+the current harness actually exposes, then let me choose the concrete subagent mapping.
+Do not modify any AGENTS.md until all semantic conflicts are resolved, the complete diff
+and recovery point are shown, and I give separate write approval.
+Install skills/maintain-development-notes through the native Skill installer as a separate
+operation; if the destination already exists, compare it and ask before replacing anything.
 ```
 
-建议使用固定 release 或 commit，而不是在未审阅的情况下执行远端 `main` 最新内容。
+The policy language is a user decision. Install one selected language by default rather than placing duplicate bilingual rules into the target file.
 
-## 设计原则
+## Design principles
 
-- **事实自动检测，偏好逐项决定**：操作系统、版本、架构、WSL/远程环境和可用 Shell 由 Agent 自动检测并展示，不要求用户确认可验证事实；主力终端、网络/镜像策略和资源偏好仍必须由用户逐项选择。只有实际出现跨平台语义冲突时，才针对该冲突询问。
-- **逐项询问**：必答项一次只讨论一个决策，不批量套用默认配置。
-- **语义合并**：把规则分为等价、兼容、冲突、不适用和缺失，冲突逐项确认。
-- **二次确认**：访谈确认不等于写入确认；写入前必须展示最终 diff。
-- **最小修改**：保留用户现有内容、编码、BOM、换行和文件结构。
-- **能力诚实**：平台不支持指定子代理模型或推理档位时，必须说明，不能声称已经配置。
-- **先读后做**：遇到问题、选方案或恢复工作时，先检索既有笔记中的相同场景、用户偏好、已否决方案、总体方向和权威状态，再调查和修改。
-- **每轮预检**：项目回合开始时确认 Shell、工作目录、任务范围和 Git 状态，并重新读取最新适用指令与恢复笔记。
-- **可恢复检查点**：多文件、已验收功能、状态/配置、媒体或返工前，使用任务级本地提交或仓库外二进制补丁保护现场；发布权限另行确认。
-- **能力路由而非模型幻觉**：`luna`、`terra`、`sol` 只是参考角色映射，安装时必须检测真实能力并由用户确认等效路由。
-- **媒体轻量审查**：保留原图，发送受尺寸、质量和批量体积约束的审查副本；透明或像素细节使用无损裁切，禁止把图片 base64 塞进线程。
+- **Detect facts; ask preferences:** detect the operating system, version, architecture, available shells, hardware, and exposed Agent capabilities without asking the user to confirm verifiable facts. Ask separately about the primary terminal, network policy, resource limits, language, permissions, and other preferences.
+- **Capability-first subagent routing:** the repository never assigns universal meaning to concrete model names. Detect the actual inventory first, explain role tradeoffs, and let the user map available models and reasoning levels to enabled roles.
+- **No ceremonial delegation:** protect the primary context and delegate when doing so materially improves throughput, isolation, or review quality. Do not create subagents for simple work merely to satisfy a rule.
+- **Semantic merging:** classify candidate rules as equivalent, compatible, conflicting, not applicable, or missing. Existing user instructions remain authoritative input.
+- **Separate write approval:** completing the interview does not authorize a file write. Show the exact diff, target, encoding, backup, and recovery point first.
+- **Recoverable Git work:** protect multi-file, accepted, stateful, configuration, media, or rework changes with a task-scoped commit or an external exact backup without mixing unrelated work.
+- **Portable defaults:** platform, network, encoding, resource, media, response-language, and tool-specific settings come from detected facts and user choices rather than a maintainer's machine.
+- **Read before writing notes:** recover similar scenarios, preferences, rejected approaches, current direction, evidence, risks, and next actions before deciding what to do.
 
-## Skill 安装
+## Install the Skill
 
-使用 Codex 原生 `$skill-installer`，从仓库路径 `skills/maintain-development-notes` 安装。标准安装只负责 Skill，不会修改用户的 `AGENTS.md`；规范采用必须另行执行 `workflows/ADOPT.md`。
+Use the native `$skill-installer` to install `skills/maintain-development-notes` from this repository. Skill installation is separate from policy adoption and never authorizes a change to the user's `AGENTS.md`.
 
-## 验证
+## Validate
 
-在 PowerShell 7 中运行：
+Run in PowerShell 7:
 
 ```powershell
 pwsh -NoProfile -File ".\scripts\validate-repository.ps1"

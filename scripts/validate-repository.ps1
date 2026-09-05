@@ -9,8 +9,11 @@ $failures = [System.Collections.Generic.List[string]]::new()
 
 $requiredFiles = @(
     'README.md',
+    'README.zh-CN.md',
     'LICENSE',
+    'examples/README.md',
     'reference/AGENTS.md',
+    'reference/AGENTS.zh-CN.md',
     'workflows/ADOPT.md',
     'workflows/UPDATE.md',
     'references/interview-schema.md',
@@ -101,6 +104,7 @@ if (Test-Path -LiteralPath $skillPath) {
 
 $requiredQuestionIds = @(
     'SCOPE-01',
+    'LANGUAGE-01',
     'WORKFLOW-01',
     'SHELL-01',
     'SHELL-02',
@@ -145,6 +149,7 @@ if (Test-Path -LiteralPath $interviewPath) {
     }
     foreach ($requiredPhrase in @(
         'operating system, version, architecture',
+        'Concrete model names are never assumed from this repository.',
         '## SHELL-01 - Primary Shell',
         '## NETWORK-01 - Network and Mirrors'
     )) {
@@ -154,30 +159,65 @@ if (Test-Path -LiteralPath $interviewPath) {
     }
 }
 
-$referencePath = Join-Path $rootPath 'reference/AGENTS.md'
+$referenceRelativePaths = @('reference/AGENTS.md', 'reference/AGENTS.zh-CN.md')
 $referenceRuleCount = 0
-if (Test-Path -LiteralPath $referencePath) {
-    $reference = [System.IO.File]::ReadAllText($referencePath, $strictUtf8)
-    $referenceRuleCount = [regex]::Matches($reference, '(?m)^\d+\. ').Count
-    if ($referenceRuleCount -ne 15) {
-        $failures.Add("Reference AGENTS.md must contain exactly 15 numbered rules; found $referenceRuleCount.")
+$referenceIdSets = @{}
+foreach ($referenceRelativePath in $referenceRelativePaths) {
+    $referencePath = Join-Path $rootPath $referenceRelativePath
+    if (-not (Test-Path -LiteralPath $referencePath -PathType Leaf)) {
+        continue
     }
 
-    foreach ($requiredPhrase in @(
-        '每个涉及项目工作的回合',
-        '每轮开始前必须阅读最近的',
-        'git status --short',
-        'git diff --binary',
-        '`luna`',
-        '`terra`',
-        '`sol high`',
+    $reference = [System.IO.File]::ReadAllText($referencePath, $strictUtf8)
+    $ruleCount = [regex]::Matches($reference, '(?m)^\d+\. ').Count
+    if ($ruleCount -ne 15) {
+        $failures.Add("$referenceRelativePath must contain exactly 15 numbered rules; found $ruleCount.")
+    }
+    if ($referenceRelativePath -eq 'reference/AGENTS.md') {
+        $referenceRuleCount = $ruleCount
+    }
+
+    $ids = @([regex]::Matches($reference, '\[(?<id>[A-Z]+-\d{3})\]') | ForEach-Object {
+        $_.Groups['id'].Value
+    })
+    $uniqueIds = @($ids | Sort-Object -Unique)
+    if ($ids.Count -ne $uniqueIds.Count) {
+        $failures.Add("$referenceRelativePath contains duplicate stable rule IDs.")
+    }
+    $referenceIdSets[$referenceRelativePath] = ($ids -join '|')
+
+    foreach ($forbiddenPattern in @(
+        '(?i)\b(luna|terra|sol)\b',
         '2048px',
         '12MB',
-        '图片 base64',
-        'Cargo 默认 `-j 2`'
+        '(?i)Cargo.*-j\s*2',
+        '\[SUB-004\]'
+    )) {
+        if ($reference -match $forbiddenPattern) {
+            $failures.Add("$referenceRelativePath contains a provider-specific name, fixed local budget, or deprecated rule: $forbiddenPattern")
+        }
+    }
+}
+
+if ($referenceIdSets.Count -eq 2) {
+    $distinctReferenceIdSets = @($referenceIdSets.Values | Sort-Object -Unique)
+    if ($distinctReferenceIdSets.Count -ne 1) {
+        $failures.Add('English and Simplified Chinese reference AGENTS.md files must contain the same stable rule IDs in the same order.')
+    }
+}
+
+if (Test-Path -LiteralPath (Join-Path $rootPath 'reference/AGENTS.md') -PathType Leaf) {
+    $reference = [System.IO.File]::ReadAllText((Join-Path $rootPath 'reference/AGENTS.md'), $strictUtf8)
+    foreach ($requiredPhrase in @(
+        'portable baseline',
+        'concrete models and reasoning levels',
+        'Never prescribe or claim unavailable model names.',
+        'do not create subagents for simple work merely to satisfy a rule',
+        'user-selected and tool-supported budget',
+        'Respond in the selected language'
     )) {
         if (-not $reference.Contains($requiredPhrase)) {
-            $failures.Add("Reference AGENTS.md is missing current-policy phrase: $requiredPhrase")
+            $failures.Add("English reference AGENTS.md is missing portable-policy phrase: $requiredPhrase")
         }
     }
 }
@@ -188,7 +228,7 @@ if (Test-Path -LiteralPath $catalogPath) {
     foreach ($ruleId in @(
         'START-001', 'START-002',
         'GIT-001', 'GIT-002', 'GIT-003',
-        'SUB-004', 'SUB-005', 'SUB-006',
+        'SUB-004', 'SUB-005', 'SUB-006', 'SUB-007',
         'MEDIA-001', 'NOTES-001'
     )) {
         if ($catalog -notmatch "(?m)^\| $([regex]::Escape($ruleId)) \|") {
@@ -205,6 +245,9 @@ if (Test-Path -LiteralPath $catalogPath) {
             }
         }
     }
+    if ($catalog -notmatch '(?m)^\| SUB-004 \| — \| \*\*Deprecated:\*\*') {
+        $failures.Add('Rule catalog must explicitly mark SUB-004 as deprecated.')
+    }
 }
 
 $adoptPath = Join-Path $rootPath 'workflows/ADOPT.md'
@@ -218,7 +261,9 @@ if (Test-Path -LiteralPath $adoptPath) {
         'DEVELOPMENT_NOTES.md',
         'recovery point',
         'git diff --binary',
-        'Report the detected platform as a fact; do not turn it into an interview question when it can be verified.',
+        'Report these detected facts; do not turn them into confirmation questions.',
+        'selected policy language',
+        'exact user-selected model/reasoning mapping',
         'capability routing',
         'visual/media transfer budget'
     )) {
@@ -235,6 +280,10 @@ if (Test-Path -LiteralPath $updatePath) {
         'Git status, branch, HEAD',
         'development notes',
         'recovery-point plan',
+        'policy language',
+        'stable IDs',
+        'actual model and reasoning controls',
+        'exact model mappings',
         'capability fallbacks',
         'media-budget questions'
     )) {
