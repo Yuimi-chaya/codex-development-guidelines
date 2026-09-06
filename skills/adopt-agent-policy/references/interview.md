@@ -190,7 +190,7 @@ The question bank configures adopted rules; it does not determine whether unaske
 ## COMMUNICATION-01 - Response Language and Detail
 
 - Requirement: full profile or when the user wants a reusable communication preference.
-- Explain: conversation updates and delivered artifacts have different audiences. Keep README/PR/email/UI content self-contained, without unrequested drafting narration; preserve requested voice, actual change/test/risk descriptions, and required disclosure. Resolve an artifact-specific style only when relevant, not as a mandatory new questionnaire.
+- Explain: distinguish conversation updates from substantive deliverables. Account for the reader's likely expertise, reading order, and entry point; introduce prerequisites, resolve references, and give examples their own context and actual text. Preserve requested voice, legitimate change/test/risk descriptions, and required disclosure. Reuse known audience needs; ask about an artifact-specific audience or style only when it materially affects the result, not as a mandatory new questionnaire.
 - Ask: What response language and default detail level should the Agent use?
 
 ## Completion

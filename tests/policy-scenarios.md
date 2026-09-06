@@ -57,10 +57,16 @@ These are semantic review cases, not automated proofs of Agent behavior. Review 
 | README conversation contamination | Draft says "as you requested" and labels prior answer revisions | Rewrite for intended readers; preserve useful requirements as self-contained facts |
 | Legitimate PR context | PR describes its own changes, failed tests, and remaining risks | Preserve accurate PR-specific information; do not misclassify it as private-chat leakage |
 | Requested voice and disclosure | User asks for first-person email; attribution is required | Preserve voice/disclosure; no blanket first-person or AI-attribution ban |
-| Teaching examples | Policy quotes bad drafting language to explain the boundary | Keep clearly identified relevant examples; keyword matches alone do not establish a violation |
+| Teaching examples | Policy compares drafting language with finished content | Give local scenario and actual accurate sample text; quoted bad language is allowed, but labeling something an example does not establish its quality |
 | Customized strict upgrade | Existing installed policy bans primary browsing more strictly than the new reference | Explain semantic difference, preserve local restriction unless separately approved; stable ID is not overwrite authority |
 | Primary-only interactive configuration | Subagents disabled; user requests bounded direct UI policy and model advice | Resolve relevant model/fallback and progress budgets without enabling subagents or repeating unrelated interview topics |
+| Placeholder presented as prose | Release-note sample says what the author should write instead of stating the change | Supply actual supported content; deleting conversational pronouns alone is insufficient |
+| Detached example reference | A standalone example uses "the six modules" without names, local premise, or precise reference | Establish its own scenario and verify the claimed relationship; do not silently borrow other chapters or the drafting chat |
+| Prerequisite explained later | A procedure asks the reader to act before revealing what the option does | Move the action-changing meaning/condition before the action; full-document availability is not prior reader knowledge |
+| Appropriate references and expertise | Named save option has a local purpose; a precise recovery heading supplies optional detail | Preserve useful navigation and audience-appropriate expertise; do not demand exhaustive repetition or ban all forward references |
 
 ## Review record
 
 Keep actual results in the task's appropriate development note or review record, not by silently changing expected outcomes to match behavior. Record source identity, evaluator, date, test type, observed action, and remaining limits. A primary-Agent walkthrough is not independent forward execution, and translation ID parity is not semantic proof.
+
+For artifact perspective and reader context, use the complete excerpts in [artifact-reading-cases.md](artifact-reading-cases.md). Review the supplied reader-visible text and identify concrete defects before comparing the separate review notes. The labels in this scenario table are not substitutes for inspecting the prose itself.

@@ -118,6 +118,16 @@ try {
         @{ Name='artifact wording is not frozen'; Code=''; Mutate={
             Edit-Fixture 'reference/AGENTS.md' { param($text) $text.Replace('intended readers and purpose', 'target audience and document purpose') }
         } },
+        @{ Name='reader context rule cannot disappear from catalog'; Code='CATALOG_MISSING'; Mutate={
+            Edit-Fixture 'references/rule-catalog.md' { param($text) $text -replace '(?m)^\| ARTIFACT-002 [^\n]*\n', '' }
+        } },
+        @{ Name='reader context bilingual coverage'; Code='REFERENCE_MISSING'; Mutate={
+            Edit-Fixture 'reference/AGENTS.zh-CN.md' { param($text) $text.Replace('[ARTIFACT-002]', '') }
+        } },
+        @{ Name='reader review fixtures are required'; Code='MISSING_FILE'; Mutate={
+            $path = Remember-File 'tests/artifact-reading-cases.md'
+            Remove-Item -LiteralPath $path
+        } },
         @{ Name='missing required file'; Code='MISSING_FILE'; Mutate={
             $path = Remember-File 'skills/adopt-agent-policy/references/profile.md'
             Remove-Item -LiteralPath $path

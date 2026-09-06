@@ -168,19 +168,47 @@ Validation should match risk. The Agent should distinguish what is implemented, 
 
 A binary Git diff is not necessarily a complete backup: staged state, untracked images, or ignored assets may need separate protection. Verify exactly what the checkpoint covers. A running authorized dev server is also not an unfinished build; report its URL and lifecycle while confirming finite commands exited. Do not kill user-owned processes.
 
-### Keep artifacts independent of the drafting conversation
+### Write for the reader
 
-README files, PR bodies, release notes, emails, and UI copy should make sense to their intended readers without the private chat that requested them. Progress commentary belongs in conversation or an appropriate development record, not automatically in the deliverable.
+A README introduces a project and its use, a PR body explains changes and verification, and release notes describe version changes. Deliver that content rather than narrating how the assistant received instructions, what it plans to write, or how many revisions it made.
 
-| Drafting language | Artifact-appropriate content |
-|---|---|
-| "As you requested, I split the rules into six modules." | "Six modules separate runtime behavior from adoption configuration." |
-| "Next I will verify this PR's changes." | The PR's actual changes, rationale, tests run, results, and residual risks |
-| "This is a more complete version of my previous answer." | The finished content, without labels describing response revision rounds |
+Distinguish what the author knows, what the document contains, and what the reader can understand at this point. A definition appearing somewhere in the document does not mean a reader will connect an ambiguous reference to it.
 
-These are teaching examples, not a keyword blacklist. First-person emails, a maintainer's explanation, legitimate PR context, and required AI attribution can be appropriate. Preserve requested voice and necessary disclosures. Convert relevant requester background into self-contained facts; do not delete useful information just because it came from a user message.
+Introduce concepts, objects, and conditions needed to understand or execute the next step. For distant context, briefly restate the relevant point or identify the exact section and its purpose. Sections, examples, and procedures may be entered through a contents list, a link, or scrolling; provide the necessary local background. Assume appropriate reader expertise without repeating every definition in every paragraph.
 
-The review question is: would a reader who never saw the drafting chat understand why this sentence belongs here? This is a model-agnostic audience rule, not a blacklist of models or a claim about hidden-prompt disclosure.
+#### Example: release-note voice
+
+Suppose a reporting tool has added CSV export and needs release notes for its users.
+
+Unsuitable: "As you requested, I have added the export feature."
+
+Suitable: "Added CSV export."
+
+Both sentences describe the same feature. The second states the version change without requiring readers to know who asked the assistant for it.
+
+#### Example: make a save prompt understandable on its own
+
+Suppose a file tool's "Keep original" option saves edits as a separate copy. A prompt in the save dialog must explain how to retain the original file; the dialog does not display the option list from the user manual.
+
+Unsuitable: "Save using the first option described earlier."
+
+Suitable: "Select 'Keep original' to save your changes as a separate copy."
+
+The instruction names the option and its result; readers need not scroll back to discover what "the first option" means.
+
+#### Example: supply content, not a writing checklist
+
+Suppose a PR fixes a crash when exporting an empty report. Three related regression tests passed; the full test suite has not run. The task is to write a PR summary.
+
+Unsuitable: "Describe the fix, test results, and remaining risks here."
+
+Suitable: "Fixed a crash when exporting an empty report. Three related regression tests passed; the full test suite has not run."
+
+The summary uses only the supplied facts. It neither substitutes a content checklist for prose nor expands the testing claim.
+
+Review prerequisites and references in reading order, then inspect sections and examples that may be read independently. If understanding requires the drafting chat, guessing an object, or mentally supplying a missing explanation, repair the text. Check each example's actual sample against its stated scenario.
+
+Choose voice for the destination: an email may use the requested first person, a PR should retain actual changes, tests, and risks, and required attribution or disclosure remains appropriate. Writing instructions belong in a writing guide; an example labeled as finished content must supply finished content.
 
 ## Preferences are not questionnaires
 
@@ -304,7 +332,7 @@ See [`workflows/ADOPT.md`](workflows/ADOPT.md) for the detailed contract.
 | Executor closes after many screenshots | Preserve decisive evidence; do not claim history deletion | Record only actually supported retention controls |
 | Exposed provider alias has no public identity evidence | Use only approved known capability/fallback; disclose uncertainty | Do not invent release dates, prices, or a verified backend |
 | User declines PowerShell 7 or Git | Adapt to the retained environment and suitable backups | No forced installation or repeated persuasion |
-| README draft narrates the previous chat | Rewrite for its readers while preserving useful facts | No new interview or model blacklist |
+| README draft relies on the previous chat or unexplained references | Supply necessary context and actual content; check facts and references in reading order | No configuration interview for ordinary writing review |
 
 ## Language and localization
 
@@ -322,6 +350,8 @@ pwsh -NoProfile -File ".\scripts\test-validator.ps1"
 Validation uses the existing PowerShell toolchain, not a requirement that adopting users switch shells. The validator checks text encoding, local links, stable-ID/catalog relations, module references, question coverage, Skill metadata, and installable-folder boundaries. The regression tests exercise malformed packages in temporary copies and do not install anything. Neither proves semantic equivalence or Agent behavior.
 
 Use [review scenarios](tests/policy-scenarios.md) for a separate behavior-oriented walkthrough or a future isolated forward test. Record which actually ran; do not call a primary-Agent walkthrough an independent execution test.
+
+For prose review, [reading cases](tests/artifact-reading-cases.md) provide complete excerpts and separate review notes. Read the excerpts first, then compare the notes to check missing prerequisites, ambiguous references, inaccurate summaries, and placeholders. Structural validation does not establish that readers can understand those excerpts without difficulty.
 
 ## Status and publication
 

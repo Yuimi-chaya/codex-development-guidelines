@@ -25,6 +25,7 @@ $requiredFiles = @(
     'reference/AGENTS.md', 'reference/AGENTS.zh-CN.md',
     'references/rule-catalog.md', 'references/interview-schema.md',
     'workflows/ADOPT.md', 'workflows/UPDATE.md', 'tests/policy-scenarios.md',
+    'tests/artifact-reading-cases.md',
     'scripts/validate-repository.ps1', 'scripts/test-validator.ps1'
 )
 $skillNames = @('adopt-agent-policy', 'maintain-development-notes')
@@ -110,7 +111,7 @@ $knownIds = @(
     'BROWSER-001', 'MEDIA-001', 'ENV-001', 'SHELL-001', 'SHELL-002',
     'FRICTION-001', 'NET-001', 'FILE-001', 'FILE-002',
     'GIT-001', 'GIT-002', 'GIT-003', 'RES-001', 'RES-002', 'VERIFY-001', 'COMM-001',
-    'ARTIFACT-001'
+    'ARTIFACT-001', 'ARTIFACT-002'
 )
 foreach ($id in $knownIds) {
     if (-not $catalogRows.ContainsKey($id)) { Add-Failure 'CATALOG_MISSING' $id }

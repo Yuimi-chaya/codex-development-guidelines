@@ -13,7 +13,7 @@ Use this workflow for a deliberate policy update, adoption-record refresh, or Sk
 - Keep runtime rules separate from first-adoption preferences and profile data.
 - Preserve stricter local primary-browser prohibitions when reviewing the adaptive execution rule. A new reference default is not authorization to loosen them.
 - If model choices need refreshing, use [model-selection.md](model-selection.md) for affected exposed IDs only. Research and recommendations do not select a replacement, authorize paid tests, or imply tool installation.
-- Review new artifact-audience guidance semantically: preserve requested voice, legitimate PR change/test/risk content, and required attribution; do not adopt a first-person blacklist.
+- Review artifact-audience and reader-context guidance semantically: require substantive supported content, reading-order prerequisites, clear references, and locally understandable examples. Preserve requested voice, legitimate PR change/test/risk content, and required attribution; do not adopt a first-person blacklist or require every paragraph to repeat all background.
 
 ## Procedure
 

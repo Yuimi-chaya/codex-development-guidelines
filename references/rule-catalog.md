@@ -31,7 +31,8 @@ IDs identify behavior rather than exact wording or position. Keep active IDs in 
 | RES-002 | 22 | validation-and-resources | active | Resource/process lifecycle | Announce, monitor, react to lag, preserve user processes |
 | VERIFY-001 | 23 | validation-and-resources | active | Acceptance and completion | Risk-matched evidence; distinguish implementation/testing/human acceptance |
 | COMM-001 | 24 | validation-and-resources | active | User-facing communication | Selected language/detail, concise evidence and state |
-| ARTIFACT-001 | 25 | validation-and-resources | active | Deliverable authoring and review | Intended reader/purpose; exclude unrequested drafting-chat contamination |
+| ARTIFACT-001 | 25 | validation-and-resources | active | Deliverable authoring and review | Actual supported content in the intended voice, not drafting commentary or placeholders |
+| ARTIFACT-002 | 26 | validation-and-resources | active | Explanation, reference, and example composition | Reading-order prerequisites, clear referents, local example context, accurate sample text |
 | SUB-004 | - | delegation-and-tools | deprecated | Historical comparison only | Mandatory numeric delegation thresholds; never adopt automatically |
 
 ## Module and precedence rules
@@ -65,3 +66,9 @@ Compare behavior as well as IDs when updating. Stable IDs and translations never
 `BROWSER-001` retains structured-tool preference and permission boundaries while separating interaction method, model, context, and resource policy. Long/high-output UI work favors isolation when viable; a stronger executor need not be the primary thread or follow a failed weak-model trial. Short direct work remains conditional on authority. Preserve any stricter locally adopted primary-browser prohibition when merging.
 
 `SUB-003` and `SUB-005` retain capability verification and role mapping, with researched recommendations confined to adoption or requested configuration consultation. `SUB-006` retains the default one-directed-retry ceiling: takeover is responsibility for reassessment, not permission to use forbidden tools, and changing agents cannot reset budgets. `MEDIA-001` distinguishes model input, transfer, and retention; `ENV-001` makes recommendations non-imposing. The new `ARTIFACT-001` separates deliverable voice from conversation commentary without banning first person or required disclosure. No existing active ID is retired or repurposed.
+
+## Reader-context revision
+
+`ARTIFACT-001` retains its audience/voice boundary and explicitly requires substantive, factually supported content instead of writing instructions disguised as finished prose. `ARTIFACT-002` adds reading-order and local-context requirements: establish prerequisites, resolve references, and supply each example's necessary scenario. A reference located somewhere in a document does not automatically establish the reader's understanding at the point of use.
+
+Keep both rules distinct from a ban on technical terminology, first person, or forward references. Existing reader-appropriate expertise, concise reminders, and precise navigation remain valid; the revision does not require every sentence to repeat all context. Compare these behaviors semantically during adoption, without replacing a user's compatible wording.

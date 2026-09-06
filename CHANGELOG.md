@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Strengthen `ARTIFACT-001` to require substantive, supported content rather than drafting instructions or placeholders, and add `ARTIFACT-002` for reading-order prerequisites, clear references, and local example context.
+- Replace the bilingual README's ambiguous module example and placeholder samples with explicit hypothetical scenarios and actual prose. Preserve requested voice, disclosures, useful cross-references, and audience-appropriate expertise.
+- Add concrete artifact-reading fixtures with separate review notes; distinguish reader-context review from structural checks and whole-document recall.
 - Separate interactive method, model capability, execution context, and resource limits. Permit capable premium executors under approved mappings, compare complete-task costs, and preserve bounded direct-use authority without mandatory weak-model trials.
 - Clarify single-operator UI handoff, pending-side-effect checks, blocker-specific takeover, and budgets that cannot reset through agent changes.
 - Distinguish model input, network payload, and persisted history; preserve image/coordinate evidence and disclose unsupported output or retention controls.

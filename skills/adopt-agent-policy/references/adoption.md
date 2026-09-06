@@ -70,7 +70,7 @@ Before writing, show:
 
 Put effective user choices in the target instructions, with conditions where needed. The generated `AGENTS.md` must work without the source checkout, Skill, or optional profile present. Do not copy the interview or explanatory modules into it. Skipping budget questions does not remove media protection; disabling delegation does not authorize forbidden direct browsing.
 
-Keep volatile research tables and drafting commentary out of the runtime file. Review it for a future reader who never saw the adoption chat: rules must stand on their own, without "as requested" narration, revision-round labels, or unrequested prompt-compliance statements.
+Keep volatile research tables and drafting commentary out of the runtime file. Review it for a future reader who never saw the adoption chat: provide actual rules, not instructions to fill them in later. Introduce necessary terms and conditions before use, name the subjects of references, and keep examples understandable at their location. Do not assume a fact elsewhere in the source checkout supplies missing context in the target file. Preserve relevant expertise and precise cross-references without copying all background into every rule.
 
 Ask for explicit approval for the final policy diff. Enumerate separate profile, installation, or other operations so the user can approve only the intended subset; do not ask again for the same already approved operation.
 

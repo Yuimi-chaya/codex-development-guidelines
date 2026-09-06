@@ -41,7 +41,7 @@ The configured policy should preserve these behavior boundaries when relevant:
 - Large media is inspected before transfer. For a 4K video or a multi-megabyte screenshot batch, use representative frames, crops, or optimized review copies while retaining originals locally.
 - Subagent conclusions are evidence, not authority. Preserve at most one directed retry by default and a progress/stop boundary; the primary Agent may reassess sooner. Distinguish capability from tool/environment/permission blockers; switching agents does not reset budgets. Keep one operator per mutable UI session and verify uncertain effects before retrying.
 - Clear resistance is a decision point. Explain alternatives and ask before unapproved installation, global changes, or expanded authority. Requiring one method is not permission for additional side effects.
-- Keep deliverables self-contained for their intended readers. Exclude unrequested drafting commentary while preserving requested voice, actual change/test/risk descriptions, and necessary disclosure. Keep the adoption questionnaire and research tables out of the generated runtime policy.
+- Deliver supported content in the requested artifact voice, not drafting commentary or placeholders. Establish prerequisites and referents in reading order; examples need visible local scenarios and actual sample text. Review likely direct-entry sections without supplying missing context from the adoption chat. Preserve legitimate change/test/risk descriptions and necessary disclosure. Keep the questionnaire and research tables out of the generated runtime policy.
 
 ## Completion
 
