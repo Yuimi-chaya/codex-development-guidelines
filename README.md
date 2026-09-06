@@ -2,19 +2,17 @@
 
 [简体中文](README.zh-CN.md)
 
-A portable development-policy reference for coding Agents, plus a separate first-adoption Skill. The repository retains its historical `codex-development-guidelines` name; its behavioral principles are not tied to a particular model provider, operating system, or Agent product.
+A portable development-policy reference for coding Agents, plus a separate first-adoption Skill.
 
 The central design rule is:
 
-> The runtime policy governs how an Agent behaves during work. The adoption Skill discovers how this user and environment should configure that policy.
+> The runtime policy governs how an Agent behaves during work. The installation interview Skill determines how to configure that policy for the user and their environment. Its behavioral principles are not tied to a particular model provider, operating system, or Agent product; they start with the actual environment and the user's preferences.
 
-These are different jobs. A normal project thread should not begin with a long questionnaire. The interview belongs to [`adopt-agent-policy`](skills/adopt-agent-policy/SKILL.md), and is used only when the user deliberately adopts or configures the policy. A new thread, a missing `AGENTS.md`, or a read-only review does not trigger adoption.
-
-This repository proposes guidance, not an enforcement engine, autonomous installer, or universal security sandbox. Existing higher-priority instructions and explicit user choices remain authoritative. The user's own Agent must inspect the real environment and adapt the proposal before writing anything.
+First-time installation includes an interview through [`adopt-agent-policy`](skills/adopt-agent-policy/SKILL.md). This flow starts only when the user intends to adopt the policy or change its configuration after installation. Installation does not blindly overwrite an existing `AGENTS.md`.
 
 ## Why this repository exists
 
-Agent instructions often become too rigid because they mix several concerns:
+Agent instructions are not a universal template to copy unchanged. They should reflect the actual environment and the user's preferences, cover common situations to reduce problems, and make everyday work fit the user's needs. This requires distinguishing:
 
 - permanent behavior and temporary environment facts;
 - safety boundaries and personal preferences;
@@ -22,8 +20,6 @@ Agent instructions often become too rigid because they mix several concerns:
 - runtime execution and first-time installation;
 - primary-agent responsibilities and subagent routing;
 - project instructions and user-level configuration.
-
-That mixture produces a policy that is technically careful but operationally tiring. It may ask the same questions in every thread, force irrelevant checks, or turn one user's machine-specific habits into universal defaults.
 
 This repository separates those concerns:
 
@@ -80,7 +76,7 @@ This does not mean asking the user to confirm every fact. It means distinguishin
 - user preference: “prefer PowerShell for future commands”;
 - task decision: “this command should use PowerShell because the current session is PowerShell.”
 
-### Choose interactive execution without fixing the model tier
+### Choose model tiers based on user requirements and task needs
 
 The primary Agent owns reasoning, integration, final decisions, validation, and the user-facing conclusion. Other authorized roles may own disjoint writes; this does not transfer final accountability. Subagents are useful when they add throughput, isolation, tool access, or independent review.
 
@@ -105,13 +101,13 @@ The default for long or high-output interaction is a suitable isolated executor,
 | Very short operation with disproportionate handoff cost | Bounded primary execution if applicable authority permits |
 | Required session or tools cannot be delegated | Allowed alternative, an existing bounded fallback, or a scoped user-approved direct-use exception |
 
-Compare complete-task results, not cost per click. Total time includes model responses, tool/page waits, network transfer, interaction rounds, handoff, recovery, and verification. Hypothetically, 30 rounds at 3 seconds take 90 seconds while 8 rounds at 8 seconds take 64; these are illustrative round times, not benchmark results. If both models need the same number of rounds, the faster one may be preferable. Do not assume stronger models are always slower or always finish in fewer rounds.
+Compare complete-task results, not cost per click. Total time includes model responses, tool/page waits, network transfer, interaction rounds, handoff, recovery, and verification. Suppose a fast model takes 30 rounds at 3 seconds each, totaling 90 seconds, while a stronger model takes 8 rounds at 8 seconds each, totaling 64 seconds. If both models need the same number of rounds, the faster one may be preferable. Do not assume stronger models are always slower or always finish in fewer rounds.
 
 Delegate a bounded stage, such as filtering, exporting, and verifying a report. Keep its observe-decide-act loop with the executor; avoid making the primary inspect every screenshot and tutor a cheap model through each click. When changing operators, stop the previous operator and hand over verified state, pending effects, permission limits, and remaining budget. One mutable session has one active operator.
 
 Short direct use and isolation fallbacks must fit existing authority or a scoped exception. Missing subagents and superior primary-model capability never override an explicit browsing prohibition. Return concise findings and decisive evidence, not the raw session; verification does not require replaying all clicks. The [delegation module](references/modules/delegation-and-tools.md) explains routing, progress signals, and takeover.
 
-### Treat media as a payload and context risk
+### Account for media's upstream network load and local storage demands
 
 Before sending media upstream, inspect its dimensions, individual size, and batch size. Preserve originals locally. For a 4K video investigation, a useful process may be:
 
@@ -144,11 +140,11 @@ Default to at most one directed retry after an inadequate result; take over soon
 
 Taking over means owning the next decision, not automatically using a prohibited tool. Changing agents does not reset the failed stage's retry/resource budget. Check uncertain side effects before repeating an action. Do not wait indefinitely or repeatedly tutor the same agent. Delay alone is not evidence of inability: set a task-appropriate boundary, use bounded waits, and continue useful independent work where possible.
 
-Review decisive evidence yourself: inspect the relevant file, reproduce a claimed fix, or verify the source behind an assertion. This does not require replaying every browser click or loading all raw output.
+Review decisive evidence yourself: inspect the relevant file, reproduce a claimed fix, or verify the source behind an assertion. This does not require replaying every browser click or loading all raw output. If the task is simple and the primary Agent can readily complete it, do not create a subagent merely to satisfy a rule.
 
 ### Stop when the environment is resisting
 
-Repeatedly issuing the same failing command is not progress. When a shell, terminal, dependency, network, permission, or tool creates clear resistance, the Agent should:
+When a shell, terminal, dependency, network, permission, or tool creates clear resistance, the Agent should:
 
 1. identify the observed blocker;
 2. determine whether the failure is transient, semantic, or environmental;
@@ -162,9 +158,9 @@ The user may explicitly require a particular method. Respect that constraint and
 
 ### Use risk-matched recovery and validation
 
-Not every one-line edit needs a new commit. Meaningful recovery cost does justify a checkpoint, such as for multi-file logic, accepted behavior, migrations, media, broad configuration, deletion, or rework. The checkpoint should be task-scoped and must not absorb unrelated user work.
+Establish a task-scoped checkpoint before changes with meaningful recovery costs, such as multi-file logic, accepted behavior, migrations, media, broad configuration, deletion, or rework. It must not absorb unrelated user work.
 
-Validation should match risk. The Agent should distinguish what is implemented, tested, human-validated, published, installed, blocked, or unknown. A green static check is not the same as human acceptance or a successful deployment.
+The Agent should distinguish what is implemented, tested, human-validated, published, installed, blocked, or unknown. A green static check is not the same as human acceptance or a successful deployment.
 
 A binary Git diff is not necessarily a complete backup: staged state, untracked images, or ignored assets may need separate protection. Verify exactly what the checkpoint covers. A running authorized dev server is also not an unfinished build; report its URL and lifecycle while confirming finite commands exited. Do not kill user-owned processes.
 
@@ -254,7 +250,7 @@ Suggested roles are throughput/discovery, ordinary implementation/verification, 
 
 The user makes the final selection and fallback decision. Do not silently substitute recommendations, pay for benchmark calls, install test dependencies, or persist unapproved mappings. If research access or comparable measurements are unavailable, disclose the limits. Keep volatile tables out of runtime instructions; only approved operational choices belong there. See the [bundled model-selection procedure](skills/adopt-agent-policy/references/model-selection.md).
 
-### Inspect tools without imposing a setup
+### Inspect tools while respecting user preferences
 
 Adoption checks relevant terminal host, active shell/version, encoding behavior, tool availability, and Git state. These are detected facts, not permission to change the machine.
 
