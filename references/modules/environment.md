@@ -27,3 +27,19 @@ Example decision request: "The installed tool lacks the required feature. May I 
 ## Configuration
 
 Adoption can establish command-scoped mirror policy, preferred shell, permitted install scopes, and resource preferences. Current-session discovery is not evidence of a permanent preference. Missing version/source information should be labeled unknown, not filled with guesses.
+
+## Adoption inspection and optional recommendations
+
+Inspect only facts relevant to the target: terminal host and active shell are different; check the actual shell/version, relevant text encoding behavior, supported tools, Git availability, and repository state. Do not scan credentials or unrelated personal configuration. If Git is absent, report that fact without attempting repository commands or treating the folder as broken.
+
+Recommendations should state the detected condition, benefit, compatibility cost, source/version if installation is proposed, scope, risks, recovery, and an option to keep the current environment.
+
+| Example | Why recommend it | Boundary and retained-environment alternative |
+|---|---|---|
+| PowerShell 7 on Windows | Consider it for more consistent UTF-8 defaults when existing commands have encoding friction | Verify current documentation and external-tool behavior; do not promise all Chinese/legacy encoding is solved. Keep the current shell and adapt syntax/encoding handling if declined |
+| Git for a project without version control | Status/diff and scoped history make changes and recovery easier to inspect | No implicit installation, initialization, global identity/configuration, or publication. Use verified exact backups if the user prefers non-Git work |
+| A local media utility | A required crop, timestamp, or encoding operation is unsupported by installed tools | Prefer an existing viable tool; a new dependency remains a separate permission decision |
+
+For PowerShell encoding details, consult Microsoft's [character encoding documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_character_encoding). Version and external-program behavior matter; this is not an instruction to transcode existing files.
+
+Recommending an environment is not making it a prerequisite for adopting behavioral guidance. Respect the user's selection, and revisit only when a new task exposes a relevant limitation.

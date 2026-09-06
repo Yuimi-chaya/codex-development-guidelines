@@ -31,7 +31,7 @@ $skillNames = @('adopt-agent-policy', 'maintain-development-notes')
 foreach ($name in $skillNames) {
     $requiredFiles += "skills/$name/SKILL.md", "skills/$name/agents/openai.yaml"
 }
-foreach ($name in @('adoption', 'update', 'interview', 'profile')) {
+foreach ($name in @('adoption', 'update', 'interview', 'profile', 'model-selection')) {
     $requiredFiles += "skills/adopt-agent-policy/references/$name.md"
 }
 $requiredFiles += 'skills/maintain-development-notes/references/note-schema.md'
@@ -109,7 +109,8 @@ $knownIds = @(
     'SUB-001', 'SUB-002', 'SUB-003', 'SUB-004', 'SUB-005', 'SUB-006', 'SUB-007',
     'BROWSER-001', 'MEDIA-001', 'ENV-001', 'SHELL-001', 'SHELL-002',
     'FRICTION-001', 'NET-001', 'FILE-001', 'FILE-002',
-    'GIT-001', 'GIT-002', 'GIT-003', 'RES-001', 'RES-002', 'VERIFY-001', 'COMM-001'
+    'GIT-001', 'GIT-002', 'GIT-003', 'RES-001', 'RES-002', 'VERIFY-001', 'COMM-001',
+    'ARTIFACT-001'
 )
 foreach ($id in $knownIds) {
     if (-not $catalogRows.ContainsKey($id)) { Add-Failure 'CATALOG_MISSING' $id }

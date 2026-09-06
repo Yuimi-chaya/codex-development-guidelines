@@ -11,6 +11,9 @@ Use this workflow for a deliberate policy update, adoption-record refresh, or Sk
 - Re-run only questions whose meaning, capability, language, profile, or user preference changed.
 - Compare stable IDs and perform semantic comparison; do not use repository ownership as permission to overwrite local policy.
 - Keep runtime rules separate from first-adoption preferences and profile data.
+- Preserve stricter local primary-browser prohibitions when reviewing the adaptive execution rule. A new reference default is not authorization to loosen them.
+- If model choices need refreshing, use [model-selection.md](model-selection.md) for affected exposed IDs only. Research and recommendations do not select a replacement, authorize paid tests, or imply tool installation.
+- Review new artifact-audience guidance semantically: preserve requested voice, legitimate PR change/test/risk content, and required attribution; do not adopt a first-person blacklist.
 
 ## Procedure
 

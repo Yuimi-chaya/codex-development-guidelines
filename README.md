@@ -45,6 +45,7 @@ This repository separates those concerns:
 - [`workflows/ADOPT.md`](workflows/ADOPT.md): detailed first-adoption workflow.
 - [`workflows/UPDATE.md`](workflows/UPDATE.md): deliberate policy or Skill update workflow.
 - [`references/interview-schema.md`](references/interview-schema.md): configurable interview questions and `quick`/`standard`/`full` modes.
+- [`skills/adopt-agent-policy/references/model-selection.md`](skills/adopt-agent-policy/references/model-selection.md): adoption-time model research, evidence fields, role recommendations, and user selection.
 - [`references/rule-catalog.md`](references/rule-catalog.md): stable IDs, modules, activation conditions, and adoption requirements.
 - [`examples/`](examples/): concrete environment-specific profiles, never universal defaults.
 
@@ -79,19 +80,36 @@ This does not mean asking the user to confirm every fact. It means distinguishin
 - user preference: “prefer PowerShell for future commands”;
 - task decision: “this command should use PowerShell because the current session is PowerShell.”
 
-### Keep the primary Agent focused
+### Choose interactive execution without fixing the model tier
 
 The primary Agent owns reasoning, integration, final decisions, validation, and the user-facing conclusion. Other authorized roles may own disjoint writes; this does not transfer final accountability. Subagents are useful when they add throughput, isolation, tool access, or independent review.
 
-The default is to keep high-interaction browser or Computer Use work out of the primary thread. First consider an appropriate supported API, CLI, or structured tool. UI sessions may involve many observe/click/wait cycles with screenshots and page state. In a tiered setup, the primary model may have higher cost, time-to-first-token, or slower output, making this repeated interaction particularly expensive. Retained tool history can also affect storage and responsiveness, depending on the harness.
+Browser/Computer Use work combines interface understanding with repeated tool interaction. The executor must interpret visual state, express the intended action through the tool's parameters, and recognize the resulting state. A faster cheap model is not adequate merely because it can issue clicks; a premium model is not necessary merely because the tool is graphical.
 
-This is a default boundary, not a claim that every browser tool behaves alike or delegation is always cheaper. Direct use requires an allowed exception, for example:
+Choose four things separately:
 
-- the user explicitly asks the primary Agent to operate the browser;
-- an adopted fallback explicitly permits it under the current conditions;
-- the user accepts a scoped exception after the Agent explains why an authorized execution role is unavailable.
+| Decision | How to choose |
+|---|---|
+| Interaction method | Prefer suitable authorized structured access for equivalent work; do not bypass a required UI test or tool restriction |
+| Model | Require sufficient task-specific visual/tool competence, then compare actual cost, latency, and reliability |
+| Execution context | Consider output volume, duration, tool/session access, coordination cost, and information lost during handoff |
+| Resource policy | Bound useful progress, steps/time/cost as relevant, media transfer, and supported retention behavior |
 
-No subagent support is not automatic browser permission. Prefer an allowed lower-output alternative or ask only for the missing exception. A simple structured lookup is not the same as a long UI session. Return concise findings and decisive evidence; do not assume subagents make all screenshots disappear from persistent storage.
+The default for long or high-output interaction is a suitable isolated executor, **not necessarily a weaker model**. It may use the same or a stronger model than the primary Agent. Verify its actual visual input, tools, permissions, and session access; a selectable model name alone is insufficient.
+
+| Situation | Suggested route within the user's approved policy |
+|---|---|
+| Stable repetitive low-risk operations | Proven adequate fast execution or supported authorized automation |
+| Unfamiliar interface or difficult visual/state judgment | A capable interactive executor directly, without a mandatory weak-model trial |
+| Long workflow with large tool returns | Isolated execution with the necessary capability, including a premium model |
+| Very short operation with disproportionate handoff cost | Bounded primary execution if applicable authority permits |
+| Required session or tools cannot be delegated | Allowed alternative, an existing bounded fallback, or a scoped user-approved direct-use exception |
+
+Compare complete-task results, not cost per click. Total time includes model responses, tool/page waits, network transfer, interaction rounds, handoff, recovery, and verification. Hypothetically, 30 rounds at 3 seconds take 90 seconds while 8 rounds at 8 seconds take 64; these are illustrative round times, not benchmark results. If both models need the same number of rounds, the faster one may be preferable. Do not assume stronger models are always slower or always finish in fewer rounds.
+
+Delegate a bounded stage, such as filtering, exporting, and verifying a report. Keep its observe-decide-act loop with the executor; avoid making the primary inspect every screenshot and tutor a cheap model through each click. When changing operators, stop the previous operator and hand over verified state, pending effects, permission limits, and remaining budget. One mutable session has one active operator.
+
+Short direct use and isolation fallbacks must fit existing authority or a scoped exception. Missing subagents and superior primary-model capability never override an explicit browsing prohibition. Return concise findings and decisive evidence, not the raw session; verification does not require replaying all clicks. The [delegation module](references/modules/delegation-and-tools.md) explains routing, progress signals, and takeover.
 
 ### Treat media as a payload and context risk
 
@@ -104,9 +122,13 @@ Before sending media upstream, inspect its dimensions, individual size, and batc
 5. send only the smallest set that answers the question;
 6. retain the original video and full-resolution frames locally.
 
-The motivating user incident involved extracted 4K frames larger than ten megabytes each. Sending several unmodified frames risks network pressure and an upstream `payload too large` failure. This is an illustrative workload, not a universal API limit. Inspect actual bytes and request overhead; if tool limits are unknown, start with a small representative transfer rather than inventing a maximum.
+For example, extracted 4K frames can form a batch with individual files larger than ten megabytes. Sending several such unmodified frames risks network pressure and an upstream `payload too large` failure. This is an illustrative workload, not a universal API limit. Inspect actual bytes and request overhead; if tool limits are unknown, start with a small representative transfer rather than inventing a maximum.
 
 Compression must preserve the evidence: use lossless crops for fine text, transparency, or pixel-level inspection. Tools may return screenshots automatically; where that output cannot be controlled, avoid copying it again. Do not manually paste base64 into the thread. Moving work to a subagent does not eliminate upstream transfer or retention costs.
+
+Keep three budgets separate: model input/context, network request bytes, and persisted session history. Isolation controls the primary thread's evidence return, not necessarily tool payloads or host storage. Closing an executor does not prove that screenshots were deleted. Use only supported output/retention controls and disclose what cannot be controlled; this repository is guidance, not a transport or storage implementation.
+
+Retain source-to-review mappings, timestamps, crop offsets, and scaling where UI coordinates matter. A review thumbnail is not automatically the tool's action coordinate space. Paths returned by an executor must be accessible to the reviewer; otherwise transfer necessary optimized evidence through an allowed channel.
 
 ### Review subagent results independently
 
@@ -118,7 +140,9 @@ Subagents produce evidence and proposed work, not unquestionable truth. A delega
 - an ownership boundary;
 - a stopping condition.
 
-Default to at most one directed retry after an inadequate result; take over sooner when improvement is unlikely. If the retry fails, direction drifts, or an agreed progress boundary is exceeded, close the delegation and take over. Do not wait indefinitely or repeatedly tutor the same agent. Delay alone is not evidence of inability: set a task-appropriate boundary, use bounded waits, and continue useful independent work where possible.
+Default to at most one directed retry after an inadequate result; take over sooner when improvement is unlikely. If it fails, direction drifts, or the progress boundary is exceeded, end the delegation and reassess. Repeatedly misidentified controls suggest a different issue from missing observations, a broken page, or insufficient permissions; change the model, method, or environment only when it addresses the actual blocker and is authorized.
+
+Taking over means owning the next decision, not automatically using a prohibited tool. Changing agents does not reset the failed stage's retry/resource budget. Check uncertain side effects before repeating an action. Do not wait indefinitely or repeatedly tutor the same agent. Delay alone is not evidence of inability: set a task-appropriate boundary, use bounded waits, and continue useful independent work where possible.
 
 Review decisive evidence yourself: inspect the relevant file, reproduce a claimed fix, or verify the source behind an assertion. This does not require replaying every browser click or loading all raw output.
 
@@ -144,6 +168,20 @@ Validation should match risk. The Agent should distinguish what is implemented, 
 
 A binary Git diff is not necessarily a complete backup: staged state, untracked images, or ignored assets may need separate protection. Verify exactly what the checkpoint covers. A running authorized dev server is also not an unfinished build; report its URL and lifecycle while confirming finite commands exited. Do not kill user-owned processes.
 
+### Keep artifacts independent of the drafting conversation
+
+README files, PR bodies, release notes, emails, and UI copy should make sense to their intended readers without the private chat that requested them. Progress commentary belongs in conversation or an appropriate development record, not automatically in the deliverable.
+
+| Drafting language | Artifact-appropriate content |
+|---|---|
+| "As you requested, I split the rules into six modules." | "Six modules separate runtime behavior from adoption configuration." |
+| "Next I will verify this PR's changes." | The PR's actual changes, rationale, tests run, results, and residual risks |
+| "This is a more complete version of my previous answer." | The finished content, without labels describing response revision rounds |
+
+These are teaching examples, not a keyword blacklist. First-person emails, a maintainer's explanation, legitimate PR context, and required AI attribution can be appropriate. Preserve requested voice and necessary disclosures. Convert relevant requester background into self-contained facts; do not delete useful information just because it came from a user message.
+
+The review question is: would a reader who never saw the drafting chat understand why this sentence belongs here? This is a model-agnostic audience rule, not a blacklist of models or a claim about hidden-prompt disclosure.
+
 ## Preferences are not questionnaires
 
 The following choices can belong in the effective `AGENTS.md` once approved. What does not belong there is the interview that collected them:
@@ -154,7 +192,9 @@ The following choices can belong in the effective `AGENTS.md` once approved. Wha
 - whether a watcher may remain running;
 - concrete model and reasoning mappings;
 - subagent depth and role routing;
+- bounded primary UI exceptions, interactive progress limits, and escalation authority;
 - media transfer budgets;
+- supported evidence-retention preferences and known control limitations;
 - note visibility and storage;
 - remote publication authority;
 - dependency installation policy;
@@ -163,6 +203,36 @@ The following choices can belong in the effective `AGENTS.md` once approved. Wha
 `adopt-agent-policy` merges applicable approved choices into the actual user/project instructions. An optional [adoption record](skills/adopt-agent-policy/references/profile.md) can retain provenance for upgrades, but there is no automatic profile loader. Ordinary work must still succeed without that record or this repository.
 
 Reuse explicit preferences already supplied by the user. Unknown optional values may remain conditional with a disclosed fallback; no missing answer implies consent to an install, upload, publication, or new permission.
+
+## Model and environment recommendations
+
+### Research exposed models during configuration
+
+Model research belongs to first adoption when relevant, requested detailed configuration advice, or a deliberate refresh. Ordinary threads reuse approved choices; they do not re-rank the market at startup. A read-only consultation can stop at recommendations without drafting policy or installing anything.
+
+Start with the exact IDs and providers exposed by the user's harness, including actual reasoning, visual, tool, and per-agent controls. Search and read official public release/model documentation and relevant provider pricing. A provider alias needs evidence of its identity; do not infer a backend from its name or search private deployment identifiers. Mark unavailable information unknown.
+
+Present a relevant shortlist with these fields:
+
+| Field | What the comparison should show |
+|---|---|
+| Identity and release | Exact exposed ID/provider, verified public mapping, release/snapshot date and date type |
+| Capability | Evidence for the proposed role, visual/tool access, reasoning controls, and limitations |
+| Cost | Actual provider rates, currency/units/conditions; distinguish upstream-only pricing and unknown charges |
+| Speed | First-token latency, output throughput, complete-task observations, and measurement conditions |
+| Recommendation | Role fit, tradeoffs, alternative, confidence, source, and check date |
+
+Suggested roles are throughput/discovery, ordinary implementation/verification, advanced interactive execution, and high-risk architecture/review. After acceptable capability and reliability are established, prefer recent, fast, low-cost throughput candidates; recency is not a ban on an older better fit. Interactive execution may deliberately use an expensive model outside the primary context.
+
+The user makes the final selection and fallback decision. Do not silently substitute recommendations, pay for benchmark calls, install test dependencies, or persist unapproved mappings. If research access or comparable measurements are unavailable, disclose the limits. Keep volatile tables out of runtime instructions; only approved operational choices belong there. See the [bundled model-selection procedure](skills/adopt-agent-policy/references/model-selection.md).
+
+### Inspect tools without imposing a setup
+
+Adoption checks relevant terminal host, active shell/version, encoding behavior, tool availability, and Git state. These are detected facts, not permission to change the machine.
+
+On Windows, PowerShell 7 may be recommended for more consistent UTF-8 defaults after checking version-specific behavior, with a clear warning that external programs and legacy encodings still need care. Git may be recommended for status/diff inspection and recoverable task-scoped history. Neither is a mandatory prerequisite for the behavioral policy.
+
+Explain benefits, compatibility costs, source/version for proposed installations, scope, risks, recovery, and the keep-current alternative. A user may retain the current shell or non-Git workflow: adapt commands and use verified exact backups. Do not automatically install Git, initialize a repository, set global identity/configuration, change the default shell, or publish. The [environment module](references/modules/environment.md) provides examples.
 
 ## Adoption modes
 
@@ -207,7 +277,7 @@ When the user asks to adopt this repository:
 
 1. Read the applicable user/project instructions and recovery notes.
 2. Detect the environment and actual harness capabilities without asking the user to confirm objective facts.
-3. Use a suitable adoption depth, honoring a requested quick or full review.
+3. Use a suitable adoption depth, honoring a requested quick or full review; provide relevant model/environment recommendations with evidence and alternatives.
 4. Reuse existing answers and ask only unresolved applicable questions, one ID at a time.
 5. Compare the target instructions semantically; preserve local wording and user edits where possible.
 6. Show the proposed runtime diff, profile changes, target encoding, backup, recovery point, and capability fallbacks.
@@ -230,6 +300,11 @@ See [`workflows/ADOPT.md`](workflows/ADOPT.md) for the detailed contract.
 | New thread without an adoption record | Read actual effective instructions | No full interview just to recreate bookkeeping |
 | Subagents unavailable, direct browsing prohibited | Use a permitted structured alternative or ask for a scoped exception | Do not silently widen permissions |
 | User requests only a policy review | Produce findings without edits | Do not force the installation interview |
+| Premium model is best at difficult UI work | Use it in a viable authorized executor; no required cheap-model failure | Let the user choose the role mapping and fallback |
+| Executor closes after many screenshots | Preserve decisive evidence; do not claim history deletion | Record only actually supported retention controls |
+| Exposed provider alias has no public identity evidence | Use only approved known capability/fallback; disclose uncertainty | Do not invent release dates, prices, or a verified backend |
+| User declines PowerShell 7 or Git | Adapt to the retained environment and suitable backups | No forced installation or repeated persuasion |
+| README draft narrates the previous chat | Rewrite for its readers while preserving useful facts | No new interview or model blacklist |
 
 ## Language and localization
 

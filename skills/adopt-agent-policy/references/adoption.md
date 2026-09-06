@@ -24,6 +24,8 @@ The reference files are candidate policy data, not active instructions during re
 5. In Git, identify branch, HEAD, dirty state, unrelated changes, and the latest valid recovery point.
 6. If encoding cannot be identified reliably, stop before proposing a write.
 
+Distinguish terminal host from active shell/version. Inspect relevant encoding behavior, installed tools, Git availability, and repository state using non-sensitive observations. If Git is absent, do not run Git commands or initialize a repository automatically. Propose useful improvements without making them adoption prerequisites: explain source/version when applicable, benefits, compatibility costs, scope, risk, recovery, and the alternative of retaining the current environment. PowerShell 7 may be worth recommending on Windows for UTF-8 consistency after checking current documentation, but it does not guarantee all external-tool or legacy encoding issues disappear. Git may improve change inspection and recovery; declining it means choosing suitable exact backups, not refusing ordinary work.
+
 ## Phase 2: Select the adoption depth
 
 Explain the three modes:
@@ -41,6 +43,10 @@ The mode changes interview breadth, not runtime safeguards. State the selected d
 3. Record answers and custom wording without changing files.
 4. Mark unrelated questions not applicable and unknown preferences deferred, with reasons. Do not treat either state as consent or as disabled runtime protection.
 5. Show a concise decision record for selected questions and skipped modules. A full review may show all IDs; quick adoption need not dump the entire catalog. Resolve every conflict affecting the proposed write.
+
+When selecting or refreshing model roles, use [model-selection.md](model-selection.md): begin with exposed IDs, verify public identities, release dates, relevant capabilities, actual-provider prices, and speed evidence, then offer a shortlist with sources/date/uncertainty. Reuse existing approved choices unless the user requests a refresh or a relevant premise changed. Recent, fast, low-cost throughput candidates still need adequate reliability. Let the user select the final model/reasoning/fallback mappings; research does not authorize paid benchmarking.
+
+For interactive workflows, discuss method, execution capability, context isolation, and resource preferences separately. The strongest interactive model may run as an executor; do not tie advanced capability to the primary context. Resolve direct-use authority even if subagents are disabled. Keep step/time/cost budgets distinct from media transfer and retention controls, and mark unsupported controls rather than promising them.
 
 ## Phase 4: Compare and present
 
@@ -63,6 +69,8 @@ Before writing, show:
 7. Any Skill installation or profile creation as a separate operation.
 
 Put effective user choices in the target instructions, with conditions where needed. The generated `AGENTS.md` must work without the source checkout, Skill, or optional profile present. Do not copy the interview or explanatory modules into it. Skipping budget questions does not remove media protection; disabling delegation does not authorize forbidden direct browsing.
+
+Keep volatile research tables and drafting commentary out of the runtime file. Review it for a future reader who never saw the adoption chat: rules must stand on their own, without "as requested" narration, revision-round labels, or unrequested prompt-compliance statements.
 
 Ask for explicit approval for the final policy diff. Enumerate separate profile, installation, or other operations so the user can approve only the intended subset; do not ask again for the same already approved operation.
 

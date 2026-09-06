@@ -89,10 +89,34 @@ try {
             Edit-Fixture 'reference/AGENTS.md' { param($text) $text.Replace('casual conversation', 'informal conversation').Replace('Casual conversation', 'Informal conversation') }
         } },
         @{ Name='additional cataloged rule is allowed'; Code=''; Mutate={
-            Edit-Fixture 'reference/AGENTS.md' { param($text) $text + "`n25. [EXAMPLE-001] A fixture-only additional rule.`n" }
-            Edit-Fixture 'reference/AGENTS.zh-CN.md' { param($text) $text + "`n25. [EXAMPLE-001] A fixture-only additional rule.`n" }
-            Edit-Fixture 'references/rule-catalog.md' { param($text) $text + "`n| EXAMPLE-001 | 25 | context-and-memory | active | Test | Additional behavior |`n" }
+            foreach ($relative in @('reference/AGENTS.md', 'reference/AGENTS.zh-CN.md')) {
+                Edit-Fixture $relative {
+                    param($text)
+                    $number = [regex]::Matches($text, '(?m)^\d+\. ').Count + 1
+                    $text + "`n$number. [EXAMPLE-001] A fixture-only additional rule.`n"
+                }
+            }
+            Edit-Fixture 'references/rule-catalog.md' {
+                param($text)
+                $numbers = [regex]::Matches($text, '(?m)^\| [A-Z]+-\d{3} \| (?<number>\d+) \|') |
+                    ForEach-Object { [int]$_.Groups['number'].Value }
+                $number = ($numbers | Measure-Object -Maximum).Maximum + 1
+                $text + "`n| EXAMPLE-001 | $number | context-and-memory | active | Test | Additional behavior |`n"
+            }
             Edit-Fixture 'references/modules/context-and-memory.md' { param($text) $text + "`nRelated fixture ID: EXAMPLE-001`n" }
+        } },
+        @{ Name='model selection reference is required'; Code='MISSING_FILE'; Mutate={
+            $path = Remember-File 'skills/adopt-agent-policy/references/model-selection.md'
+            Remove-Item -LiteralPath $path
+        } },
+        @{ Name='artifact rule cannot disappear from catalog'; Code='CATALOG_MISSING'; Mutate={
+            Edit-Fixture 'references/rule-catalog.md' { param($text) $text -replace '(?m)^\| ARTIFACT-001 [^\n]*\n', '' }
+        } },
+        @{ Name='artifact bilingual coverage'; Code='REFERENCE_MISSING'; Mutate={
+            Edit-Fixture 'reference/AGENTS.zh-CN.md' { param($text) $text.Replace('[ARTIFACT-001]', '') }
+        } },
+        @{ Name='artifact wording is not frozen'; Code=''; Mutate={
+            Edit-Fixture 'reference/AGENTS.md' { param($text) $text.Replace('intended readers and purpose', 'target audience and document purpose') }
         } },
         @{ Name='missing required file'; Code='MISSING_FILE'; Mutate={
             $path = Remember-File 'skills/adopt-agent-policy/references/profile.md'

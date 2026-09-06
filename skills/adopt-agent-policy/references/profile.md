@@ -16,6 +16,9 @@ Useful fields:
 | Modules | Adopted, conditional, or omitted, with reasons |
 | Decisions | Question ID, value, provenance, scope, and whether explicit or proposed-and-approved |
 | Deferred values | Why unknown; exact adopted conditional fallback, without implied permission |
+| Model research, if requested | Exact exposed identity/provider, evidence sources and check date, uncertainty, approved mapping/fallback; distinguish research from selection |
+| Interactive execution | Approved tool/model/context choices, direct-use authority, progress/stop budget, supported media/retention controls and unknowns |
+| Environment decisions | Detected shell/encoding/Git facts, accepted or declined recommendations, retained-environment recovery approach |
 | Recovery | Backup location, base identity, restore scope, verified integrity |
 | Applied state | Exact approved changes, target hash, validation, pending human acceptance |
 
@@ -39,3 +42,5 @@ The example is not a default profile. In particular, disabling delegation must n
 ## Updates
 
 Reconcile the record with current instructions and facts before using it. If it is missing, continue from the actual target and available source; do not replay adoption merely to reconstruct bookkeeping. If it conflicts, treat it as a lead to investigate, not authority to overwrite the user's policy.
+
+Research observations can become stale without invalidating every adopted rule. Refresh only affected evidence and decisions when requested or necessary; do not copy volatile price tables into runtime instructions or rerank models at every thread start. Never save credentials or private deployment identifiers as public research provenance.

@@ -38,7 +38,8 @@ The question bank configures adopted rules; it does not determine whether unaske
 ## SHELL-01 - Primary Shell
 
 - Requirement: full profile or when command generation depends on a preferred shell.
-- Detect: active shell and installed shell versions.
+- Detect: terminal host, active shell/version, installed alternatives, and relevant encoding behavior.
+- Explain: recommend useful alternatives with reasons, compatibility costs, and a keep-current option. On Windows, consider PowerShell 7 after verifying its encoding behavior; do not promise universal Chinese-encoding fixes or change the default shell automatically.
 - Ask: Which shell and version should be preferred for future commands?
 
 ## SHELL-02 - Secondary Shell Compatibility
@@ -82,8 +83,9 @@ The question bank configures adopted rules; it does not determine whether unaske
 
 ## SUBAGENT-02 - Model and Reasoning Strategy
 
-- Requirement: full or explicit delegation profile when subagents are enabled.
-- Detect: actual selectable models, reasoning levels, cost/latency information, and per-agent overrides.
+- Requirement: when selecting or refreshing a model strategy during adoption or requested detailed configuration consultation, including primary-only setups.
+- Detect: actual selectable IDs/providers, reasoning levels, visual/tool/session access, and per-agent overrides.
+- Explain: use [model-selection.md](model-selection.md) for relevant researched recommendations during adoption or requested detailed consultation. Compare release dates, capability, current-provider cost, and speed evidence with sources/date/uncertainty; do not infer aliases or run paid probes without authority. Recent/fast/cheap throughput models must first be adequate; the user selects the final strategy.
 - Ask: Should verified choices be selected for efficiency, quality, a tiered strategy, or the harness default?
 
 ## SUBAGENT-03 - Subagent Concurrency
@@ -98,32 +100,33 @@ The question bank configures adopted rules; it does not determine whether unaske
 
 ## SUBAGENT-05 - Write and Tool Ownership
 
-- Requirement: standard/full when subagents are enabled.
-- Explain: authorized roles may own separate file writes, but the primary Agent retains final decisions and acceptance. Direct browser use requires an allowed route or scoped exception; disabling subagents does not bypass that boundary.
-- Ask: Which verified roles may read, browse, write, or handle media, and who owns final acceptance?
+- Requirement: when configuring interactive-tool ownership or standard/full delegation, including direct-use policy when subagents are disabled.
+- Explain: authorized roles may own separate file writes, but the primary Agent retains final decisions and acceptance. A stronger interactive model can be an executor. Long/high-output UI work favors viable isolation; short direct work and unavailable-isolation fallbacks need applicable authority. Disabling subagents does not bypass that boundary, and a mutable session has one operator.
+- Ask: Which verified roles may read, browse, write, or handle media, and which bounded primary direct-use exceptions, if any, should be allowed? Keep final acceptance with the primary Agent.
 
 ## SUBAGENT-06 - Unsupported Controls
 
-- Requirement: full or explicit delegation profile when requested model/reasoning controls may be unavailable.
-- Ask: If a requested control is unavailable, should the Agent disclose and use the harness default, avoid subagents, or stop and ask?
+- Requirement: when requested model/reasoning controls may be unavailable in a selected configuration, including primary-only setups.
+- Ask: If a requested control is unavailable, should the Agent disclose and use a permitted harness default, avoid the affected route, or stop and ask?
 
 ## SUBAGENT-07 - Delegation Trigger
 
 - Requirement: standard/full when subagents are enabled.
-- Explain: delegation should be driven by material benefit, not ceremonial numeric thresholds.
+- Explain: delegation should be driven by material benefit, not ceremonial numeric thresholds. Compare complete-task cost, time, reliability, output volume, and handoff loss. Model level does not determine execution context, and a difficult task need not begin with a weak-model trial.
 - Ask: Which task signals justify delegation, and when should the primary Agent proceed alone?
 
 ## SUBAGENT-08 - Capability and Role Mapping
 
 - Requirement: full or explicit delegation profile when roles are enabled.
-- Detect: verified models, reasoning levels, browser/write/media access, and primary-Agent access.
-- Ask: For each enabled role, which exact verified model, reasoning level, and tool permissions should apply?
+- Detect: verified models, reasoning levels, visual/browser/write/media access, session constraints, and primary-Agent access; use the researched shortlist from [model-selection.md](model-selection.md) when relevant.
+- Explain: suggested roles are throughput/discovery, ordinary implementation/verification, advanced interactive execution, and high-risk architecture/review. One model may cover several; an executor may be as capable as or more capable than the primary.
+- Ask: For each enabled role, which exact verified model, reasoning level, and tool permissions should apply? Resolve fallback and cost authority separately where needed; a recommendation is not selection.
 
 ## SUBAGENT-09 - Retry, Takeover, and Closure
 
-- Requirement: standard/full when subagents are enabled.
-- Explain: bounded retries protect cost and make takeover explicit.
-- Ask: Should the default maximum of one directed retry apply, and what progress/stop boundary is appropriate? The primary Agent may take over sooner and must verify conclusions independently.
+- Requirement: standard/full delegation or when configuring interactive progress/stop limits, including authorized primary-only UI work.
+- Explain: bounded retries protect cost and make takeover explicit. Reassess capability versus tool/environment/permission blockers; takeover does not grant forbidden tool use. Preserve remaining budget and pending effects during handoff, without resetting limits by changing agents.
+- Ask: For delegation, should the default maximum of one directed retry apply? For relevant interactive workflows, what useful-progress or step/time/cost stop boundary is appropriate? Resolve these separately when needed; the primary Agent may reassess sooner and must verify conclusions independently.
 
 ## INSTALL-01 - Dependencies and Tools
 
@@ -148,6 +151,8 @@ The question bank configures adopted rules; it does not determine whether unaske
 ## GIT-02 - Recovery Point Triggers
 
 - Requirement: full profile or when adopting Git recovery behavior.
+- Detect: Git availability, whether the target is a repository, and current state when applicable.
+- Explain: Git can improve status/diff inspection and scoped recovery; recommending it does not authorize installation, initialization, global identity/configuration, or publication. If declined or unavailable, adapt recovery to verified exact backups.
 - Ask: Which changes and milestones must have a verified recovery point before work continues?
 
 ## GIT-03 - Checkpoint Storage and Scope
@@ -178,12 +183,14 @@ The question bank configures adopted rules; it does not determine whether unaske
 ## MEDIA-01 - Visual Review Transfer Budget
 
 - Requirement: only when visual/media tools or workflows are enabled.
-- Detect: available media tools, transparency/detail needs, source sizes, and whether media leaves the local machine.
-- Ask: Which task-specific review budget and fidelity requirements should be recorded? Discuss dimensions, format, and batch size only where useful. Retain originals and avoid base64 echoes regardless; do not invent unavailable tool limits or allow raw batch uploads merely because numeric preferences are deferred.
+- Detect: available media tools, transparency/detail needs, source sizes, whether media leaves the machine, and actual screenshot/retention controls.
+- Explain: model input, network payload, and persisted history have separate limits. Isolation/closure does not guarantee smaller requests or history deletion. Preserve necessary image detail and coordinate mappings, and disclose uncontrollable automatic returns.
+- Ask: Which relevant review budget, fidelity, and supported retention preferences should be recorded? Discuss dimensions, format, and batch size only where useful. Retain originals and avoid base64 echoes regardless; do not invent unavailable tool limits or allow raw batch uploads merely because numeric preferences are deferred.
 
 ## COMMUNICATION-01 - Response Language and Detail
 
 - Requirement: full profile or when the user wants a reusable communication preference.
+- Explain: conversation updates and delivered artifacts have different audiences. Keep README/PR/email/UI content self-contained, without unrequested drafting narration; preserve requested voice, actual change/test/risk descriptions, and required disclosure. Resolve an artifact-specific style only when relevant, not as a mandatory new questionnaire.
 - Ask: What response language and default detail level should the Agent use?
 
 ## Completion

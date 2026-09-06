@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Separate interactive method, model capability, execution context, and resource limits. Permit capable premium executors under approved mappings, compare complete-task costs, and preserve bounded direct-use authority without mandatory weak-model trials.
+- Clarify single-operator UI handoff, pending-side-effect checks, blocker-specific takeover, and budgets that cannot reset through agent changes.
+- Distinguish model input, network payload, and persisted history; preserve image/coordinate evidence and disclose unsupported output or retention controls.
+- Add adoption/configuration model research with exact exposed IDs, release/capability/provider-cost/speed evidence, user-selected roles, and no implicit paid benchmarking.
+- Inspect terminal/shell/encoding/Git conditions and recommend improvements without forcing installation, initialization, or migration.
+- Add `ARTIFACT-001` for reader-appropriate deliverables without unrequested drafting commentary; preserve requested voice, legitimate change/test/risk context, and required disclosure.
+- Expand bilingual rationale and semantic scenarios; validate the bundled model-selection resource and new stable ID without freezing wording or paragraph counts.
 - Separate runtime guidance, modular rationale, and first-adoption configuration. Ordinary threads and read-only reviews do not start the adoption interview.
 - Add the independently installable `adopt-agent-policy` Skill, with bundled adoption/update workflows, a reusable question bank, and an optional non-authoritative provenance record.
 - Reuse explicit preferences rather than asking them again. Quick/standard/full describe interview depth, not weaker or stronger safety profiles.

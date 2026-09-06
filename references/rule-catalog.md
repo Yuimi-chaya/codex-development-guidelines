@@ -11,13 +11,13 @@ IDs identify behavior rather than exact wording or position. Keep active IDs in 
 | WRITE-001 | 5 | delegation-and-tools | active | Work ownership and side effects | Authorized role writes; primary Agent retains final acceptance |
 | SUB-007 | 6 | delegation-and-tools | active | Material delegation benefit | Protect context and avoid ceremonial delegation |
 | SUB-003 | 7 | delegation-and-tools | active | Selecting model/reasoning controls | Verify capabilities and apply approved choices or permitted fallback |
-| SUB-005 | 7 | delegation-and-tools | active | Mapping work roles | Map stable roles to available model/tool capabilities |
-| BROWSER-001 | 8 | delegation-and-tools | active | Interactive browser or Computer Use | Prefer structured tools; delegate UI; require an allowed fallback or exception |
+| SUB-005 | 7 | delegation-and-tools | active | Mapping work roles | User-approved roles; model capability independent of primary/executor context |
+| BROWSER-001 | 8 | delegation-and-tools | active | Interactive browser or Computer Use | Separate method/model/context/budget; optimize full task; preserve authority |
 | SUB-001 | 9 | delegation-and-tools | active | Every delegation | Bounded task and evidence contract; no overlapping writes |
 | SUB-002 | 9 | delegation-and-tools | active | Delegation depth/concurrency | Honor user limits with conservative defaults |
-| SUB-006 | 10 | delegation-and-tools | active | Delegation result or progress review | Verify claims; at most one retry by default; take over and close |
-| MEDIA-001 | 11 | media | active | Media transfer upstream | Inspect sizes, optimize review copies, preserve originals, avoid base64 echoes |
-| ENV-001 | 12 | environment | active | Environment-dependent work | Detect relevant non-sensitive facts, not maintainer assumptions |
+| SUB-006 | 10 | delegation-and-tools | active | Delegation result or progress review | Verify claims; one retry by default; reassess cause, authority, and remaining budget |
+| MEDIA-001 | 11 | media | active | Media transfer upstream | Inspect/optimize evidence; separate input, payload, and retention costs |
+| ENV-001 | 12 | environment | active | Environment-dependent work | Detect relevant facts; recommend without imposing tools or Git adoption |
 | SHELL-001 | 13 | environment | active | Executing commands | Use active-shell syntax and evidence-based failure handling |
 | SHELL-002 | 13 | environment | active | Handling command paths | Safe quoting and path handling |
 | FRICTION-001 | 14 | environment | active | Clear environmental/tool resistance | Stop ineffective retries; propose alternatives; ask for new authority |
@@ -31,6 +31,7 @@ IDs identify behavior rather than exact wording or position. Keep active IDs in 
 | RES-002 | 22 | validation-and-resources | active | Resource/process lifecycle | Announce, monitor, react to lag, preserve user processes |
 | VERIFY-001 | 23 | validation-and-resources | active | Acceptance and completion | Risk-matched evidence; distinguish implementation/testing/human acceptance |
 | COMM-001 | 24 | validation-and-resources | active | User-facing communication | Selected language/detail, concise evidence and state |
+| ARTIFACT-001 | 25 | validation-and-resources | active | Deliverable authoring and review | Intended reader/purpose; exclude unrequested drafting-chat contamination |
 | SUB-004 | - | delegation-and-tools | deprecated | Historical comparison only | Mandatory numeric delegation thresholds; never adopt automatically |
 
 ## Module and precedence rules
@@ -58,3 +59,9 @@ Keep all previously active IDs. `SUB-003` still means verified model/reasoning s
 New IDs separate adaptation/no-repeat adoption (`CORE-001`), browser routing (`BROWSER-001`), resistance handling (`FRICTION-001`), and verification (`VERIFY-001`). Preflight/read cadence now permits approved event-based customization while preserving stricter existing user rules. The default one-retry limit is retained and independent result verification is explicit.
 
 Compare behavior as well as IDs when updating. Stable IDs and translations never justify overwriting a customized user rule.
+
+## Adaptive execution and artifact-boundary revision
+
+`BROWSER-001` retains structured-tool preference and permission boundaries while separating interaction method, model, context, and resource policy. Long/high-output UI work favors isolation when viable; a stronger executor need not be the primary thread or follow a failed weak-model trial. Short direct work remains conditional on authority. Preserve any stricter locally adopted primary-browser prohibition when merging.
+
+`SUB-003` and `SUB-005` retain capability verification and role mapping, with researched recommendations confined to adoption or requested configuration consultation. `SUB-006` retains the default one-directed-retry ceiling: takeover is responsibility for reassessment, not permission to use forbidden tools, and changing agents cannot reset budgets. `MEDIA-001` distinguishes model input, transfer, and retention; `ENV-001` makes recommendations non-imposing. The new `ARTIFACT-001` separates deliverable voice from conversation commentary without banning first person or required disclosure. No existing active ID is retired or repurposed.
