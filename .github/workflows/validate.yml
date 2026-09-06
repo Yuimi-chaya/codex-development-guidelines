@@ -17,3 +17,7 @@ jobs:
       - name: Validate policy package
         shell: pwsh
         run: ./scripts/validate-repository.ps1
+
+      - name: Test validator and isolated Skill packages
+        shell: pwsh
+        run: ./scripts/test-validator.ps1

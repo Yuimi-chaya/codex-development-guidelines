@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Separate runtime guidance, modular rationale, and first-adoption configuration. Ordinary threads and read-only reviews do not start the adoption interview.
+- Add the independently installable `adopt-agent-policy` Skill, with bundled adoption/update workflows, a reusable question bank, and an optional non-authoritative provenance record.
+- Reuse explicit preferences rather than asking them again. Quick/standard/full describe interview depth, not weaker or stronger safety profiles.
+- Add dedicated browser-routing, environment-resistance, and verification rules while retaining existing stable IDs and the default one-directed-retry boundary.
+- Keep direct-browser fallback and new installations within actual authorization; unavailable subagents or a user-required method do not grant extra permissions.
+- Expand bilingual README guidance and six rationale modules with boundaries, examples, transfer/process costs, recovery completeness, and adoption procedures.
+- Keep generated instructions self-contained; persistent choices belong in effective instructions, not only in an optional profile. Update note-reading guidance to honor adopted cadence without removing the read-before-act gate.
+- Replace exact paragraph-count/phrase validation with catalog/reference relations, local-link and isolated Skill checks, and focused validator regression tests. Keep behavioral scenario review separate from static validation.
 - Detect the operating system, version, architecture, and related platform facts automatically instead of asking installers to confirm them.
 - Keep primary-terminal and network/mirror policy as explicit user decisions.
 - Make the public entry point English-first with a maintained Simplified Chinese companion and a bilingual reference-policy pair.

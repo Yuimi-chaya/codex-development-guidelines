@@ -1,41 +1,60 @@
 # Stable Rule Catalog
 
-Use these IDs when discussing adoption, updates, and translations. They identify behavior rather than exact wording. A user-owned `AGENTS.md` may use different prose, and a localized reference must preserve the same active ID set.
+IDs identify behavior rather than exact wording or position. Keep active IDs in both reference languages; preserve deprecated IDs for upgrade comparison without including them in generated runtime policy. Renumbering paragraphs is allowed; changing an ID's meaning requires an explicit migration note.
 
-| ID | Reference rule | Behavior | Applicability |
-|---|---:|---|---|
-| START-001 | 1 | Confirm Shell, working directory, task scope, and Git status/branch/HEAD before project work | General project work |
-| START-002 | 2 | Re-read applicable instructions and recovery notes at each project-work turn and update them at meaningful verified checkpoints | General project work; requires readable notes when present |
-| NOTES-001 | 2 | Read relevant development memory before acting and maintain it only when a durable change is worth recording | Requires the notes Skill or an equivalent process |
-| GIT-001 | 3 | Confirm a valid recovery point before risky, accepted, multi-file, stateful, media, configuration, or rework changes | Git repositories |
-| GIT-002 | 4 | Prefer a task-scoped local commit; otherwise create an external binary patch or equivalent exact backup; do not publish without authority | Git repositories; policy-specific |
-| GIT-003 | 5 | Exclude unrelated work, avoid whole-worktree stash, prohibit unauthorized destructive operations, and verify rollback targets | Git repositories |
-| SUB-001 | 8 | Give each delegation a bounded task and prevent overlapping writes | Requires subagent support |
-| SUB-002 | 8 | Honor user-selected delegation depth, concurrency, and ownership limits; keep review/exploration read-only by default | Requires subagent support |
-| SUB-003 | 7 | Select concrete models and reasoning levels only from the capabilities the harness actually exposes and the user approves | Requires exposed controls or an explicit fallback |
-| SUB-004 | — | **Deprecated:** mandatory numeric escalation thresholds that can force ceremonial delegation | Retained only for upgrade/conflict detection; do not adopt automatically |
-| SUB-005 | 7 | Map stable work roles to verified model, reasoning, and tool capabilities without prescribing provider-specific names | Capability- and preference-specific |
-| SUB-006 | 9 | Retry an inadequate subagent at most once, then return control to the primary Agent and summarize evidence and risk | Requires subagent support |
-| SUB-007 | 6 | Delegate when it materially improves throughput, isolation, tool access, or review quality; do not delegate simple work merely to satisfy a rule | Requires subagent support |
-| MEDIA-001 | 10 | Preserve originals and send optimized, bounded review copies; use lossless copies or crops when fidelity requires them and never place media base64 in the thread | Visual/media workflows |
-| ENV-001 | 11 | Detect platform, shell, network constraints, and capabilities rather than assuming the maintainer's environment | Environment-specific |
-| SHELL-001 | 11 | Detect the current shell and use syntax it supports | General; wording is shell-specific |
-| SHELL-002 | 11 | Quote command paths safely, especially paths with spaces or non-ASCII characters | General |
-| NET-001 | 12 | Use command-scoped mirrors/proxies and require approval for new tools or broader configuration changes | Preference-specific |
-| FILE-001 | 13 | Preserve encoding, BOM, line endings, permissions, structure, and existing user content | General |
-| FILE-002 | 14 | Keep edits scoped and ask before destructive, broad, uncertain, or subjective changes | General |
-| WRITE-001 | 8, 14 | Keep write ownership explicit; reviewers and exploration remain read-only unless a verified role is authorized | Capability- and preference-specific |
-| RES-001 | 15 | Apply selected worker and tool-specific parallelism only where supported | Tool- and preference-specific |
-| RES-002 | 15 | Respect selected heavy-task and background-process limits, announce heavy work, and react to lag | Preference-specific |
-| COMM-001 | 15 | Protect the primary context and follow the selected response language and detail level | Preference-specific |
+| ID | Rule | Module | Status | Trigger | Behavior |
+|---|---:|---|---|---|---|
+| CORE-001 | 1 | context-and-memory | active | Every relevant task | Adapt to actual user context; reuse choices; do not replay adoption |
+| START-001 | 2 | context-and-memory | active | Project start and changed context | Confirm shell, directory, scope, Git status/branch/HEAD |
+| START-002 | 3 | context-and-memory | active | Before relevant project decisions | Read instructions and existing notes at the selected cadence |
+| NOTES-001 | 4 | context-and-memory | active | Relevant memory or complex continuing work | Recover prior context; maintain notes only at meaningful checkpoints |
+| WRITE-001 | 5 | delegation-and-tools | active | Work ownership and side effects | Authorized role writes; primary Agent retains final acceptance |
+| SUB-007 | 6 | delegation-and-tools | active | Material delegation benefit | Protect context and avoid ceremonial delegation |
+| SUB-003 | 7 | delegation-and-tools | active | Selecting model/reasoning controls | Verify capabilities and apply approved choices or permitted fallback |
+| SUB-005 | 7 | delegation-and-tools | active | Mapping work roles | Map stable roles to available model/tool capabilities |
+| BROWSER-001 | 8 | delegation-and-tools | active | Interactive browser or Computer Use | Prefer structured tools; delegate UI; require an allowed fallback or exception |
+| SUB-001 | 9 | delegation-and-tools | active | Every delegation | Bounded task and evidence contract; no overlapping writes |
+| SUB-002 | 9 | delegation-and-tools | active | Delegation depth/concurrency | Honor user limits with conservative defaults |
+| SUB-006 | 10 | delegation-and-tools | active | Delegation result or progress review | Verify claims; at most one retry by default; take over and close |
+| MEDIA-001 | 11 | media | active | Media transfer upstream | Inspect sizes, optimize review copies, preserve originals, avoid base64 echoes |
+| ENV-001 | 12 | environment | active | Environment-dependent work | Detect relevant non-sensitive facts, not maintainer assumptions |
+| SHELL-001 | 13 | environment | active | Executing commands | Use active-shell syntax and evidence-based failure handling |
+| SHELL-002 | 13 | environment | active | Handling command paths | Safe quoting and path handling |
+| FRICTION-001 | 14 | environment | active | Clear environmental/tool resistance | Stop ineffective retries; propose alternatives; ask for new authority |
+| NET-001 | 15 | environment | active | Downloads, installs, configuration | Scoped tools and network changes within actual authorization |
+| FILE-001 | 16 | files-and-recovery | active | Editing files | Preserve encoding, structure, permissions, and unrelated content |
+| FILE-002 | 17 | files-and-recovery | active | Risky or subjective changes | Exact target/scope and applicable authorization |
+| GIT-001 | 18 | files-and-recovery | active | Meaningful recovery cost | Verify checkpoints before risky work and at stable milestones |
+| GIT-002 | 19 | files-and-recovery | active | Creating checkpoints | Task-only commits or complete relevant external backups; no implicit publication |
+| GIT-003 | 20 | files-and-recovery | active | Rollback, stash, publication | Exclude unrelated work; verify targets and authority |
+| RES-001 | 21 | validation-and-resources | active | Heavy work | Supported worker limits and conservative heavy-task concurrency |
+| RES-002 | 22 | validation-and-resources | active | Resource/process lifecycle | Announce, monitor, react to lag, preserve user processes |
+| VERIFY-001 | 23 | validation-and-resources | active | Acceptance and completion | Risk-matched evidence; distinguish implementation/testing/human acceptance |
+| COMM-001 | 24 | validation-and-resources | active | User-facing communication | Selected language/detail, concise evidence and state |
+| SUB-004 | - | delegation-and-tools | deprecated | Historical comparison only | Mandatory numeric delegation thresholds; never adopt automatically |
 
-## Semantic comparison rules
+## Module and precedence rules
 
-- An exact text difference is not automatically a behavioral conflict.
-- A shorter local rule may already cover several reference rules.
-- Environment-specific examples must not become unconditional global requirements.
-- A user-selected value always overrides a reference sample for that preference.
-- Unsupported platform or harness capabilities must be omitted or expressed as conditional behavior.
-- Concrete model names, reasoning labels, browser tools, and write routes must be detected and user-mapped before adoption; preserve role semantics when an exact choice is unavailable.
-- Fixed media numbers, worker counts, and tool flags are examples or user-selected parameters, not universal requirements unless the user explicitly adopts them.
-- Never use stable IDs as justification to replace locally customized text without approval.
+- `active` means maintained, not executed on every task. The trigger determines applicability.
+- Module explanations are authoring/review material, not additional files every coding thread must load. The selected runtime instructions must be self-contained.
+- User preferences can include scoped standing authority. Apply its exact limits; neither a suggested default, an optional profile, nor a tool's availability creates authority.
+- Existing user and project instructions are authoritative input. Reference rules are merged semantically and never replace local content merely to match wording.
+- Runtime facts are not preferences. A detected shell, model, browser, or memory size does not answer a user's choice about future behavior.
+- Concrete model names, reasoning labels, browser tools, write routes, worker counts, and media budgets must come from the actual harness or an explicit user choice.
+
+## Module rationale
+
+- [Context and memory](modules/context-and-memory.md)
+- [Delegation and tools](modules/delegation-and-tools.md)
+- [Media and payloads](modules/media.md)
+- [Environment and resistance](modules/environment.md)
+- [Files and recovery](modules/files-and-recovery.md)
+- [Validation and resources](modules/validation-and-resources.md)
+
+## Migration from the portable baseline
+
+Keep all previously active IDs. `SUB-003` still means verified model/reasoning selection, and `SUB-005` still means role mapping; browser routing has its own new `BROWSER-001`. `NOTES-001` remains active. `SUB-004` remains deprecated.
+
+New IDs separate adaptation/no-repeat adoption (`CORE-001`), browser routing (`BROWSER-001`), resistance handling (`FRICTION-001`), and verification (`VERIFY-001`). Preflight/read cadence now permits approved event-based customization while preserving stricter existing user rules. The default one-retry limit is retained and independent result verification is explicit.
+
+Compare behavior as well as IDs when updating. Stable IDs and translations never justify overwriting a customized user rule.

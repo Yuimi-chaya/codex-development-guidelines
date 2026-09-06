@@ -1,6 +1,6 @@
 ---
 name: maintain-development-notes
-description: Read, reconcile, create, and maintain durable development notes for context recovery. Use automatically when a workspace or thread has multiple active features, branches, worktrees, PRs, repositories, risky local installations, repeated task switching, long-running investigations, or state that must survive compaction and handoff; at the start of each project-work turn, whenever an applicable note exists, also use it before diagnosing problems, planning, choosing an approach, resuming work, or changing direction so prior similar scenarios, user preferences, rejected approaches, overall direction, evidence, and open risks guide the work. Do not create or update notes for ordinary chat, unrelated one-off questions, simple self-contained changes with no continuing state, or short read-only exploration that produces no durable decision or risk.
+description: Read, reconcile, create, and maintain durable project notes for context recovery. Use relevant existing notes before project decisions, resumption, or direction changes; maintain them for complex or continuing work spanning features, branches, installations, or handoffs. Follow the adopted read cadence. Do not create notes for casual chat, unrelated questions, or simple work without durable state.
 ---
 
 # Maintain Development Notes
@@ -13,11 +13,13 @@ Apply the read gate before the write gate.
 
 ### Read gate
 
-At the start of every project-work turn, re-read the latest applicable `AGENTS.md` and the relevant parts of any development or handoff note before diagnosing, planning, choosing a solution, implementing, testing, resuming work, changing direction, installing, releasing, or handing off.
+Read the latest applicable `AGENTS.md` and relevant existing development or handoff notes before diagnosis, planning, solution selection, implementation, testing, resumption, direction changes, installation, release, or handoff. Follow an explicitly adopted read cadence, including stricter per-turn rules. Do not repeatedly reload unchanged long history within one continuous operation.
 
 The read gate applies even when the current task is small and will not justify a note update. A small task can still depend on old decisions, user preferences, or a rejected approach.
 
 Skip reading only for casual conversation, general advice, or work clearly unrelated to the note's scope.
+
+Reading is not an adoption interview. Reuse known preferences; never ask the policy-configuration questions merely because a new project-work turn starts.
 
 ### Write gate
 

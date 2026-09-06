@@ -1,301 +1,237 @@
 [CmdletBinding()]
 param(
-    [string]$Root = (Split-Path -Parent $PSScriptRoot)
+    [string]$Root = (Split-Path -Parent $PSScriptRoot),
+    [switch]$PassThru
 )
 
 $ErrorActionPreference = 'Stop'
 $rootPath = (Resolve-Path -LiteralPath $Root).Path
 $failures = [System.Collections.Generic.List[string]]::new()
+$strictUtf8 = [System.Text.UTF8Encoding]::new($false, $true)
+$texts = @{}
+
+function Add-Failure([string]$Code, [string]$Message) {
+    $failures.Add("[$Code] $Message")
+}
+
+function Test-Within([string]$Parent, [string]$Target) {
+    $relative = [System.IO.Path]::GetRelativePath($Parent, $Target)
+    return -not ([System.IO.Path]::IsPathRooted($relative) -or $relative -match '^\.\.([\\/]|$)')
+}
 
 $requiredFiles = @(
-    'README.md',
-    'README.zh-CN.md',
-    'LICENSE',
-    'examples/README.md',
-    'reference/AGENTS.md',
-    'reference/AGENTS.zh-CN.md',
-    'workflows/ADOPT.md',
-    'workflows/UPDATE.md',
-    'references/interview-schema.md',
-    'references/rule-catalog.md',
-    'skills/maintain-development-notes/SKILL.md',
-    'skills/maintain-development-notes/agents/openai.yaml',
-    'skills/maintain-development-notes/references/note-schema.md'
+    'README.md', 'README.zh-CN.md', 'LICENSE', 'CHANGELOG.md',
+    'examples/README.md', 'examples/AGENTS.windows-powershell-zh-CN.md',
+    'reference/AGENTS.md', 'reference/AGENTS.zh-CN.md',
+    'references/rule-catalog.md', 'references/interview-schema.md',
+    'workflows/ADOPT.md', 'workflows/UPDATE.md', 'tests/policy-scenarios.md',
+    'scripts/validate-repository.ps1', 'scripts/test-validator.ps1'
 )
-
-foreach ($relativePath in $requiredFiles) {
-    $path = Join-Path $rootPath $relativePath
-    if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-        $failures.Add("Missing required file: $relativePath")
+$skillNames = @('adopt-agent-policy', 'maintain-development-notes')
+foreach ($name in $skillNames) {
+    $requiredFiles += "skills/$name/SKILL.md", "skills/$name/agents/openai.yaml"
+}
+foreach ($name in @('adoption', 'update', 'interview', 'profile')) {
+    $requiredFiles += "skills/adopt-agent-policy/references/$name.md"
+}
+$requiredFiles += 'skills/maintain-development-notes/references/note-schema.md'
+foreach ($relative in $requiredFiles) {
+    if (-not (Test-Path -LiteralPath (Join-Path $rootPath $relative) -PathType Leaf)) {
+        Add-Failure 'MISSING_FILE' $relative
     }
 }
 
-$textFiles = Get-ChildItem -LiteralPath $rootPath -Recurse -File | Where-Object {
-    $_.FullName -notmatch '[\\/]\.git[\\/]'
-}
-$strictUtf8 = [System.Text.UTF8Encoding]::new($false, $true)
-$windowsUsersPrefix = 'C:' + [char]92 + 'Users' + [char]92
-$macUsersPrefix = '/' + 'Users' + '/'
-
-foreach ($file in $textFiles) {
+$textExtensions = @('.md', '.ps1', '.yaml', '.yml', '.json', '.txt')
+$files = @(Get-ChildItem -LiteralPath $rootPath -Recurse -File -Force | Where-Object {
+    $_.FullName -notmatch '[\\/]\.git[\\/]' -and
+    ($_.Extension -in $textExtensions -or $_.Name -in @('LICENSE', '.gitattributes', '.gitignore'))
+})
+foreach ($file in $files) {
+    $relative = [System.IO.Path]::GetRelativePath($rootPath, $file.FullName).Replace('\', '/')
     $bytes = [System.IO.File]::ReadAllBytes($file.FullName)
-    try {
-        $content = $strictUtf8.GetString($bytes)
-    }
+    try { $content = $strictUtf8.GetString($bytes) }
     catch {
-        $failures.Add("Not valid UTF-8: $($file.FullName.Substring($rootPath.Length + 1))")
+        Add-Failure 'ENCODING' "$relative is not valid UTF-8"
         continue
     }
-
-    if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) {
-        $failures.Add("UTF-8 BOM is not allowed for new repository text: $($file.FullName.Substring($rootPath.Length + 1))")
+    if ($content.Length -gt 0 -and $content[0] -eq [char]0xFEFF) {
+        Add-Failure 'BOM' "$relative has a UTF-8 BOM"
     }
-
-    if ($content.Contains($windowsUsersPrefix) -or $content.Contains($macUsersPrefix)) {
-        $failures.Add("Possible personal absolute path: $($file.FullName.Substring($rootPath.Length + 1))")
+    # Normalize only the in-memory comparison, never the source or backup bytes.
+    $texts[$relative] = $content.Replace("`r`n", "`n")
+    $privatePrefixes = @(
+        ('C:' + [char]92 + 'Users' + [char]92),
+        ('/' + 'Users' + '/'),
+        ('/' + 'home' + '/')
+    )
+    foreach ($prefix in $privatePrefixes) {
+        if ($content.Contains($prefix)) { Add-Failure 'PRIVATE_PATH' "$relative contains a personal path prefix" }
     }
-
     if ($file.Name -ieq 'AGENTS.md' -and $file.Name -cne 'AGENTS.md') {
-        $failures.Add("Non-standard AGENTS.md casing: $($file.FullName.Substring($rootPath.Length + 1))")
+        Add-Failure 'CASING' "$relative has nonstandard instruction-file casing"
     }
-
-    if ($file.Extension -eq '.md') {
-        $matches = [regex]::Matches($content, '\[[^\]]+\]\((?!https?://|#)([^)#]+\.md)(?:#[^)]+)?\)')
-        foreach ($match in $matches) {
-            $link = $match.Groups[1].Value -replace '/', [System.IO.Path]::DirectorySeparatorChar
-            $target = Join-Path $file.DirectoryName $link
-            if (-not (Test-Path -LiteralPath $target -PathType Leaf)) {
-                $failures.Add("Broken Markdown link in $($file.Name): $($match.Groups[1].Value)")
+    if ($file.Extension -ne '.md') { continue }
+    foreach ($link in [regex]::Matches($content, '\[[^\]\r\n]*\]\((?<path>[^)\r\n]+)\)')) {
+        $href = $link.Groups['path'].Value.Trim()
+        if ($href -match '^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|#|//)') { continue }
+        $localPath = [uri]::UnescapeDataString(($href -split '#', 2)[0])
+        if (-not $localPath) { continue }
+        $target = [System.IO.Path]::GetFullPath((Join-Path $file.DirectoryName $localPath))
+        if (-not (Test-Within $rootPath $target)) {
+            Add-Failure 'LINK_ESCAPE' "$relative -> $href"
+        }
+        elseif (-not (Test-Path -LiteralPath $target)) {
+            Add-Failure 'LINK_MISSING' "$relative -> $href"
+        }
+        if ($relative -match '^skills/([^/]+)/') {
+            $skillRoot = Join-Path $rootPath "skills/$($Matches[1])"
+            if (-not (Test-Within $skillRoot $target)) {
+                Add-Failure 'SKILL_ESCAPE' "$relative has an install-breaking reference: $href"
             }
         }
     }
 }
 
-$skillPath = Join-Path $rootPath 'skills/maintain-development-notes/SKILL.md'
-if (Test-Path -LiteralPath $skillPath) {
-    $skill = [System.IO.File]::ReadAllText($skillPath, $strictUtf8)
-    if (-not $skill.StartsWith("---`n")) {
-        $failures.Add('Skill frontmatter must start at the first byte.')
-    }
-    if ($skill -notmatch '(?m)^name: maintain-development-notes$') {
-        $failures.Add('Skill name is missing or incorrect.')
-    }
-    if ($skill -notmatch '(?m)^description: .+$') {
-        $failures.Add('Skill description is missing.')
-    }
-
-    foreach ($requiredPhrase in @(
-        'Apply separate read and write gates',
-        'At the start of every project-work turn',
-        'Discover and read before acting',
-        'the same or a related problem or scenario',
-        'user preferences and non-negotiable constraints',
-        'rejected, failed, superseded, or unsafe approaches',
-        'the overall product, architecture, and release direction',
-        'the last verified authoritative state and supporting evidence',
-        'unresolved risks, pending validation, and ordered next actions',
-        'targeted search (`rg` when available)'
-    )) {
-        if (-not $skill.Contains($requiredPhrase)) {
-            $failures.Add("Skill is missing read-before-act gate: $requiredPhrase")
-        }
+# The catalog is a deliberately simple Markdown table with a fixed column schema.
+$catalogRows = @{}
+$catalog = $texts['references/rule-catalog.md']
+foreach ($match in [regex]::Matches([string]$catalog, '(?m)^\| (?<id>[A-Z]+-\d{3}) \| (?<rule>\d+|-) \| (?<module>[a-z-]+) \| (?<status>active|deprecated) \| (?<trigger>[^|\n]+) \| (?<behavior>[^|\n]+) \|$')) {
+    $id = $match.Groups['id'].Value
+    if ($catalogRows.ContainsKey($id)) { Add-Failure 'CATALOG_DUPLICATE' $id }
+    $catalogRows[$id] = @{
+        Rule = $match.Groups['rule'].Value
+        Module = $match.Groups['module'].Value
+        Status = $match.Groups['status'].Value
     }
 }
-
-$requiredQuestionIds = @(
-    'SCOPE-01',
-    'LANGUAGE-01',
-    'WORKFLOW-01',
-    'SHELL-01',
-    'SHELL-02',
-    'NETWORK-01',
-    'RESOURCE-01',
-    'RESOURCE-02',
-    'RESOURCE-03',
-    'RESOURCE-04',
-    'SUBAGENT-01',
-    'SUBAGENT-02',
-    'SUBAGENT-03',
-    'SUBAGENT-04',
-    'SUBAGENT-05',
-    'SUBAGENT-06',
-    'SUBAGENT-07',
-    'SUBAGENT-08',
-    'SUBAGENT-09',
-    'INSTALL-01',
-    'ENCODING-01',
-    'SAFETY-01',
-    'GIT-01',
-    'GIT-02',
-    'GIT-03',
-    'GIT-04',
-    'NOTES-01',
-    'NOTES-02',
-    'NOTES-03',
-    'MEDIA-01',
-    'COMMUNICATION-01'
+$knownIds = @(
+    'CORE-001', 'START-001', 'START-002', 'NOTES-001', 'WRITE-001',
+    'SUB-001', 'SUB-002', 'SUB-003', 'SUB-004', 'SUB-005', 'SUB-006', 'SUB-007',
+    'BROWSER-001', 'MEDIA-001', 'ENV-001', 'SHELL-001', 'SHELL-002',
+    'FRICTION-001', 'NET-001', 'FILE-001', 'FILE-002',
+    'GIT-001', 'GIT-002', 'GIT-003', 'RES-001', 'RES-002', 'VERIFY-001', 'COMM-001'
 )
-
-$interviewPath = Join-Path $rootPath 'references/interview-schema.md'
-if (Test-Path -LiteralPath $interviewPath) {
-    $interview = [System.IO.File]::ReadAllText($interviewPath, $strictUtf8)
-    foreach ($questionId in $requiredQuestionIds) {
-        if ($interview -notmatch "(?m)^## $([regex]::Escape($questionId))\b") {
-            $failures.Add("Missing interview question: $questionId")
-        }
+foreach ($id in $knownIds) {
+    if (-not $catalogRows.ContainsKey($id)) { Add-Failure 'CATALOG_MISSING' $id }
+}
+foreach ($id in $catalogRows.Keys) {
+    $row = $catalogRows[$id]
+    if ($row.Status -eq 'deprecated' -and $row.Rule -ne '-') { Add-Failure 'DEPRECATED_RULE' $id }
+    $modulePath = "references/modules/$($row.Module).md"
+    if (-not $texts.ContainsKey($modulePath)) { Add-Failure 'MODULE_MISSING' $modulePath }
+    elseif ($row.Status -eq 'active' -and $texts[$modulePath] -notmatch [regex]::Escape($id)) {
+        Add-Failure 'MODULE_COVERAGE' "$modulePath does not identify $id"
     }
-    if ($interview -match '(?m)^## PLATFORM-01\b') {
-        $failures.Add('Operating system/platform must be detected as an objective fact, not asked as a mandatory interview question.')
-    }
-    foreach ($requiredPhrase in @(
-        'operating system, version, architecture',
-        'Concrete model names are never assumed from this repository.',
-        '## SHELL-01 - Primary Shell',
-        '## NETWORK-01 - Network and Mirrors'
-    )) {
-        if (-not $interview.Contains($requiredPhrase)) {
-            $failures.Add("Interview schema is missing environment-detection or retained-preference coverage: $requiredPhrase")
-        }
+}
+if ($catalogRows.ContainsKey('SUB-004') -and $catalogRows['SUB-004'].Status -ne 'deprecated') {
+    Add-Failure 'DEPRECATED_RULE' 'SUB-004 must remain deprecated'
+}
+foreach ($id in $knownIds | Where-Object { $_ -ne 'SUB-004' }) {
+    if ($catalogRows.ContainsKey($id) -and $catalogRows[$id].Status -ne 'active') {
+        Add-Failure 'ACTIVE_RULE' "$id was unexpectedly retired"
     }
 }
 
-$referenceRelativePaths = @('reference/AGENTS.md', 'reference/AGENTS.zh-CN.md')
-$referenceRuleCount = 0
-$referenceIdSets = @{}
-foreach ($referenceRelativePath in $referenceRelativePaths) {
-    $referencePath = Join-Path $rootPath $referenceRelativePath
-    if (-not (Test-Path -LiteralPath $referencePath -PathType Leaf)) {
-        continue
-    }
-
-    $reference = [System.IO.File]::ReadAllText($referencePath, $strictUtf8)
-    $ruleCount = [regex]::Matches($reference, '(?m)^\d+\. ').Count
-    if ($ruleCount -ne 15) {
-        $failures.Add("$referenceRelativePath must contain exactly 15 numbered rules; found $ruleCount.")
-    }
-    if ($referenceRelativePath -eq 'reference/AGENTS.md') {
-        $referenceRuleCount = $ruleCount
-    }
-
-    $ids = @([regex]::Matches($reference, '\[(?<id>[A-Z]+-\d{3})\]') | ForEach-Object {
-        $_.Groups['id'].Value
-    })
-    $uniqueIds = @($ids | Sort-Object -Unique)
-    if ($ids.Count -ne $uniqueIds.Count) {
-        $failures.Add("$referenceRelativePath contains duplicate stable rule IDs.")
-    }
-    $referenceIdSets[$referenceRelativePath] = ($ids -join '|')
-
-    foreach ($forbiddenPattern in @(
-        '(?i)\b(luna|terra|sol)\b',
-        '2048px',
-        '12MB',
-        '(?i)Cargo.*-j\s*2',
-        '\[SUB-004\]'
-    )) {
-        if ($reference -match $forbiddenPattern) {
-            $failures.Add("$referenceRelativePath contains a provider-specific name, fixed local budget, or deprecated rule: $forbiddenPattern")
+$referenceMaps = @{}
+$referenceSequences = @{}
+foreach ($relative in @('reference/AGENTS.md', 'reference/AGENTS.zh-CN.md')) {
+    $reference = [string]$texts[$relative]
+    $map = @{}
+    $sequence = [System.Collections.Generic.List[string]]::new()
+    $paragraphs = [regex]::Matches($reference, '(?m)^(?<number>\d+)\. (?<body>.+)$')
+    $expectedNumber = 1
+    foreach ($paragraph in $paragraphs) {
+        $number = [int]$paragraph.Groups['number'].Value
+        if ($number -ne $expectedNumber) { Add-Failure 'NUMBERING' "$relative expected $expectedNumber, got $number" }
+        $expectedNumber++
+        $ids = [regex]::Matches($paragraph.Groups['body'].Value, '\[(?<id>[A-Z]+-\d{3})\]')
+        if ($ids.Count -eq 0) { Add-Failure 'RULE_WITHOUT_ID' "$relative paragraph $number" }
+        foreach ($idMatch in $ids) {
+            $id = $idMatch.Groups['id'].Value
+            if ($map.ContainsKey($id)) { Add-Failure 'REFERENCE_DUPLICATE' "$relative $id" }
+            $map[$id] = $number
+            $sequence.Add($id)
+            if (-not $catalogRows.ContainsKey($id)) { Add-Failure 'UNCATALOGED_ID' "$relative $id" }
+            elseif ($catalogRows[$id].Status -ne 'active') { Add-Failure 'DEPRECATED_REFERENCE' "$relative $id" }
+            elseif ($catalogRows[$id].Rule -ne [string]$number) { Add-Failure 'RULE_MAPPING' "$relative $id is not in the catalog paragraph" }
         }
     }
+    foreach ($id in $catalogRows.Keys) {
+        if ($catalogRows[$id].Status -eq 'active' -and -not $map.ContainsKey($id)) {
+            Add-Failure 'REFERENCE_MISSING' "$relative $id"
+        }
+    }
+    if ($reference -match '(?i)\b(?:luna|terra|sol)\b|Cargo.*-j\s*2') {
+        Add-Failure 'LOCAL_DEFAULT' "$relative contains maintainer-specific defaults"
+    }
+    if ($reference -match '\b[A-Z]+-\d{2}\b|\$adopt-agent-policy|interview\.md') {
+        Add-Failure 'RUNTIME_INTERVIEW' "$relative embeds interview execution details"
+    }
+    $referenceMaps[$relative] = $map
+    $referenceSequences[$relative] = $sequence -join '|'
+}
+if ($referenceSequences['reference/AGENTS.md'] -ne $referenceSequences['reference/AGENTS.zh-CN.md']) {
+    Add-Failure 'BILINGUAL_PARITY' 'Active IDs must appear in the same order in both reference languages'
 }
 
-if ($referenceIdSets.Count -eq 2) {
-    $distinctReferenceIdSets = @($referenceIdSets.Values | Sort-Object -Unique)
-    if ($distinctReferenceIdSets.Count -ne 1) {
-        $failures.Add('English and Simplified Chinese reference AGENTS.md files must contain the same stable rule IDs in the same order.')
+$questionIds = @(
+    'SCOPE-01', 'LANGUAGE-01', 'WORKFLOW-01', 'SHELL-01', 'SHELL-02', 'NETWORK-01',
+    'RESOURCE-01', 'RESOURCE-02', 'RESOURCE-03', 'RESOURCE-04',
+    'SUBAGENT-01', 'SUBAGENT-02', 'SUBAGENT-03', 'SUBAGENT-04', 'SUBAGENT-05',
+    'SUBAGENT-06', 'SUBAGENT-07', 'SUBAGENT-08', 'SUBAGENT-09',
+    'INSTALL-01', 'ENCODING-01', 'SAFETY-01', 'GIT-01', 'GIT-02', 'GIT-03', 'GIT-04',
+    'NOTES-01', 'NOTES-02', 'NOTES-03', 'MEDIA-01', 'COMMUNICATION-01'
+)
+$interview = [string]$texts['skills/adopt-agent-policy/references/interview.md']
+$questions = @{}
+foreach ($section in [regex]::Matches($interview, '(?ms)^## (?<id>[A-Z]+-\d{2}) - [^\n]+\n(?<body>.*?)(?=^## |\z)')) {
+    $id = $section.Groups['id'].Value
+    if ($questions.ContainsKey($id)) { Add-Failure 'QUESTION_DUPLICATE' $id }
+    $questions[$id] = $true
+    if ($section.Groups['body'].Value -notmatch '(?m)^- Requirement: .+' -or
+        $section.Groups['body'].Value -notmatch '(?m)^- Ask: .+') {
+        Add-Failure 'QUESTION_SHAPE' "$id needs applicability and a decision prompt"
     }
 }
-
-if (Test-Path -LiteralPath (Join-Path $rootPath 'reference/AGENTS.md') -PathType Leaf) {
-    $reference = [System.IO.File]::ReadAllText((Join-Path $rootPath 'reference/AGENTS.md'), $strictUtf8)
-    foreach ($requiredPhrase in @(
-        'portable baseline',
-        'concrete models and reasoning levels',
-        'Never prescribe or claim unavailable model names.',
-        'do not create subagents for simple work merely to satisfy a rule',
-        'user-selected and tool-supported budget',
-        'Respond in the selected language'
-    )) {
-        if (-not $reference.Contains($requiredPhrase)) {
-            $failures.Add("English reference AGENTS.md is missing portable-policy phrase: $requiredPhrase")
-        }
-    }
+foreach ($id in $questionIds) {
+    if (-not $questions.ContainsKey($id)) { Add-Failure 'QUESTION_MISSING' $id }
 }
+if ($questions.ContainsKey('PLATFORM-01')) { Add-Failure 'FACT_INTERVIEW' 'Detect platform instead of asking for confirmation' }
 
-$catalogPath = Join-Path $rootPath 'references/rule-catalog.md'
-if (Test-Path -LiteralPath $catalogPath) {
-    $catalog = [System.IO.File]::ReadAllText($catalogPath, $strictUtf8)
-    foreach ($ruleId in @(
-        'START-001', 'START-002',
-        'GIT-001', 'GIT-002', 'GIT-003',
-        'SUB-004', 'SUB-005', 'SUB-006', 'SUB-007',
-        'MEDIA-001', 'NOTES-001'
-    )) {
-        if ($catalog -notmatch "(?m)^\| $([regex]::Escape($ruleId)) \|") {
-            $failures.Add("Rule catalog is missing current-policy ID: $ruleId")
+# Check the simple scalar metadata used by this package, not arbitrary YAML syntax.
+foreach ($name in $skillNames) {
+    $skill = [string]$texts["skills/$name/SKILL.md"]
+    $front = [regex]::Match($skill, '\A---\n(?<body>.*?)\n---(?:\n|\z)', 'Singleline')
+    if (-not $front.Success) { Add-Failure 'SKILL_FRONTMATTER' $name }
+    elseif ($front.Groups['body'].Value -notmatch "(?m)^name: $([regex]::Escape($name))$") {
+        Add-Failure 'SKILL_NAME' $name
+    }
+    $description = [regex]::Match($front.Groups['body'].Value, '(?m)^description: (?<value>.+)$')
+    if (-not $description.Success -or $description.Groups['value'].Length -gt 1024) {
+        Add-Failure 'SKILL_DESCRIPTION' $name
+    }
+    $ui = [string]$texts["skills/$name/agents/openai.yaml"]
+    foreach ($field in @('display_name', 'short_description', 'default_prompt')) {
+        $value = [regex]::Match($ui, "(?m)^  ${field}: `"(?<value>[^`"\n]+)`"$").Groups['value'].Value
+        if (-not $value) { Add-Failure 'SKILL_UI' "$name $field" }
+        if ($field -eq 'short_description' -and ($value.Length -lt 25 -or $value.Length -gt 64)) {
+            Add-Failure 'SKILL_UI_LENGTH' $name
+        }
+        if ($field -eq 'default_prompt' -and -not $value.Contains('$' + $name)) {
+            Add-Failure 'SKILL_PROMPT' "$name must be named in its prompt"
         }
     }
-
-    foreach ($line in ($catalog -split "`n")) {
-        if ($line -match '^\|\s*[A-Z0-9-]+\s*\|\s*([0-9,\-]+)\s*\|') {
-            foreach ($numberMatch in [regex]::Matches($Matches[1], '\d+')) {
-                if ([int]$numberMatch.Value -gt $referenceRuleCount) {
-                    $failures.Add("Rule catalog references missing AGENTS rule $($numberMatch.Value): $line")
-                }
-            }
-        }
-    }
-    if ($catalog -notmatch '(?m)^\| SUB-004 \| — \| \*\*Deprecated:\*\*') {
-        $failures.Add('Rule catalog must explicitly mark SUB-004 as deprecated.')
-    }
-}
-
-$adoptPath = Join-Path $rootPath 'workflows/ADOPT.md'
-if (Test-Path -LiteralPath $adoptPath) {
-    $adopt = [System.IO.File]::ReadAllText($adoptPath, $strictUtf8)
-    foreach ($requiredPhrase in @(
-        'Ask exactly one question ID at a time.',
-        'Do not use timeouts, defaults, or silence as consent.',
-        'Show the final diff and obtain a separate, explicit confirmation.',
-        'git status --short',
-        'DEVELOPMENT_NOTES.md',
-        'recovery point',
-        'git diff --binary',
-        'Report these detected facts; do not turn them into confirmation questions.',
-        'selected policy language',
-        'exact user-selected model/reasoning mapping',
-        'capability routing',
-        'visual/media transfer budget'
-    )) {
-        if (-not $adopt.Contains($requiredPhrase)) {
-            $failures.Add("ADOPT workflow is missing gate: $requiredPhrase")
-        }
-    }
-}
-
-$updatePath = Join-Path $rootPath 'workflows/UPDATE.md'
-if (Test-Path -LiteralPath $updatePath) {
-    $update = [System.IO.File]::ReadAllText($updatePath, $strictUtf8)
-    foreach ($requiredPhrase in @(
-        'Git status, branch, HEAD',
-        'development notes',
-        'recovery-point plan',
-        'policy language',
-        'stable IDs',
-        'actual model and reasoning controls',
-        'exact model mappings',
-        'capability fallbacks',
-        'media-budget questions'
-    )) {
-        if (-not $update.Contains($requiredPhrase)) {
-            $failures.Add("UPDATE workflow is missing current-policy gate: $requiredPhrase")
-        }
-    }
+    if ($ui -notmatch '(?m)^  allow_implicit_invocation: (true|false)$') { Add-Failure 'SKILL_POLICY' $name }
 }
 
 if ($failures.Count -gt 0) {
-    $failures | ForEach-Object { Write-Error $_ }
-    exit 1
+    throw "Repository validation failed ($($failures.Count) issues):`n$($failures -join "`n")"
 }
-
-Write-Host "Repository validation passed ($($textFiles.Count) text files, $($requiredQuestionIds.Count) interview questions)."
+$result = [pscustomobject]@{
+    TextFiles = $files.Count
+    ActiveRules = $referenceMaps['reference/AGENTS.md'].Count
+    Questions = $questions.Count
+    Skills = $skillNames.Count
+}
+if ($PassThru) { $result }
+else { Write-Host "Repository validation passed ($($result.TextFiles) text files, $($result.ActiveRules) active IDs, $($result.Questions) question topics, $($result.Skills) Skills)." }

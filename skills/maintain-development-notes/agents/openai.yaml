@@ -1,7 +1,7 @@
 interface:
   display_name: "Maintain Development Notes"
   short_description: "Read project memory before maintaining durable notes"
-  default_prompt: "Use $maintain-development-notes at the start of this project-work turn to read the latest applicable instructions and recovery notes, reconcile them with current evidence, and maintain an accurate record when reality changes."
+  default_prompt: "Use $maintain-development-notes to recover relevant project memory at the adopted cadence and update durable notes when verified state changes."
 
 policy:
   allow_implicit_invocation: true

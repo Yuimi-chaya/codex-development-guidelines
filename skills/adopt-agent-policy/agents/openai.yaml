@@ -1,0 +1,7 @@
+interface:
+  display_name: "Adopt Agent Policy"
+  short_description: "Configure Agent policy once, not every thread"
+  default_prompt: "Use $adopt-agent-policy to configure this policy for my environment, reuse known preferences, and show the proposed diff before writing."
+
+policy:
+  allow_implicit_invocation: true
