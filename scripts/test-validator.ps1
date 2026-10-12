@@ -128,6 +128,19 @@ try {
             $path = Remember-File 'tests/artifact-reading-cases.md'
             Remove-Item -LiteralPath $path
         } },
+        @{ Name='interaction reference is independently required'; Code='MISSING_FILE'; Mutate={
+            $path = Remember-File 'skills/adopt-agent-policy/references/user-interaction.md'
+            Remove-Item -LiteralPath $path
+        } },
+        @{ Name='interaction rule cannot disappear from catalog'; Code='CATALOG_MISSING'; Mutate={
+            Edit-Fixture 'references/rule-catalog.md' { param($text) $text -replace '(?m)^\| COMM-002 [^\n]*\n', '' }
+        } },
+        @{ Name='interaction bilingual coverage'; Code='REFERENCE_MISSING'; Mutate={
+            Edit-Fixture 'reference/AGENTS.zh-CN.md' { param($text) $text.Replace('[COMM-002]', '') }
+        } },
+        @{ Name='interaction enablement decision is required'; Code='QUESTION_MISSING'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text -replace '(?ms)^## COMMUNICATION-02 - [^\n]+\n.*?(?=^## |\z)', '' }
+        } },
         @{ Name='missing required file'; Code='MISSING_FILE'; Mutate={
             $path = Remember-File 'skills/adopt-agent-policy/references/profile.md'
             Remove-Item -LiteralPath $path

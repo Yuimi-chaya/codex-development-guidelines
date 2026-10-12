@@ -48,6 +48,8 @@ When selecting or refreshing model roles, use [model-selection.md](model-selecti
 
 For interactive workflows, discuss method, execution capability, context isolation, and resource preferences separately. The strongest interactive model may run as an executor; do not tie advanced capability to the primary context. Resolve direct-use authority even if subagents are disabled. Keep step/time/cost budgets distinct from media transfer and retention controls, and mark unsupported controls rather than promising them.
 
+When runtime communication is in scope, resolve `COMMUNICATION-02` using [user-interaction.md](user-interaction.md). Inspect supported question/assistance channels, explain the benefit and interruption cost, and let the user enable, retain current behavior, or defer. Keep the behavioral preference and a feature/configuration write separate; a recommendation does not authorize changing `config.toml` or restarting the host. Preserve necessary clarification and approval boundaries even if optional interaction is declined.
+
 ## Phase 4: Compare and present
 
 Semantically compare the target with the selected source's localized reference and stable rule catalog. Classify each rule as:
@@ -66,7 +68,7 @@ Before writing, show:
 4. Exact target path, encoding, BOM, line endings, and permissions.
 5. Backup path and recovery-point plan.
 6. Complete unified diff or equivalent before/after preview.
-7. Any Skill installation or profile creation as a separate operation.
+7. Any Skill installation, profile creation, interaction-feature configuration, or host restart as a separate operation.
 
 Put effective user choices in the target instructions, with conditions where needed. The generated `AGENTS.md` must work without the source checkout, Skill, or optional profile present. Do not copy the interview or explanatory modules into it. Skipping budget questions does not remove media protection; disabling delegation does not authorize forbidden direct browsing.
 

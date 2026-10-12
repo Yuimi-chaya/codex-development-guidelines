@@ -142,6 +142,22 @@ Taking over means owning the next decision, not automatically using a prohibited
 
 Review decisive evidence yourself: inspect the relevant file, reproduce a claimed fix, or verify the source behind an assertion. This does not require replaying every browser click or loading all raw output. If the task is simple and the primary Agent can readily complete it, do not create a subagent merely to satisfy a rule.
 
+For substantial file exploration, use an available, authorized read-only agent to return paths, symbols, line references, and compressed findings. Coordinate division of work and both sides' pace: identify responsibilities and dependencies, advance independent work, and exchange relevant blockers and changes. Avoid duplicate exploration and repeated checks of unchanged status.
+
+An authorized agent can monitor a long build/test, observing the existing process and reporting meaningful progress, failures, or exit status. Monitoring does not start another build or increase heavy-task concurrency. If the execution session is inaccessible, use a supported observation route or retain monitoring locally; do not claim a delegation that did not occur.
+
+### Ask or notify the user
+
+Long tasks need sustained progress and timely alignment. When missing information materially affects the approach or result and cannot be reasonably resolved from context, ask a concrete, short question with meaningful options where useful. Reuse explicit answers; ordinary work does not restart the configuration interview.
+
+When the user must open a window, reproduce an issue, or provide immediate assistance, use an available, permitted interaction tool such as `request_user_input` under their preference. State the action and purpose. Do not assume the app is in the foreground or that a passing progress message was seen or acted on.
+
+For example, an investigation needs the user to open an application's settings window. Request that assistance while continuing independent source inspection; wait for confirmation or observation of the window before the screenshot-dependent step. No reply does not mean the action is complete or authorize an unapproved GUI route.
+
+Question tools serve concrete questions and assistance, not routine progress, apologies, or promises. After misuse is pointed out, correct it directly; do not open another dialog asking whether to stop accidental calls. Avoid empty calls or repeated reminders for an unchanged request.
+
+Advance independent work while waiting and keep dependent steps pending. Tool mode, input, and approval restrictions still apply. If the tool is unavailable or optional enablement is declined, ask clearly through an allowed channel without claiming delivery or treating silence/timeouts as consent. Verify host notification behavior rather than assuming the user saw a notification.
+
 ### Stop when the environment is resisting
 
 When a shell, terminal, dependency, network, permission, or tool creates clear resistance, the Agent should:
@@ -223,12 +239,28 @@ The following choices can belong in the effective `AGENTS.md` once approved. Wha
 - remote publication authority;
 - dependency installation policy;
 - response language and detail preference.
+- proactive-question/assistance enablement, supported channels, and interruption preferences.
 
 `adopt-agent-policy` merges applicable approved choices into the actual user/project instructions. An optional [adoption record](skills/adopt-agent-policy/references/profile.md) can retain provenance for upgrades, but there is no automatic profile loader. Ordinary work must still succeed without that record or this repository.
 
 Reuse explicit preferences already supplied by the user. Unknown optional values may remain conditional with a disclosed fallback; no missing answer implies consent to an install, upload, publication, or new permission.
 
 ## Model and environment recommendations
+
+### Whether to enable proactive questions
+
+During initial configuration or a deliberate communication update, detect actual interaction tools and mode restrictions, explain timely alignment versus interruption costs, and ask whether to enable proactive questions, keep current behavior, or defer. Ordinary threads reuse the choice. Declining optional enablement does not permit guessing important answers.
+
+For a Codex version supporting the feature, propose:
+
+```toml
+[features]
+default_mode_request_user_input = true
+```
+
+If `[features]` already exists, add or update only the key without duplicating the table. Verify support, effective state, configuration scope, and reload requirements when configuring the actual installation. Show a minimal diff, backup, and recovery plan before an authorized write. Do not automatically edit `config.toml` or restart the app, or promise that a policy rule alone exposes a tool to an existing task.
+
+The example and motivation come from the [maintainer's usage note](https://x.com/heyiwei233/status/2109408871941034316). The [official configuration schema](https://developers.openai.com/codex/config-schema.json), checked on October 12, 2026, contains this boolean key; that does not establish every version's support or notification delivery. See the [bundled interaction procedure](skills/adopt-agent-policy/references/user-interaction.md).
 
 ### Research exposed models during configuration
 
@@ -276,7 +308,7 @@ For a reusable project profile. It asks about enabled modules such as Git recove
 
 For a user-level or team-level profile. It refreshes all applicable durable preferences and verified capability mappings.
 
-The mode controls interview breadth, not runtime safety. The question bank's 31 IDs are a reusable set of topics, not 31 mandatory conversation turns. An explicit existing answer can resolve a question without asking again; optional unknowns can be deferred with a visible proposed fallback. Show unresolved permissions/conflicts separately. Completing an interview does not approve the final write.
+The mode controls interview breadth, not runtime safety. The question bank's 32 IDs are a reusable set of topics, not 32 mandatory conversation turns. An explicit existing answer can resolve a question without asking again; optional unknowns can be deferred with a visible proposed fallback. Show unresolved permissions/conflicts separately. Completing an interview does not approve the final write.
 
 ## How to use it
 
@@ -329,6 +361,8 @@ See [`workflows/ADOPT.md`](workflows/ADOPT.md) for the detailed contract.
 | Exposed provider alias has no public identity evidence | Use only approved known capability/fallback; disclose uncertainty | Do not invent release dates, prices, or a verified backend |
 | User declines PowerShell 7 or Git | Adapt to the retained environment and suitable backups | No forced installation or repeated persuasion |
 | README draft relies on the previous chat or unexplained references | Supply necessary context and actual content; check facts and references in reading order | No configuration interview for ordinary writing review |
+
+Interaction boundary cases: reuse an existing choice without re-asking; preserve an allowed necessary-clarification channel when enablement is deferred; verify a requested window is open before dependent work; monitor an existing build without restarting it. Resolve configuration preference separately from authorization to write or restart.
 
 ## Language and localization
 

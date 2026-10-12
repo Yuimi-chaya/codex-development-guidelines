@@ -51,6 +51,12 @@ Only one operator may control a mutable session at a time. Stop the previous ope
 
 ## Delegation contract
 
+Keep simple work with the primary Agent. For substantial file exploration, use an available, authorized read-only scout to return relevant paths, symbols, line references, and compressed findings. A configured model mapping applies to that scout; do not infer that exploration must use a cheaper model or silently change a user's selected model.
+
+Coordinate the division of work and both sides' pace. Give agents non-overlapping responsibilities and identify which result blocks which next step. The primary Agent should advance independent work while a scout investigates, then integrate its result before making dependent changes. Exchange scope changes, decisive findings, and blockers when they affect the other side; avoid redoing the delegated investigation or polling unchanged status repeatedly.
+
+For a long build/test, assign an authorized agent to monitor the existing process or supported execution session, summarize meaningful progress, and report exit status or blockers. Make one role responsible for starting or stopping the run. Monitoring is not permission to restart it or launch another heavy task. If session access cannot be shared, use a supported observation route or retain monitoring locally; do not claim the agent is watching a process it cannot observe.
+
 Specify objective, permitted reads/actions, exact write scope if any, output size, evidence needed, progress boundary, and stopping condition. Add relevant time, step, or cost limits using available measurements; do not invent unavailable price telemetry. Use a conservative bounded stage when no numeric budget is configured. Exceeding it calls for reassessment, not an automatic new allowance.
 
 A useful browser deliverable is a conclusion, source/page identity, decisive observed state, relevant artifact paths, uncertainty, and remaining budget, not an entire interaction transcript. Verify that the recipient can access referenced files; otherwise transfer the necessary optimized evidence through an allowed channel. Never hand off credentials or an entire private session history as routine context.

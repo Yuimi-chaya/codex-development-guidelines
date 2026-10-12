@@ -113,6 +113,7 @@ The question bank configures adopted rules; it does not determine whether unaske
 
 - Requirement: standard/full when subagents are enabled.
 - Explain: delegation should be driven by material benefit, not ceremonial numeric thresholds. Compare complete-task cost, time, reliability, output volume, and handoff loss. Model level does not determine execution context, and a difficult task need not begin with a weak-model trial.
+- Explain: substantial file exploration can use authorized read-only agents. Long builds/tests can have a monitoring agent while the primary advances independent work; monitor one existing run, respect heavy-task limits, and coordinate blockers and dependencies.
 - Ask: Which task signals justify delegation, and when should the primary Agent proceed alone?
 
 ## SUBAGENT-08 - Capability and Role Mapping
@@ -126,6 +127,7 @@ The question bank configures adopted rules; it does not determine whether unaske
 
 - Requirement: standard/full delegation or when configuring interactive progress/stop limits, including authorized primary-only UI work.
 - Explain: bounded retries protect cost and make takeover explicit. Reassess capability versus tool/environment/permission blockers; takeover does not grant forbidden tool use. Preserve remaining budget and pending effects during handoff, without resetting limits by changing agents.
+- Explain: agree on useful progress/blocker exchanges and both sides' pace, including monitoring long processes. Avoid duplicate work or rapid unchanged polling; integrate evidence before dependent actions.
 - Ask: For delegation, should the default maximum of one directed retry apply? For relevant interactive workflows, what useful-progress or step/time/cost stop boundary is appropriate? Resolve these separately when needed; the primary Agent may reassess sooner and must verify conclusions independently.
 
 ## INSTALL-01 - Dependencies and Tools
@@ -192,6 +194,13 @@ The question bank configures adopted rules; it does not determine whether unaske
 - Requirement: full profile or when the user wants a reusable communication preference.
 - Explain: distinguish conversation updates from substantive deliverables. Account for the reader's likely expertise, reading order, and entry point; introduce prerequisites, resolve references, and give examples their own context and actual text. Preserve requested voice, legitimate change/test/risk descriptions, and required disclosure. Reuse known audience needs; ask about an artifact-specific audience or style only when it materially affects the result, not as a mandatory new questionnaire.
 - Ask: What response language and default detail level should the Agent use?
+
+## COMMUNICATION-02 - Proactive Questions and Assistance
+
+- Requirement: standard/full when configuring runtime communication, or any mode when the user explicitly asks about proactive interaction. Reuse an existing preference; optional enablement is not a prerequisite for adopting other rules.
+- Detect: available question/reminder tools, supported modes and input, approval restrictions, current feature state, and installed-version support. Tool presence does not prove notification delivery.
+- Explain: use [user-interaction.md](user-interaction.md) for recommendations and Codex's optional configuration example. Necessary questions and assistance can prevent drift, but empty/repetitive prompts interrupt work. Declining optional interaction retains necessary clarification through an allowed channel; configuration writes and restarts need separate authority.
+- Ask: Would you like to enable supported proactive questions and assistance requests during work, keep the current behavior, or defer the choice?
 
 ## Completion
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add bilingual `COMM-002` for necessary runtime questions and assistance, independent work while awaiting input, confirmation before dependent steps, and no empty/repetitive or progress/apology dialogs.
+- Add optional proactive-interaction preference `COMMUNICATION-02` and a bundled capability-aware procedure with a sourced Codex configuration example, user-selected fallback, and separate configuration/restart authority.
+- Simplify delegation guidance while preserving stable IDs and safety boundaries; make read-only exploration, work division, coordinated pace, and monitoring an existing long build/test explicit.
+- Extend bilingual README guidance, configuration provenance, structural regression checks, and semantic interaction/coordination cases.
 - Strengthen `ARTIFACT-001` to require substantive, supported content rather than drafting instructions or placeholders, and add `ARTIFACT-002` for reading-order prerequisites, clear references, and local example context.
 - Replace the bilingual README's ambiguous module example and placeholder samples with explicit hypothetical scenarios and actual prose. Preserve requested voice, disclosures, useful cross-references, and audience-appropriate expertise.
 - Add concrete artifact-reading fixtures with separate review notes; distinguish reader-context review from structural checks and whole-document recall.

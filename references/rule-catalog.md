@@ -9,11 +9,11 @@ IDs identify behavior rather than exact wording or position. Keep active IDs in 
 | START-002 | 3 | context-and-memory | active | Before relevant project decisions | Read instructions and existing notes at the selected cadence |
 | NOTES-001 | 4 | context-and-memory | active | Relevant memory or complex continuing work | Recover prior context; maintain notes only at meaningful checkpoints |
 | WRITE-001 | 5 | delegation-and-tools | active | Work ownership and side effects | Authorized role writes; primary Agent retains final acceptance |
-| SUB-007 | 6 | delegation-and-tools | active | Material delegation benefit | Protect context and avoid ceremonial delegation |
+| SUB-007 | 6 | delegation-and-tools | active | Material delegation benefit or substantial file exploration | Use authorized read-only exploration; keep simple work local |
 | SUB-003 | 7 | delegation-and-tools | active | Selecting model/reasoning controls | Verify capabilities and apply approved choices or permitted fallback |
 | SUB-005 | 7 | delegation-and-tools | active | Mapping work roles | User-approved roles; model capability independent of primary/executor context |
 | BROWSER-001 | 8 | delegation-and-tools | active | Interactive browser or Computer Use | Separate method/model/context/budget; optimize full task; preserve authority |
-| SUB-001 | 9 | delegation-and-tools | active | Every delegation | Bounded task and evidence contract; no overlapping writes |
+| SUB-001 | 9 | delegation-and-tools | active | Every delegation | Bounded contract, work division and coordinated pace; no overlapping writes |
 | SUB-002 | 9 | delegation-and-tools | active | Delegation depth/concurrency | Honor user limits with conservative defaults |
 | SUB-006 | 10 | delegation-and-tools | active | Delegation result or progress review | Verify claims; one retry by default; reassess cause, authority, and remaining budget |
 | MEDIA-001 | 11 | media | active | Media transfer upstream | Inspect/optimize evidence; separate input, payload, and retention costs |
@@ -33,6 +33,7 @@ IDs identify behavior rather than exact wording or position. Keep active IDs in 
 | COMM-001 | 24 | validation-and-resources | active | User-facing communication | Selected language/detail, concise evidence and state |
 | ARTIFACT-001 | 25 | validation-and-resources | active | Deliverable authoring and review | Actual supported content in the intended voice, not drafting commentary or placeholders |
 | ARTIFACT-002 | 26 | validation-and-resources | active | Explanation, reference, and example composition | Reading-order prerequisites, clear referents, local example context, accurate sample text |
+| COMM-002 | 27 | validation-and-resources | active | Material unanswered question or necessary user assistance | Permitted interaction, independent progress, confirmed dependencies, no empty/repeated prompts |
 | SUB-004 | - | delegation-and-tools | deprecated | Historical comparison only | Mandatory numeric delegation thresholds; never adopt automatically |
 
 ## Module and precedence rules
@@ -72,3 +73,9 @@ Compare behavior as well as IDs when updating. Stable IDs and translations never
 `ARTIFACT-001` retains its audience/voice boundary and explicitly requires substantive, factually supported content instead of writing instructions disguised as finished prose. `ARTIFACT-002` adds reading-order and local-context requirements: establish prerequisites, resolve references, and supply each example's necessary scenario. A reference located somewhere in a document does not automatically establish the reader's understanding at the point of use.
 
 Keep both rules distinct from a ban on technical terminology, first person, or forward references. Existing reader-appropriate expertise, concise reminders, and precise navigation remain valid; the revision does not require every sentence to repeat all context. Compare these behaviors semantically during adoption, without replacing a user's compatible wording.
+
+## User interaction and delegation coordination revision
+
+`COMM-002` adds runtime questions and assistance requests, distinct from first-adoption interviewing. It respects actual tool restrictions and user preferences, keeps dependent work pending, and forbids empty or repetitive prompts and progress/apology dialogs. Optional interactive enablement does not disable necessary clarification or grant approval authority.
+
+The delegation paragraphs are shorter while preserving active IDs, approved mappings, independent evidence checks, the default one-directed-retry limit, and permission/resource boundaries. `SUB-007` adds authorized read-only exploration for substantial file work; `SUB-001` makes division of work and both sides' pace explicit. `RES-002` adds monitoring of an existing long build/test without duplicate execution. Concrete model defaults remain user-selected.

@@ -1,6 +1,6 @@
 # Validation, Resources, and Communication
 
-Scope: proportional verification, useful process lifecycles, and audience-appropriate communication. Related IDs: `RES-001`, `RES-002`, `VERIFY-001`, `COMM-001`, `ARTIFACT-001`, `ARTIFACT-002`.
+Scope: proportional verification, useful process lifecycles, and audience-appropriate communication. Related IDs: `RES-001`, `RES-002`, `VERIFY-001`, `COMM-001`, `COMM-002`, `ARTIFACT-001`, `ARTIFACT-002`.
 
 ## Why
 
@@ -26,6 +26,18 @@ Example: a validator confirms that bilingual policy files contain matching IDs. 
 ## Configuration
 
 Response language, detail, artifact audience/voice, background-process permission, and build concurrency belong in the approved effective instructions when durable. A destination-specific writing request takes precedence within its scope. A new task can reuse preferences without asking again. If a specific job needs more resources than authorized, explain the tradeoff and seek only that change.
+
+## Ask or notify during work
+
+Ask when an unresolved fact or choice materially changes the outcome and cannot be reasonably recovered from context. Do not re-ask explicit answers or pause for harmless implementation details. Necessary user assistance is also an interaction: a request to open a window or reproduce a bug should say what action is needed and how it will unblock the task.
+
+The user may be working elsewhere. A progress message mentioning assistance does not prove it was seen, and an interactive tool call does not prove the user has performed the action. Use an available, permitted interaction channel under the adopted preference; confirm the reply or observable result before dependent work. Advance independent work while waiting when the environment supports it. If the tool is unavailable, clearly state the request through an allowed channel; never simulate a notification or invoke GUI automation just to avoid asking for necessary human help.
+
+Keep questions short and offer relevant choices when useful, respecting the tool's input format and mode restrictions. Use designated approval mechanisms for authorization when required; a clarification dialog is not a way around them. Do not send empty calls, duplicate an unchanged pending request, or use the tool for status updates, apologies, or promises. After misuse is pointed out, correct the behavior without another dialog announcing the correction.
+
+Example: a screenshot investigation needs the user to open a specific application's settings window. Ask for that action through the supported channel, then continue inspecting independent source files. The screenshot check waits until the user confirms or the window is observed. There is no need to repeatedly ask whether the user is ready, nor to start unrelated computer interaction.
+
+Whether to enable optional proactive interaction is a user decision during adoption or deliberate configuration, not a question every thread must repeat. The bundled [interaction procedure](../../skills/adopt-agent-policy/references/user-interaction.md) separates that preference from tool availability, host notifications, and configuration writes.
 
 ## Deliver actual reader-facing content
 

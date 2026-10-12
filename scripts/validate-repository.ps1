@@ -32,7 +32,7 @@ $skillNames = @('adopt-agent-policy', 'maintain-development-notes')
 foreach ($name in $skillNames) {
     $requiredFiles += "skills/$name/SKILL.md", "skills/$name/agents/openai.yaml"
 }
-foreach ($name in @('adoption', 'update', 'interview', 'profile', 'model-selection')) {
+foreach ($name in @('adoption', 'update', 'interview', 'profile', 'model-selection', 'user-interaction')) {
     $requiredFiles += "skills/adopt-agent-policy/references/$name.md"
 }
 $requiredFiles += 'skills/maintain-development-notes/references/note-schema.md'
@@ -110,7 +110,7 @@ $knownIds = @(
     'SUB-001', 'SUB-002', 'SUB-003', 'SUB-004', 'SUB-005', 'SUB-006', 'SUB-007',
     'BROWSER-001', 'MEDIA-001', 'ENV-001', 'SHELL-001', 'SHELL-002',
     'FRICTION-001', 'NET-001', 'FILE-001', 'FILE-002',
-    'GIT-001', 'GIT-002', 'GIT-003', 'RES-001', 'RES-002', 'VERIFY-001', 'COMM-001',
+    'GIT-001', 'GIT-002', 'GIT-003', 'RES-001', 'RES-002', 'VERIFY-001', 'COMM-001', 'COMM-002',
     'ARTIFACT-001', 'ARTIFACT-002'
 )
 foreach ($id in $knownIds) {
@@ -182,7 +182,7 @@ $questionIds = @(
     'SUBAGENT-01', 'SUBAGENT-02', 'SUBAGENT-03', 'SUBAGENT-04', 'SUBAGENT-05',
     'SUBAGENT-06', 'SUBAGENT-07', 'SUBAGENT-08', 'SUBAGENT-09',
     'INSTALL-01', 'ENCODING-01', 'SAFETY-01', 'GIT-01', 'GIT-02', 'GIT-03', 'GIT-04',
-    'NOTES-01', 'NOTES-02', 'NOTES-03', 'MEDIA-01', 'COMMUNICATION-01'
+    'NOTES-01', 'NOTES-02', 'NOTES-03', 'MEDIA-01', 'COMMUNICATION-01', 'COMMUNICATION-02'
 )
 $interview = [string]$texts['skills/adopt-agent-policy/references/interview.md']
 $questions = @{}

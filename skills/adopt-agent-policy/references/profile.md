@@ -18,6 +18,7 @@ Useful fields:
 | Deferred values | Why unknown; exact adopted conditional fallback, without implied permission |
 | Model research, if requested | Exact exposed identity/provider, evidence sources and check date, uncertainty, approved mapping/fallback; distinguish research from selection |
 | Interactive execution | Approved tool/model/context choices, direct-use authority, progress/stop budget, supported media/retention controls and unknowns |
+| User interaction | Proactive-question/assistance preference, supported channel and fallback, source of choice, separately authorized feature writes, pending reload or verification |
 | Environment decisions | Detected shell/encoding/Git facts, accepted or declined recommendations, retained-environment recovery approach |
 | Recovery | Backup location, base identity, restore scope, verified integrity |
 | Applied state | Exact approved changes, target hash, validation, pending human acceptance |
