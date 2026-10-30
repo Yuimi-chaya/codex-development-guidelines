@@ -6,6 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $rootPath = (Resolve-Path -LiteralPath $Root).Path
 $validator = Join-Path $rootPath 'scripts/validate-repository.ps1'
+$assetSync = Join-Path $rootPath 'scripts/sync-policy-assets.ps1'
 $tempParent = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath())
 $fixture = Join-Path $tempParent ('agent-policy-validator-' + [guid]::NewGuid().ToString('N'))
 $utf8 = [System.Text.UTF8Encoding]::new($false, $true)
@@ -84,9 +85,11 @@ try {
         @{ Name='valid package'; Code=''; Mutate={} },
         @{ Name='LF and CRLF compare equally'; Code=''; Mutate={
             Edit-Fixture 'skills/adopt-agent-policy/SKILL.md' { param($text) $text.Replace("`n", "`r`n") }
+            Edit-Fixture 'skills/adopt-agent-policy/assets/runtime-policy.en.md' { param($text) $text.Replace("`n", "`r`n") }
         } },
         @{ Name='wording is not frozen'; Code=''; Mutate={
             Edit-Fixture 'reference/AGENTS.md' { param($text) $text.Replace('casual conversation', 'informal conversation').Replace('Casual conversation', 'Informal conversation') }
+            Edit-Fixture 'skills/adopt-agent-policy/assets/runtime-policy.en.md' { param($text) $text.Replace('casual conversation', 'informal conversation').Replace('Casual conversation', 'Informal conversation') }
         } },
         @{ Name='additional cataloged rule is allowed'; Code=''; Mutate={
             foreach ($relative in @('reference/AGENTS.md', 'reference/AGENTS.zh-CN.md')) {
@@ -104,6 +107,33 @@ try {
                 $text + "`n| EXAMPLE-001 | $number | context-and-memory | active | Test | Additional behavior |`n"
             }
             Edit-Fixture 'references/modules/context-and-memory.md' { param($text) $text + "`nRelated fixture ID: EXAMPLE-001`n" }
+            $null = Remember-File 'skills/adopt-agent-policy/assets/runtime-policy.en.md'
+            $null = Remember-File 'skills/adopt-agent-policy/assets/runtime-policy.zh-CN.md'
+            & $assetSync -Root $fixture -Write
+        } },
+        @{ Name='configuration discovery reference is required'; Code='MISSING_FILE'; Mutate={
+            $path = Remember-File 'skills/adopt-agent-policy/references/discovery.md'
+            Remove-Item -LiteralPath $path
+        } },
+        @{ Name='standalone policy asset is required'; Code='MISSING_FILE'; Mutate={
+            $path = Remember-File 'skills/adopt-agent-policy/assets/runtime-policy.zh-CN.md'
+            Remove-Item -LiteralPath $path
+        } },
+        @{ Name='runtime asset rejects catalog tags'; Code='ASSET_METADATA'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/assets/runtime-policy.en.md' { param($text) $text.Replace('1. Adapt', '1. [CORE-001] Adapt') }
+        } },
+        @{ Name='runtime asset rejects bare question identifiers'; Code='ASSET_METADATA'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/assets/runtime-policy.zh-CN.md' { param($text) $text + "`nSUBAGENT-02`n" }
+        } },
+        @{ Name='runtime asset cannot lose a safeguard'; Code='ASSET_DRIFT'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/assets/runtime-policy.en.md' { param($text) $text -replace '(?m)^11\. .+\n', '' }
+        } },
+        @{ Name='source change requires asset refresh'; Code='ASSET_DRIFT'; Mutate={
+            Edit-Fixture 'reference/AGENTS.md' { param($text) $text.Replace('Keep simple work local.', 'Handle straightforward work locally.') }
+        } },
+        @{ Name='runtime asset allows normal numbering'; Code=''; Mutate={
+            Edit-Fixture 'reference/AGENTS.md' { param($text) $text.Replace('Keep simple work local.', 'Handle straightforward work locally.') }
+            Edit-Fixture 'skills/adopt-agent-policy/assets/runtime-policy.en.md' { param($text) $text.Replace('Keep simple work local.', 'Handle straightforward work locally.') }
         } },
         @{ Name='model selection reference is required'; Code='MISSING_FILE'; Mutate={
             $path = Remember-File 'skills/adopt-agent-policy/references/model-selection.md'
@@ -117,6 +147,7 @@ try {
         } },
         @{ Name='artifact wording is not frozen'; Code=''; Mutate={
             Edit-Fixture 'reference/AGENTS.md' { param($text) $text.Replace('intended readers and purpose', 'target audience and document purpose') }
+            Edit-Fixture 'skills/adopt-agent-policy/assets/runtime-policy.en.md' { param($text) $text.Replace('intended readers and purpose', 'target audience and document purpose') }
         } },
         @{ Name='reader context rule cannot disappear from catalog'; Code='CATALOG_MISSING'; Mutate={
             Edit-Fixture 'references/rule-catalog.md' { param($text) $text -replace '(?m)^\| ARTIFACT-002 [^\n]*\n', '' }
@@ -138,8 +169,8 @@ try {
         @{ Name='interaction bilingual coverage'; Code='REFERENCE_MISSING'; Mutate={
             Edit-Fixture 'reference/AGENTS.zh-CN.md' { param($text) $text.Replace('[COMM-002]', '') }
         } },
-        @{ Name='interaction enablement decision is required'; Code='QUESTION_MISSING'; Mutate={
-            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text -replace '(?ms)^## COMMUNICATION-02 - [^\n]+\n.*?(?=^## |\z)', '' }
+        @{ Name='interaction decision group is required'; Code='DECISION_MISSING'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text -replace '(?ms)^## Proactive Interaction\n.*?(?=^## |\z)', '' }
         } },
         @{ Name='missing required file'; Code='MISSING_FILE'; Mutate={
             $path = Remember-File 'skills/adopt-agent-policy/references/profile.md'
@@ -170,11 +201,17 @@ try {
         @{ Name='Skill cannot link outside installed folder'; Code='SKILL_ESCAPE'; Mutate={
             Edit-Fixture 'skills/adopt-agent-policy/SKILL.md' { param($text) $text + "`n[Outside](../../README.md)`n" }
         } },
-        @{ Name='question coverage'; Code='QUESTION_MISSING'; Mutate={
-            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text.Replace('## SCOPE-01 -', '## SCOPE-99 -') }
+        @{ Name='decision group coverage'; Code='DECISION_MISSING'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text.Replace('## Scope and Language', '## Unrelated Topic') }
         } },
-        @{ Name='duplicate question'; Code='QUESTION_DUPLICATE'; Mutate={
-            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text + "`n## SCOPE-01 - Duplicate`n`n- Requirement: test`n- Ask: test`n" }
+        @{ Name='duplicate decision group'; Code='DECISION_DUPLICATE'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text + "`n## Scope and Language`n`n- Resolve: test`n- Recommend: test`n- Decision: test`n" }
+        } },
+        @{ Name='decision group requires a recommendation'; Code='DECISION_SHAPE'; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text.Replace('- Recommend:', '- Suggestion:') }
+        } },
+        @{ Name='decision wording is not frozen'; Code=''; Mutate={
+            Edit-Fixture 'skills/adopt-agent-policy/references/interview.md' { param($text) $text.Replace('One runtime language is normally sufficient.', 'Normally keep a single runtime language.') }
         } },
         @{ Name='interview IDs cannot enter runtime'; Code='RUNTIME_INTERVIEW'; Mutate={
             Edit-Fixture 'reference/AGENTS.md' { param($text) $text + "`nAsk SCOPE-01 at startup.`n" }

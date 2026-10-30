@@ -1,207 +1,47 @@
-# First-Adoption Interview Schema
+# Configuration Decision Checklist
 
-This question bank belongs to `adopt-agent-policy`. Use it for deliberate first adoption or a configuration update, not ordinary coding or a read-only policy review. Starting a thread, encountering an unconfigured module, or finding no `AGENTS.md` does not by itself trigger an interview.
+Use this internally after [discovery.md](discovery.md) and relevant research. Recommend a complete configuration, reuse existing choices, and collect only unresolved preferences together. This is not a questionnaire, a mode/module menu, or a sequence of mandatory questions. No topic IDs belong in the user-facing proposal or generated instructions.
 
-## Interview modes
+The request determines depth. Optional unknown numbers can retain a disclosed conservative fallback. Missing permission, a material conflict, and a required unsupported capability need explicit resolution. Respect the input tool's limits and approval restrictions; follow up only for a real dependency.
 
-- `quick`: confirm scope, language, permissions that are immediately relevant, and any module needed by the current adoption.
-- `standard`: ask decisions for the modules the user wants enabled in the target profile; leave unrelated modules unconfigured.
-- `full`: build or refresh a reusable user-level or team-level profile and ask every applicable preference below.
+## Scope and Language
 
-Ask one unresolved question ID at a time and split compound preferences into short follow-ups where needed. Reuse explicit applicable answers from the request or existing instructions with their source; `required` means resolved, not necessarily asked again. Detect facts first, do not ask users to reconfirm them, and mark unknown facts honestly. Standard is the module-focused default; modes are not mandatory preliminary questions.
+- Resolve: actual Codex home and effective instruction file, overrides, explicit project scope, target language.
+- Recommend: user-level `AGENTS.md` unless the user specifies otherwise; preserve existing language or propose the conversation language for a new file. One runtime language is normally sufficient.
+- Decision: ask only if the target remains ambiguous, an override creates a material conflict, or language cannot reasonably be inferred. Show the exact path and scope in the concrete proposal.
 
-Record decisions as answered, reused (with source), not applicable (with reason), deferred (with a disclosed fallback), or unresolved. Defer optional unknown preferences, not consent or a conflict that affects the proposed write. Do not ask about private network configuration or hardware unrelated to the adoption.
+## Environment and Recovery
 
-## Runtime safeguards versus questions
+- Resolve: active shell/version versus terminal host, relevant encoding behavior, available tools/Git, existing preflight/note cadence, checkpoint and rollback restrictions.
+- Recommend: adapt to the retained environment. Explain optional tools with source/version, benefits, scope, risks, recovery, and a keep-current alternative. On Windows, PowerShell 7 may help UTF-8 consistency but cannot fix every external-tool or legacy-file issue. Git helps inspect and recover changes; non-Git work can use verified exact backups.
+- Decision: combine only needed shell/tool, backup-location, or standing-installation choices. Do not require installation, initialize Git, change global identity/network/default-shell settings, or collect private network data. Preserve stricter preflight and rollback boundaries. Basic note behavior does not require another Skill installation; separate note storage/visibility matters only when a note is actually needed.
 
-The question bank configures adopted rules; it does not determine whether unasked safety rules exist. Reuse runtime defaults in the visible proposal when appropriate, labeling them proposed rather than user-selected. A final approved diff can adopt those disclosed defaults. Without such approval, silence adopts nothing. Resource limits, browser exceptions, and publication permissions must not silently become permissive when questions are skipped.
+## Models and Delegation
 
-## SCOPE-01 - Instruction Scope
+- Resolve: exact exposed IDs/providers, supported reasoning and per-agent controls, actual visual/tool/session access, existing role mappings and permission. Use [model-selection.md](model-selection.md) before recommending choices.
+- Recommend: a small role-based bundle with verified evidence, alternatives, and unknowns. Throughput candidates must be adequate before favoring recent, cheap, fast releases. A capable premium interactive executor can remain outside the primary context. One model may cover several roles; retain valid explicit choices.
+- Decision: offer the relevant researched bundle, retained/default strategy, or custom choice. Resolve subagent permission and unsupported-control fallback without asking users to fill every role individually. Keep simple work local, exploration read-only, writes bounded by ownership, final acceptance with the primary Agent, one-level/conservative delegation, and at most one directed retry with an actual stop boundary unless the user chooses otherwise.
+- Preserve: distinguish capability from tool/environment/permission blockers; coordinate both sides' pace, monitor existing long runs without duplicates, prevent overlapping file/UI operators, and carry pending effects and remaining budgets across handoffs. Direct browser authority remains relevant when delegation is unavailable; disabling agents never lifts an explicit prohibition.
 
-- Requirement: required for every adoption mode.
-- Detect: applicable user-level and project-level instruction files and the requested target.
-- Ask: Which scope and exact target path should receive the adopted runtime rules?
+## Resources and Media
 
-## LANGUAGE-01 - Generated Policy Language
+- Resolve: existing worker/heavy-task limits, responsiveness preferences, server/watcher authority, and relevant visual workflows or supported retention controls.
+- Recommend: conservative heavy-task concurrency when unset; optional numeric limits can remain conditional. Preserve originals, inspect dimensions/file/batch sizes before transfer, send necessary optimized evidence, and avoid base64 echoes. Model input, network payload, and persisted history are separate costs; closing an executor does not prove deletion.
+- Decision: ask for durable numeric or lifecycle preferences only when they affect this configuration. Do not force a permanent media questionnaire for an unrelated workflow. Detail/coordinate fidelity and actual tool limits govern media choices; a deferred number never authorizes unchecked original uploads.
 
-- Requirement: required for every adoption mode.
-- Detect: target language and available localized references.
-- Explain: one runtime language keeps the policy concise; a separate companion translation may aid human review without duplicating runtime instructions.
-- Ask: Which language should the target use, and should a companion translation be maintained?
+## Proactive Interaction
 
-## WORKFLOW-01 - Runtime Preflight
+- Resolve: question/assistance tools, actual mode/input/approval restrictions, observable feature state and version support, and any existing preference. Use [user-interaction.md](user-interaction.md).
+- Recommend: necessary concise questions and visible requests for human help, balanced against interruptions. Offer supported enablement, retaining current behavior, or deferral in the same proposal as other decisions.
+- Decision: reuse a known choice; otherwise ask whether to enable this behavior. Name any `config.toml` key change and required reload separately. A behavioral preference alone does not authorize those operations, expose a tool, guarantee a notification, or confirm user action.
+- Preserve: continue independent work while waiting, hold dependent steps, retain an allowed necessary-clarification channel when optional enablement is declined, and avoid empty/repetitive prompts or progress/apology dialogs. Silence and timeouts are not consent.
 
-- Requirement: full profile, or when changing the startup/notes module.
-- Explain: preflight protects against stale scope, branch, or context, but a small task may not need every check.
-- Ask: In which project-work situations should the Agent confirm Shell, working directory, scope, Git state, instructions, and notes before acting?
+## Conflicts and Write Scope
 
-## SHELL-01 - Primary Shell
-
-- Requirement: full profile or when command generation depends on a preferred shell.
-- Detect: terminal host, active shell/version, installed alternatives, and relevant encoding behavior.
-- Explain: recommend useful alternatives with reasons, compatibility costs, and a keep-current option. On Windows, consider PowerShell 7 after verifying its encoding behavior; do not promise universal Chinese-encoding fixes or change the default shell automatically.
-- Ask: Which shell and version should be preferred for future commands?
-
-## SHELL-02 - Secondary Shell Compatibility
-
-- Requirement: full profile or when cross-shell portability matters.
-- Detect: other available shells.
-- Ask: Which secondary shells, if any, must generated commands support?
-
-## NETWORK-01 - Network and Mirrors
-
-- Requirement: full profile or when downloads/dependency installation are part of adoption.
-- Detect: non-sensitive network facts only.
-- Ask: What region, temporary mirror, proxy, and global-configuration policy should apply?
-
-## RESOURCE-01 - Overall Resource Strategy
-
-- Requirement: full profile or when the user wants persistent resource policy.
-- Detect: available non-sensitive CPU/memory/storage facts when relevant. Treat shared-use or responsiveness preferences as unknown unless the user has stated them.
-- Ask: Should the Agent use performance-first, balanced, conservative, or custom resource behavior?
-
-## RESOURCE-02 - Per-Command Worker Limit
-
-- Requirement: full profile or when persistent worker limits are requested.
-- Ask: What worker limit, or tool-default policy, should apply where commands support it?
-
-## RESOURCE-03 - Simultaneous Heavy Tasks
-
-- Requirement: full profile or when persistent heavy-task limits are requested.
-- Ask: How many heavy build, test, install, or indexing processes may run at once?
-
-## RESOURCE-04 - Background Process Lifecycle
-
-- Requirement: full profile or when the Agent may manage long-running processes.
-- Ask: May the Agent leave servers, watchers, or indexers running, and when must they stop?
-
-## SUBAGENT-01 - Subagent Permission
-
-- Requirement: standard/full when subagents are exposed and the target profile covers delegation.
-- Detect: whether subagent tools are actually available.
-- Ask: May the Agent use subagents, and for which categories of work?
-
-## SUBAGENT-02 - Model and Reasoning Strategy
-
-- Requirement: when selecting or refreshing a model strategy during adoption or requested detailed configuration consultation, including primary-only setups.
-- Detect: actual selectable IDs/providers, reasoning levels, visual/tool/session access, and per-agent overrides.
-- Explain: use [model-selection.md](model-selection.md) for relevant researched recommendations during adoption or requested detailed consultation. Compare release dates, capability, current-provider cost, and speed evidence with sources/date/uncertainty; do not infer aliases or run paid probes without authority. Recent/fast/cheap throughput models must first be adequate; the user selects the final strategy.
-- Ask: Should verified choices be selected for efficiency, quality, a tiered strategy, or the harness default?
-
-## SUBAGENT-03 - Subagent Concurrency
-
-- Requirement: full or explicit delegation profile when subagents are enabled.
-- Ask: What is the maximum number of simultaneously active subagents?
-
-## SUBAGENT-04 - Delegation Depth
-
-- Requirement: full or explicit delegation profile when subagents are enabled.
-- Ask: May subagents create child agents, or may only the primary Agent delegate?
-
-## SUBAGENT-05 - Write and Tool Ownership
-
-- Requirement: when configuring interactive-tool ownership or standard/full delegation, including direct-use policy when subagents are disabled.
-- Explain: authorized roles may own separate file writes, but the primary Agent retains final decisions and acceptance. A stronger interactive model can be an executor. Long/high-output UI work favors viable isolation; short direct work and unavailable-isolation fallbacks need applicable authority. Disabling subagents does not bypass that boundary, and a mutable session has one operator.
-- Ask: Which verified roles may read, browse, write, or handle media, and which bounded primary direct-use exceptions, if any, should be allowed? Keep final acceptance with the primary Agent.
-
-## SUBAGENT-06 - Unsupported Controls
-
-- Requirement: when requested model/reasoning controls may be unavailable in a selected configuration, including primary-only setups.
-- Ask: If a requested control is unavailable, should the Agent disclose and use a permitted harness default, avoid the affected route, or stop and ask?
-
-## SUBAGENT-07 - Delegation Trigger
-
-- Requirement: standard/full when subagents are enabled.
-- Explain: delegation should be driven by material benefit, not ceremonial numeric thresholds. Compare complete-task cost, time, reliability, output volume, and handoff loss. Model level does not determine execution context, and a difficult task need not begin with a weak-model trial.
-- Explain: substantial file exploration can use authorized read-only agents. Long builds/tests can have a monitoring agent while the primary advances independent work; monitor one existing run, respect heavy-task limits, and coordinate blockers and dependencies.
-- Ask: Which task signals justify delegation, and when should the primary Agent proceed alone?
-
-## SUBAGENT-08 - Capability and Role Mapping
-
-- Requirement: full or explicit delegation profile when roles are enabled.
-- Detect: verified models, reasoning levels, visual/browser/write/media access, session constraints, and primary-Agent access; use the researched shortlist from [model-selection.md](model-selection.md) when relevant.
-- Explain: suggested roles are throughput/discovery, ordinary implementation/verification, advanced interactive execution, and high-risk architecture/review. One model may cover several; an executor may be as capable as or more capable than the primary.
-- Ask: For each enabled role, which exact verified model, reasoning level, and tool permissions should apply? Resolve fallback and cost authority separately where needed; a recommendation is not selection.
-
-## SUBAGENT-09 - Retry, Takeover, and Closure
-
-- Requirement: standard/full delegation or when configuring interactive progress/stop limits, including authorized primary-only UI work.
-- Explain: bounded retries protect cost and make takeover explicit. Reassess capability versus tool/environment/permission blockers; takeover does not grant forbidden tool use. Preserve remaining budget and pending effects during handoff, without resetting limits by changing agents.
-- Explain: agree on useful progress/blocker exchanges and both sides' pace, including monitoring long processes. Avoid duplicate work or rapid unchanged polling; integrate evidence before dependent actions.
-- Ask: For delegation, should the default maximum of one directed retry apply? For relevant interactive workflows, what useful-progress or step/time/cost stop boundary is appropriate? Resolve these separately when needed; the primary Agent may reassess sooner and must verify conclusions independently.
-
-## INSTALL-01 - Dependencies and Tools
-
-- Requirement: required when adoption may install a Skill, dependency, or helper.
-- Ask: What may the Agent install automatically, and which sources or scopes require separate approval?
-
-## ENCODING-01 - Unknown Encoding
-
-- Requirement: full profile or when the target contains uncertain legacy text.
-- Ask: Must the Agent stop on unknown encoding, or proceed only after the user specifies it?
-
-## SAFETY-01 - Destructive and Broad Changes
-
-- Requirement: required whenever adoption may modify existing instructions or broad configuration.
-- Ask: Which destructive, broad, or subjective operations always require explicit approval?
-
-## GIT-01 - Publication Authority
-
-- Requirement: full profile, an explicit publication-policy change, or an actual requested forge action. Merely editing a Git-tracked file does not require a publication interview.
-- Ask: Which remote Git and forge actions may occur without a new confirmation, and which always require one?
-
-## GIT-02 - Recovery Point Triggers
-
-- Requirement: full profile or when adopting Git recovery behavior.
-- Detect: Git availability, whether the target is a repository, and current state when applicable.
-- Explain: Git can improve status/diff inspection and scoped recovery; recommending it does not authorize installation, initialization, global identity/configuration, or publication. If declined or unavailable, adapt recovery to verified exact backups.
-- Ask: Which changes and milestones must have a verified recovery point before work continues?
-
-## GIT-03 - Checkpoint Storage and Scope
-
-- Requirement: full profile or when adopting Git recovery behavior.
-- Ask: Should checkpoints prefer task-only commits, external exact backups, or a context-dependent combination, and where may backups be stored?
-
-## GIT-04 - Rollback and Stash Safety
-
-- Requirement: full profile or when adopting Git recovery behavior.
-- Ask: What stash, destructive-command, and rollback restrictions must apply?
-
-## NOTES-01 - Development Note Trigger
-
-- Requirement: standard/full when the notes module is enabled.
-- Ask: When should `$maintain-development-notes` create or update a durable note?
-
-## NOTES-02 - Development Note Visibility
-
-- Requirement: full profile when notes may be committed or shared.
-- Ask: Should notes be committed, private, decided per project, or stored at a custom location?
-
-## NOTES-03 - Read Gate and Refresh Cadence
-
-- Requirement: standard/full when the notes module is enabled.
-- Ask: For which project tasks and at what cadence must the Agent reread applicable instructions and notes?
-
-## MEDIA-01 - Visual Review Transfer Budget
-
-- Requirement: only when visual/media tools or workflows are enabled.
-- Detect: available media tools, transparency/detail needs, source sizes, whether media leaves the machine, and actual screenshot/retention controls.
-- Explain: model input, network payload, and persisted history have separate limits. Isolation/closure does not guarantee smaller requests or history deletion. Preserve necessary image detail and coordinate mappings, and disclose uncontrollable automatic returns.
-- Ask: Which relevant review budget, fidelity, and supported retention preferences should be recorded? Discuss dimensions, format, and batch size only where useful. Retain originals and avoid base64 echoes regardless; do not invent unavailable tool limits or allow raw batch uploads merely because numeric preferences are deferred.
-
-## COMMUNICATION-01 - Response Language and Detail
-
-- Requirement: full profile or when the user wants a reusable communication preference.
-- Explain: distinguish conversation updates from substantive deliverables. Account for the reader's likely expertise, reading order, and entry point; introduce prerequisites, resolve references, and give examples their own context and actual text. Preserve requested voice, legitimate change/test/risk descriptions, and required disclosure. Reuse known audience needs; ask about an artifact-specific audience or style only when it materially affects the result, not as a mandatory new questionnaire.
-- Ask: What response language and default detail level should the Agent use?
-
-## COMMUNICATION-02 - Proactive Questions and Assistance
-
-- Requirement: standard/full when configuring runtime communication, or any mode when the user explicitly asks about proactive interaction. Reuse an existing preference; optional enablement is not a prerequisite for adopting other rules.
-- Detect: available question/reminder tools, supported modes and input, approval restrictions, current feature state, and installed-version support. Tool presence does not prove notification delivery.
-- Explain: use [user-interaction.md](user-interaction.md) for recommendations and Codex's optional configuration example. Necessary questions and assistance can prevent drift, but empty/repetitive prompts interrupt work. Declining optional interaction retains necessary clarification through an allowed channel; configuration writes and restarts need separate authority.
-- Ask: Would you like to enable supported proactive questions and assistance requests during work, keep the current behavior, or defer the choice?
+- Resolve: semantic conflicts, exact diff, encoding/permissions, original hashes, backup/recovery, proposed instruction-chain bytes versus its applicable loading budget, and current operation authority.
+- Recommend: preserve compatible wording, user-owned references, stricter boundaries, and unrelated content. Generate self-contained runtime prose without catalog/question IDs, source bookkeeping, research tables, or installation commentary.
+- Decision: present material conflicts and any missing authority for the concrete result together. Known byte-budget overflow needs a complete smaller merge or an explicitly scoped configuration remedy, not truncation or a silent limit increase. Policy changes, optional feature writes, extra packages, records, restarts, and publication have distinct named scopes that can be decided in one response. Do not repeat authorization for the same unchanged operation, use a clarification tool for prohibited approval collection, or make an optional adoption record a prerequisite.
 
 ## Completion
 
-Before proposing the final diff, summarize selected answers, their sources, skipped modules, and any deferred values with the exact proposed fallback. A full review may list all IDs; a quick review should stay compact. Resolve decisions and conflicts that affect the write. Completing the interview never authorizes writing, installation, publication, or global changes.
+Once relevant choices and conflicts are resolved, use the approved scope to apply and verify changes. Report what was actually written, preserved, checked, and backed up, plus unknown or pending load/acceptance state. No checklist transcript or extra profile file is required.

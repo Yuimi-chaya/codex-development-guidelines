@@ -1,58 +1,40 @@
 ---
 name: adopt-agent-policy
-description: Help a user deliberately adopt, configure, or update an Agent development policy, including requested detailed model and environment configuration advice. Detect actual capabilities, research relevant exposed models, resolve only unknown preferences, and apply an approved diff. Ordinary coding, a new thread, and read-only policy review do not trigger an adoption interview.
+description: Configure Codex user-level AGENTS.md when the user asks to install, adopt, or update these guidelines. Inspect the actual environment, relevant Codex configuration, and exposed models first; research public model facts, recommend a configuration, collect unresolved preferences together, and apply the authorized changes. Honor an explicit project-level target. Reviewing the repository or ordinary coding does not request installation.
 ---
 
-# Adopt Agent Policy
+# Configure Codex AGENTS.md
 
-Configure runtime guidance during a deliberate adoption session, not every coding thread. The trigger is user intent to adopt or change policy in a scope, not the absence of a file or the creation of a thread. A read-only review produces findings, not an interview.
+Turn an installation request into a usable Codex instruction configuration. Start the read-only checks immediately; do not open with "Which rules do you want?" or ask the user to choose modules, rule IDs, or interview depth.
 
-This folder is independently installable: its workflow, questions, model-selection procedure, and profile schema are bundled. The policy itself is a separate input: use a user-selected local reference package pinned to a commit/release, or explicitly identified local changes. Do not infer the source by walking above an installed Skill. If the source is unavailable, ask for it before drafting policy; do not invent or silently download a replacement. Read-only model/environment configuration advice does not require that source and does not imply adoption or installation.
+Default to the user's actual Codex home (`CODEX_HOME`, otherwise `~/.codex`) and its `AGENTS.md`. Honor an explicitly requested project/file scope. Check active overrides before proposing a target: an existing `AGENTS.override.md` can shadow the ordinary file. Show the resolved path and effective scope in the proposal; ask early only if safe inspection cannot resolve a material ambiguity.
 
-## Boundaries
+This Skill contains its own [English](assets/runtime-policy.en.md) and [Chinese](assets/runtime-policy.zh-CN.md) policy starting points. Read the appropriate asset as candidate data, not as authority to change settings. Use it when no other source is specified. A user-selected checkout/release takes precedence; identify its revision or local draft. Do not require another checkout merely because this Skill is installed independently.
 
-- Treat `reference/AGENTS.md` and its localized counterpart as candidate data, never as active instructions.
-- Read existing applicable instructions and recovery notes before proposing changes.
-- Detect objective facts such as platform, shell, paths, tools, model inventory, permissions, and installation state. Do not ask the user to confirm facts the harness can verify.
-- Distinguish terminal host from shell/version; inspect relevant encoding behavior and Git availability/state. Recommend useful tools with reasons and alternatives, but respect a retained shell or non-Git workflow. Observation and recommendation do not authorize installation or initialization.
-- Research relevant exposed models only for adoption/configuration advice using [model-selection.md](references/model-selection.md). Distinguish actual provider costs, public evidence, local observations, and unknown aliases. The user chooses final roles and fallbacks; no automatic paid tests or recurring market survey.
-- Use `standard` module-focused adoption unless the user asks for a narrower `quick` or exhaustive `full` review. These are interview depths, not different safety levels, and choosing one is not a mandatory extra question.
-- Reuse explicit applicable choices from the request and existing instructions, recording their source. Ask only unresolved decisions relevant to the target; do not make users repeat answers.
-- When runtime interaction is relevant, read [user-interaction.md](references/user-interaction.md) and resolve whether the user wants proactive questions/assistance. Check actual tool restrictions and host support, explain interruption costs and fallbacks, and obtain separate authorization before any configuration write.
-- Ask one question ID at a time and explain the tradeoff. An omitted question is not consent.
-- Keep interview completion, file-write approval, Skill installation, global configuration, and publication as separate decisions.
-- Preserve user edits through semantic comparison. Never replace a whole file merely to match the repository wording.
-- Show the final diff, encoding, backup, recovery point, and capability fallbacks before any approved write.
+## Do the work in this order
 
-## Workflow
+1. **Inspect and research.** Read [discovery.md](references/discovery.md) and complete one bounded, read-only pass over the applicable instructions/notes, target files, relevant Codex settings, environment/tools, and actually exposed models. Follow [model-selection.md](references/model-selection.md) to check public release, capability, provider-cost, and speed evidence. Read [user-interaction.md](references/user-interaction.md) when evaluating proactive questions. Reuse explicit current preferences. Complete everything accessible before collecting preferences; disclose unavailable facts without endless probing.
+2. **Recommend and collect decisions together.** Summarize detected facts, preserved choices, recommended settings with reasons/alternatives, and unresolved decisions in one consolidated proposal. Use [interview.md](references/interview.md) as an internal coverage checklist, not a turn-by-turn script. Ask in ordinary language, combine related choices, and respect the input tool's question limit. Only a genuinely answer-dependent decision needs a follow-up. Never ask the user to research facts you can inspect.
+3. **Compose the actual instructions.** Adapt the bundled asset or selected source to the user's choices and existing policy. Merge semantically; retain compatible wording, unrelated content, and stricter local boundaries. Put effective choices in the target itself. Check the proposed instruction chain against the applicable loading byte budget; do not knowingly write a truncated configuration or silently raise the limit. The installed file must work without this Skill, repository, or optional record.
+4. **Preview, apply, verify.** Present the concrete diff, resolved target, encoding, backup/recovery plan, and any remaining limitations. Combine outstanding decisions and write scope into the same review when practical. Apply changes already covered by explicit authority; otherwise obtain the needed approval for the concrete result through a permitted channel. Recheck target hashes, back up original bytes, make the scoped edits, and verify them. See [adoption.md](references/adoption.md) for merge/recovery details or [update.md](references/update.md) for deliberate updates.
 
-1. For first adoption read [adoption.md](references/adoption.md); for deliberate updates read [update.md](references/update.md). For requested model configuration advice, read [model-selection.md](references/model-selection.md); return recommendations without requiring an installation interview. Read only relevant sections of [interview.md](references/interview.md). The remaining steps apply when drafting or changing policy.
-2. Inspect the chosen policy source, current target, applicable instructions, notes, Git state, and actual capabilities without writing.
-3. Reuse known scope, language, and preferences. Ask one unresolved decision at a time, explain the alternatives, and record its provenance.
-4. Compare the source's runtime policy and stable rule catalog with existing instructions. Classify rules as equivalent, compatible, conflicting, not applicable, or missing; keep runtime safeguards separate from interview choices.
-5. Produce a self-contained target policy: adopted behavioral choices must be in the effective instructions, not only in an optional profile. Do not require repository-relative modules to be available in a future coding thread.
-6. Present the exact diff and recovery plan. List Skill installation and optional [profile record](references/profile.md) as separate operations, not implied parts of adoption.
-7. After explicit approval, verify targets have not changed, apply only approved changes, and report verification and remaining uncertainty. Do not claim a restart, installation, or publication occurred without evidence.
+## Output contract
 
-## Runtime-policy reminders
+Generate normal, reader-facing runtime instructions, with descriptive headings and optional ordinary list numbering. **Do not copy catalog rule IDs such as `[CORE-001]` or `[SUB-007]`, question IDs such as `SUBAGENT-02`, module-status tables, source paths/revisions, interview answers, research tables, or installation/drafting commentary into `AGENTS.md`.** Preserve user-owned identifiers or project references that have an actual runtime purpose; do not strip them blindly.
 
-The configured policy should preserve these behavior boundaries when relevant:
+When updating an older adoption that already contains this repository's maintenance tags, include their removal in the proposed diff without changing the associated behavior. Distinguish those tags from the user's own labels; if their purpose is uncertain, resolve it before deleting them.
 
-- The primary Agent remains responsible for integration and acceptance, including delegated writes. Choose interaction method, capable model, context, and budget separately; a premium executor can remain outside the primary thread. Prefer isolation for long/high-output UI work when tool/session access permits; direct work needs applicable authority. Do not require a weak-model trial or per-click primary coaching.
-- Large media is inspected before transfer. For a 4K video or a multi-megabyte screenshot batch, use representative frames, crops, or optimized review copies while retaining originals locally.
-- Subagent conclusions are evidence, not authority. Preserve at most one directed retry by default and a progress/stop boundary; the primary Agent may reassess sooner. Distinguish capability from tool/environment/permission blockers; switching agents does not reset budgets. Keep one operator per mutable UI session and verify uncertain effects before retrying.
-- Keep simple work local; use authorized read-only agents for substantial exploration. Coordinate division of work, dependencies, and both sides' pace. For long builds/tests, assign monitoring of the existing run when supported; do not duplicate the heavy process.
-- Ask necessary questions and request human assistance through available, permitted channels under the user's preference. Continue independent work while waiting, hold dependent steps pending, and avoid empty/repeated prompts or progress/apology dialogs. Declined optional enablement does not remove necessary clarification or approval boundaries.
-- Clear resistance is a decision point. Explain alternatives and ask before unapproved installation, global changes, or expanded authority. Requiring one method is not permission for additional side effects.
-- Deliver supported content in the requested artifact voice, not drafting commentary or placeholders. Establish prerequisites and referents in reading order; examples need visible local scenarios and actual sample text. Review likely direct-entry sections without supplying missing context from the adoption chat. Preserve legitimate change/test/risk descriptions and necessary disclosure. Keep the questionnaire and research tables out of the generated runtime policy.
+For example, a Chinese instruction about delegation can read:
 
-## Completion
+> 简单任务由主代理直接完成。大量文件探索在可用且获准时使用只读子代理；明确分工、证据和停止条件，主代理核验关键结论后负责最终验收。
 
-Finish with a decision record that distinguishes:
+Select exact models only from verified available controls and the user's approved choices. Do not promise unavailable reasoning levels, tools, session sharing, notification delivery, or history deletion. Keep simple tasks local, primary acceptance, bounded retries/stops, single write/UI ownership, media inspection/original retention, and permission boundaries when relevant.
 
-- detected facts;
-- user-selected preferences;
-- rules kept, added, merged, replaced, or omitted;
-- writes or installations separately approved;
-- validation actually run;
-- remaining risks, unknowns, and manual acceptance.
+## Scope and authority
+
+- Installing/configuring these guidelines is distinct from installing this Skill. If the user requests only the Skill package, install only that package. A request to review or develop this repository is not a request to configure the current machine.
+- Reading relevant configuration does not authorize secret disclosure, paid probes, extra tools, global provider/model changes, repository initialization, publication, or a host restart. Recommend optional operations separately and name their exact targets. They can be approved together in one response; do not require a ceremonial confirmation for each already authorized step.
+- Declining a recommendation means adapting to the retained environment. Missing information is unknown, not permission. Use the designated approval mechanism where required; a question tool cannot bypass its own approval restrictions.
+- Ordinary coding and new threads reuse the installed policy. Detailed read-only configuration advice ends at recommendations unless writing is requested. An optional [adoption record](references/profile.md) is created only when requested, never as a prerequisite.
+
+Finish briefly: changed files and effective scope, preserved choices, validation, backup/checkpoint, and anything pending reload or human acceptance. Do not claim installation or configuration loading from a successful source-package check.

@@ -26,15 +26,20 @@ $requiredFiles = @(
     'references/rule-catalog.md', 'references/interview-schema.md',
     'workflows/ADOPT.md', 'workflows/UPDATE.md', 'tests/policy-scenarios.md',
     'tests/artifact-reading-cases.md',
-    'scripts/validate-repository.ps1', 'scripts/test-validator.ps1'
+    'scripts/validate-repository.ps1', 'scripts/test-validator.ps1', 'scripts/sync-policy-assets.ps1'
 )
 $skillNames = @('adopt-agent-policy', 'maintain-development-notes')
 foreach ($name in $skillNames) {
     $requiredFiles += "skills/$name/SKILL.md", "skills/$name/agents/openai.yaml"
 }
-foreach ($name in @('adoption', 'update', 'interview', 'profile', 'model-selection', 'user-interaction')) {
+foreach ($name in @('adoption', 'update', 'interview', 'profile', 'model-selection', 'user-interaction', 'discovery')) {
     $requiredFiles += "skills/adopt-agent-policy/references/$name.md"
 }
+$policyAssets = @(
+    @{ Source = 'reference/AGENTS.md'; Target = 'skills/adopt-agent-policy/assets/runtime-policy.en.md' },
+    @{ Source = 'reference/AGENTS.zh-CN.md'; Target = 'skills/adopt-agent-policy/assets/runtime-policy.zh-CN.md' }
+)
+foreach ($pair in $policyAssets) { $requiredFiles += $pair.Target }
 $requiredFiles += 'skills/maintain-development-notes/references/note-schema.md'
 foreach ($relative in $requiredFiles) {
     if (-not (Test-Path -LiteralPath (Join-Path $rootPath $relative) -PathType Leaf)) {
@@ -176,29 +181,39 @@ if ($referenceSequences['reference/AGENTS.md'] -ne $referenceSequences['referenc
     Add-Failure 'BILINGUAL_PARITY' 'Active IDs must appear in the same order in both reference languages'
 }
 
-$questionIds = @(
-    'SCOPE-01', 'LANGUAGE-01', 'WORKFLOW-01', 'SHELL-01', 'SHELL-02', 'NETWORK-01',
-    'RESOURCE-01', 'RESOURCE-02', 'RESOURCE-03', 'RESOURCE-04',
-    'SUBAGENT-01', 'SUBAGENT-02', 'SUBAGENT-03', 'SUBAGENT-04', 'SUBAGENT-05',
-    'SUBAGENT-06', 'SUBAGENT-07', 'SUBAGENT-08', 'SUBAGENT-09',
-    'INSTALL-01', 'ENCODING-01', 'SAFETY-01', 'GIT-01', 'GIT-02', 'GIT-03', 'GIT-04',
-    'NOTES-01', 'NOTES-02', 'NOTES-03', 'MEDIA-01', 'COMMUNICATION-01', 'COMMUNICATION-02'
-)
-$interview = [string]$texts['skills/adopt-agent-policy/references/interview.md']
-$questions = @{}
-foreach ($section in [regex]::Matches($interview, '(?ms)^## (?<id>[A-Z]+-\d{2}) - [^\n]+\n(?<body>.*?)(?=^## |\z)')) {
-    $id = $section.Groups['id'].Value
-    if ($questions.ContainsKey($id)) { Add-Failure 'QUESTION_DUPLICATE' $id }
-    $questions[$id] = $true
-    if ($section.Groups['body'].Value -notmatch '(?m)^- Requirement: .+' -or
-        $section.Groups['body'].Value -notmatch '(?m)^- Ask: .+') {
-        Add-Failure 'QUESTION_SHAPE' "$id needs applicability and a decision prompt"
+# Runtime assets are installable data, while tagged references remain authoring sources.
+foreach ($pair in $policyAssets) {
+    if (-not $texts.ContainsKey($pair.Source) -or -not $texts.ContainsKey($pair.Target)) { continue }
+    $asset = [string]$texts[$pair.Target]
+    if ($asset -match '\b[A-Z]+-\d{2,3}\b') {
+        Add-Failure 'ASSET_METADATA' "$($pair.Target) contains a maintenance identifier"
+    }
+    $expected = [regex]::Replace([string]$texts[$pair.Source], '(?m)^(\d+\. )(?:\[[A-Z]+-\d{3}\] )+', '$1')
+    if (-not [string]::Equals($asset, $expected, [System.StringComparison]::Ordinal)) {
+        Add-Failure 'ASSET_DRIFT' "$($pair.Target) differs from its source behavior; regenerate policy assets"
     }
 }
-foreach ($id in $questionIds) {
-    if (-not $questions.ContainsKey($id)) { Add-Failure 'QUESTION_MISSING' $id }
+
+$decisionTopics = @(
+    'Scope and Language', 'Environment and Recovery', 'Models and Delegation',
+    'Resources and Media', 'Proactive Interaction', 'Conflicts and Write Scope'
+)
+$interview = [string]$texts['skills/adopt-agent-policy/references/interview.md']
+$decisions = @{}
+foreach ($section in [regex]::Matches($interview, '(?ms)^## (?<topic>[^\n]+)\n(?<body>.*?)(?=^## |\z)')) {
+    $topic = $section.Groups['topic'].Value
+    if ($topic -eq 'Completion') { continue }
+    if ($decisions.ContainsKey($topic)) { Add-Failure 'DECISION_DUPLICATE' $topic }
+    $decisions[$topic] = $true
+    foreach ($field in @('Resolve', 'Recommend', 'Decision')) {
+        if ($section.Groups['body'].Value -notmatch "(?m)^- ${field}: .+") {
+            Add-Failure 'DECISION_SHAPE' "$topic needs $field guidance"
+        }
+    }
 }
-if ($questions.ContainsKey('PLATFORM-01')) { Add-Failure 'FACT_INTERVIEW' 'Detect platform instead of asking for confirmation' }
+foreach ($topic in $decisionTopics) {
+    if (-not $decisions.ContainsKey($topic)) { Add-Failure 'DECISION_MISSING' $topic }
+}
 
 # Check the simple scalar metadata used by this package, not arbitrary YAML syntax.
 foreach ($name in $skillNames) {
@@ -232,8 +247,8 @@ if ($failures.Count -gt 0) {
 $result = [pscustomobject]@{
     TextFiles = $files.Count
     ActiveRules = $referenceMaps['reference/AGENTS.md'].Count
-    Questions = $questions.Count
+    DecisionTopics = $decisions.Count
     Skills = $skillNames.Count
 }
 if ($PassThru) { $result }
-else { Write-Host "Repository validation passed ($($result.TextFiles) text files, $($result.ActiveRules) active IDs, $($result.Questions) question topics, $($result.Skills) Skills)." }
+else { Write-Host "Repository validation passed ($($result.TextFiles) text files, $($result.ActiveRules) active IDs, $($result.DecisionTopics) decision groups, $($result.Skills) Skills)." }

@@ -1,14 +1,16 @@
-# Agent Development Guidelines
+# Codex AGENTS.md Development Guidelines
 
 [简体中文](README.zh-CN.md)
 
-A portable development-policy reference for coding Agents, plus a separate first-adoption Skill.
+Development guidelines for Codex user-level `AGENTS.md`. Generate usable instructions from the actual environment, existing configuration, and user preferences, honoring an explicitly requested project scope. The behavioral principles can inform other Agents; the configuration workflow targets Codex.
 
 The central design rule is:
 
-> The runtime policy governs how an Agent behaves during work. The installation interview Skill determines how to configure that policy for the user and their environment. Its behavioral principles are not tied to a particular model provider, operating system, or Agent product; they start with the actual environment and the user's preferences.
+> Inspect discoverable facts first, recommend with evidence, collect unresolved preferences together, and let the user decide. Adapt the rules to the user rather than requiring the maintainer's models, tools, or working habits.
 
-First-time installation includes an interview through [`adopt-agent-policy`](skills/adopt-agent-policy/SKILL.md). This flow starts only when the user intends to adopt the policy or change its configuration after installation. Installation does not blindly overwrite an existing `AGENTS.md`.
+When asked to install these guidelines, [`adopt-agent-policy`](skills/adopt-agent-policy/SKILL.md) first inspects the environment, relevant Codex settings, and exposed models, checks public sources, then presents recommendations and outstanding decisions together. Users need not pick rules, select interview modes, or answer numbered topics individually. Existing choices are reused and existing `AGENTS.md` content is merged semantically.
+
+The default target is `AGENTS.md` in the actual Codex home: `CODEX_HOME`, otherwise `~/.codex`. Check whether `AGENTS.override.md` shadows the ordinary file and show the exact target, diff, and recovery plan before writing. Installing only the Skill package, reviewing the repository, or developing it does not authorize local configuration changes.
 
 ## Why this repository exists
 
@@ -26,7 +28,7 @@ This repository separates those concerns:
 | Layer | Responsibility | Typical lifetime |
 |---|---|---|
 | Runtime `AGENTS.md` | Behavior during active work: scope, ownership, safety, delegation, tools, recovery, truthful reporting | Every relevant task |
-| `adopt-agent-policy` Skill | First adoption and deliberate configuration updates | During an adoption/update session |
+| `adopt-agent-policy` Skill | Inspect and research, recommend, collect choices, merge, and verify | During an installation/update session |
 | Adopted user/project instructions | Effective choices: language, shell, delegation, resources, and scoped authority | Until changed or no longer applicable |
 | Optional adoption record | Provenance and decisions for future review, not a runtime loader | Until updated or removed |
 | Runtime facts | Current shell, path, tool inventory, model availability, permissions, and hardware | Current session or task |
@@ -34,13 +36,15 @@ This repository separates those concerns:
 
 ## Repository contents
 
-- [`reference/AGENTS.md`](reference/AGENTS.md): canonical English runtime baseline.
-- [`reference/AGENTS.zh-CN.md`](reference/AGENTS.zh-CN.md): semantically equivalent Simplified Chinese baseline.
-- [`skills/adopt-agent-policy/SKILL.md`](skills/adopt-agent-policy/SKILL.md): first-adoption and update Skill with all workflow references bundled.
+- [`reference/AGENTS.md`](reference/AGENTS.md): tagged English authoring source for review, maintenance, and version comparison.
+- [`reference/AGENTS.zh-CN.md`](reference/AGENTS.zh-CN.md): semantically equivalent Simplified Chinese source.
+- [`skills/adopt-agent-policy/assets/`](skills/adopt-agent-policy/assets/): bilingual installation starting points without maintenance IDs, to adapt and merge.
+- [`skills/adopt-agent-policy/SKILL.md`](skills/adopt-agent-policy/SKILL.md): Codex instruction configuration Skill with bundled workflows and clean bilingual policy assets; usable without a separate checkout.
 - [`skills/maintain-development-notes`](skills/maintain-development-notes): reads relevant project memory before acting and maintains durable notes when complexity justifies them.
 - [`workflows/ADOPT.md`](workflows/ADOPT.md): detailed first-adoption workflow.
 - [`workflows/UPDATE.md`](workflows/UPDATE.md): deliberate policy or Skill update workflow.
-- [`references/interview-schema.md`](references/interview-schema.md): configurable interview questions and `quick`/`standard`/`full` modes.
+- [`references/interview-schema.md`](references/interview-schema.md): internal decision checklist, not a sequential interview script.
+- [`skills/adopt-agent-policy/references/discovery.md`](skills/adopt-agent-policy/references/discovery.md): read-only discovery of configuration scope, overrides, models, environment, and relevant settings.
 - [`skills/adopt-agent-policy/references/model-selection.md`](skills/adopt-agent-policy/references/model-selection.md): adoption-time model research, evidence fields, role recommendations, and user selection.
 - [`references/rule-catalog.md`](references/rule-catalog.md): stable IDs, modules, activation conditions, and adoption requirements.
 - [`examples/`](examples/): concrete environment-specific profiles, never universal defaults.
@@ -241,7 +245,7 @@ The following choices can belong in the effective `AGENTS.md` once approved. Wha
 - response language and detail preference.
 - proactive-question/assistance enablement, supported channels, and interruption preferences.
 
-`adopt-agent-policy` merges applicable approved choices into the actual user/project instructions. An optional [adoption record](skills/adopt-agent-policy/references/profile.md) can retain provenance for upgrades, but there is no automatic profile loader. Ordinary work must still succeed without that record or this repository.
+`adopt-agent-policy` merges applicable approved choices into the actual user/project instructions. An optional [adoption record](skills/adopt-agent-policy/references/profile.md) retains provenance when requested; it is not created by default and has no automatic loader. Ordinary work must still succeed without that record or this repository.
 
 Reuse explicit preferences already supplied by the user. Unknown optional values may remain conditional with a disclosed fallback; no missing answer implies consent to an install, upload, publication, or new permission.
 
@@ -249,7 +253,7 @@ Reuse explicit preferences already supplied by the user. Unknown optional values
 
 ### Whether to enable proactive questions
 
-During initial configuration or a deliberate communication update, detect actual interaction tools and mode restrictions, explain timely alignment versus interruption costs, and ask whether to enable proactive questions, keep current behavior, or defer. Ordinary threads reuse the choice. Declining optional enablement does not permit guessing important answers.
+During initial configuration or a deliberate communication update, detect interaction tools and mode restrictions, then include proactive questions, keep-current behavior, or deferral in the consolidated recommendation. Explain timely alignment versus interruption costs. Ordinary threads reuse the choice. Declining optional enablement does not permit guessing important answers.
 
 For a Codex version supporting the feature, propose:
 
@@ -264,7 +268,7 @@ The example and motivation come from the [maintainer's usage note](https://x.com
 
 ### Research exposed models during configuration
 
-Model research belongs to first adoption when relevant, requested detailed configuration advice, or a deliberate refresh. Ordinary threads reuse approved choices; they do not re-rank the market at startup. A read-only consultation can stop at recommendations without drafting policy or installing anything.
+An installation request starts proactive inspection of the exposed model inventory and relevant public evidence before recommendations; retain existing valid mappings. Requested detailed configuration advice and deliberate refreshes can also include research. Ordinary threads reuse approved choices rather than re-ranking the market at startup. A read-only consultation can stop at recommendations without drafting policy or installing anything.
 
 Start with the exact IDs and providers exposed by the user's harness, including actual reasoning, visual, tool, and per-agent controls. Search and read official public release/model documentation and relevant provider pricing. A provider alias needs evidence of its identity; do not infer a backend from its name or search private deployment identifiers. Mark unavailable information unknown.
 
@@ -278,7 +282,7 @@ Present a relevant shortlist with these fields:
 | Speed | First-token latency, output throughput, complete-task observations, and measurement conditions |
 | Recommendation | Role fit, tradeoffs, alternative, confidence, source, and check date |
 
-Suggested roles are throughput/discovery, ordinary implementation/verification, advanced interactive execution, and high-risk architecture/review. After acceptable capability and reliability are established, prefer recent, fast, low-cost throughput candidates; recency is not a ban on an older better fit. Interactive execution may deliberately use an expensive model outside the primary context.
+Suggested roles are throughput/discovery, ordinary implementation/verification, advanced interactive execution, and high-risk architecture/review. After acceptable capability and reliability are established, prefer recent, fast, low-cost throughput candidates; recency is not a ban on an older better fit. Interactive execution may deliberately use an expensive model; long workflows favor a viable authorized independent context, while short direct work retains its applicable permission boundary.
 
 The user makes the final selection and fallback decision. Do not silently substitute recommendations, pay for benchmark calls, install test dependencies, or persist unapproved mappings. If research access or comparable measurements are unavailable, disclose the limits. Keep volatile tables out of runtime instructions; only approved operational choices belong there. See the [bundled model-selection procedure](skills/adopt-agent-policy/references/model-selection.md).
 
@@ -290,42 +294,55 @@ On Windows, PowerShell 7 may be recommended for more consistent UTF-8 defaults a
 
 Explain benefits, compatibility costs, source/version for proposed installations, scope, risks, recovery, and the keep-current alternative. A user may retain the current shell or non-Git workflow: adapt commands and use verified exact backups. Do not automatically install Git, initialize a repository, set global identity/configuration, change the default shell, or publish. The [environment module](references/modules/environment.md) provides examples.
 
-## Adoption modes
+## Inspect first, then ask
 
-`adopt-agent-policy` supports three interview depths. Standard is the module-focused default; the user can request quick or full without another mandatory mode-selection question.
+There is one configuration flow, with depth determined by the actual request. Complete accessible read-only checks before collecting preferences; no preliminary choice of modes or modules is required.
 
-### Quick
+| Inspect proactively | Recommendation it supports |
+|---|---|
+| Actual Codex home, existing instructions, overrides, and relevant settings | Exact target, preserved local rules, shadowing, and conflicts |
+| Active shell/version, relevant encoding behavior, Git, and installed tools | Workable current-environment behavior, optional improvements, costs, and keep-current alternatives |
+| Exposed models and supported controls | Role/model suggestions after checking release, capability, provider-price, and speed evidence |
+| Question tools, mode restrictions, and observable feature state | Necessary proactive interaction and an allowed fallback |
+| File encoding, line endings, permissions, hash, recovery, and applicable instruction-chain budget | Minimal diff, backup, and whether the merged instructions would be truncated |
 
-For a local first use or a small project. It confirms the target scope, policy language, immediate permissions, and only the modules needed for the current adoption.
+Extract only relevant configuration fields. Do not dump `config.toml`, read authentication files, or send keys, private endpoints, or deployment identifiers to search engines. If inventory, speed, or price evidence is unavailable, mark it unknown, finish other checks, and offer a limited recommendation without endless probes or invented data.
 
-Example: the user wants to place a runtime baseline in one repository. The Skill may inspect the repository, ask which `AGENTS.md` should be changed, compare the existing file, and ask separately for write approval. It should not ask for a permanent media budget if this repository has no media workflow.
+A successful write does not prove every instruction loads. Before merging, check the contributing chain's bytes against the installed version's effective limits, including `project_doc_max_bytes` where relevant. Resolve known overflow with a deduplicated/smaller complete policy or a specifically authorized configuration change. Do not silently truncate, remove user content, or raise the limit. If loading completeness cannot be checked, report it as unverified.
 
-### Standard
+Then present detected facts, reused choices, recommendations with reasons, and only the decisions the user must make: model strategy, proactive questions, resource preferences, or actual rule conflicts. Respect question-tool limits. Follow up only when an answer introduces a real dependency or conflict. Optional numeric limits can use a disclosed conservative fallback without a question for every checklist entry.
 
-For a reusable project profile. It asks about enabled modules such as Git recovery, durable notes, delegation, resources, or publication.
+For example, suppose discovery finds Windows with PowerShell 5.1, no Git, and no instruction override conflict. The user already requested Chinese, the current default model, and no automatic installations. Preserve those choices, explain the optional benefits of PowerShell 7 and Git in the same proposal, continue adapting to the existing environment, and resolve only outstanding interaction preferences and concrete file changes. Do not ask for language again, require rule selection, or make tool installation a prerequisite.
 
-### Full
+The proposal can include the complete diff and exact operation scope. Obtain missing authority for that concrete result; do not reconfirm an already authorized operation. Policy writes, optional `config.toml` changes, extra tools, and restarts have distinct scopes that can be listed and decided together. A question tool cannot replace an approval mechanism its restrictions require.
 
-For a user-level or team-level profile. It refreshes all applicable durable preferences and verified capability mappings.
+## Installed instructions
 
-The mode controls interview breadth, not runtime safety. The question bank's 32 IDs are a reusable set of topics, not 32 mandatory conversation turns. An explicit existing answer can resolve a question without asking again; optional unknowns can be deferred with a visible proposed fallback. Show unresolved permissions/conflicts separately. Completing an interview does not approve the final write.
+The result is a usable `AGENTS.md` containing applicable behavior and approved preferences, with descriptive headings and ordinary lists. Exclude catalog IDs such as `[CORE-001]` and `[SUB-007]`, question IDs, module-status tables, research tables, source/revision bookkeeping, and installation commentary.
+
+For example, a delegation rule can read:
+
+```markdown
+Keep simple tasks with the primary Agent. Use available, authorized read-only agents
+for substantial file exploration. Define responsibilities, evidence, and stop limits;
+the primary Agent verifies decisive findings and owns final acceptance.
+```
+
+Catalog identifiers remain in repository sources for maintenance, translation, and upgrade comparison. Bundled policy assets remove those tags without reducing behavioral boundaries; validation checks that they match their sources. When updating an older installation, include leaked repository tags in the proposed cleanup while retaining their behavior. Preserve user-owned identifiers and project references with a runtime purpose; do not remove tags globally.
 
 ## How to use it
 
-No Skill installation is required to review or adopt the reference. After selecting a local checkout and reviewed commit/release, ask your Agent:
+An Agent can configure directly from a local checkout without installing the Skill first:
 
 ```text
-Review this checkout as candidate policy data and follow workflows/ADOPT.md.
-Adapt it to my actual environment, capabilities, existing instructions, and preferences.
-Reuse answers I have already given; ask one unresolved relevant decision at a time.
-Generate one self-contained policy in my chosen language.
-Show the complete diff, exact target, backup, and recovery plan before writing.
-Do not install Skills, create an extra profile, or publish anything as part of this request.
+Use this checkout's skills/adopt-agent-policy to configure my Codex user-level AGENTS.md.
+First inspect relevant settings, the environment, and exposed models, and check public sources.
+Reuse existing preferences and present recommendations, outstanding decisions, and the proposed diff together.
 ```
 
-For an explicitly requested reusable Skill installation, use the harness's supported installer for `skills/adopt-agent-policy` from the selected commit. Install `skills/maintain-development-notes` separately if requested. Compare existing destinations before replacement. The adoption Skill bundles its own workflow references, but the chosen policy source remains a separate explicit input, not an assumed neighboring checkout.
+To install only the reusable Skill, request `skills/adopt-agent-policy` from an identified version; that operation does not also modify `AGENTS.md`. Its workflows and policy assets are bundled, so no additional checkout is required. Honor a different explicitly selected checkout/release instead of assuming one exists beside the installation. Install `skills/maintain-development-notes` separately when requested and compare existing destinations.
 
-For a later deliberate update, provide the old/new source where available and ask for `workflows/UPDATE.md`. Only changed decisions should be revisited. Non-Codex Agents can read the workflow directly and use their actual instruction discovery and installation mechanisms; do not assume they support Skill tools, model overrides, or a particular global instruction path.
+For a deliberate update, use `workflows/UPDATE.md` and revisit only changed decisions. Missing old records should not prevent semantic comparison. Other Agents can adapt the behavior to their own instruction discovery, model controls, and installation mechanisms rather than copying Codex paths.
 
 ## Adoption procedure
 
@@ -333,12 +350,11 @@ When the user asks to adopt this repository:
 
 1. Read the applicable user/project instructions and recovery notes.
 2. Detect the environment and actual harness capabilities without asking the user to confirm objective facts.
-3. Use a suitable adoption depth, honoring a requested quick or full review; provide relevant model/environment recommendations with evidence and alternatives.
-4. Reuse existing answers and ask only unresolved applicable questions, one ID at a time.
-5. Compare the target instructions semantically; preserve local wording and user edits where possible.
-6. Show the proposed runtime diff, profile changes, target encoding, backup, recovery point, and capability fallbacks.
-7. Obtain separate approval for each write, Skill installation, global configuration change, or publication action.
-8. Apply only approved changes and verify their hashes, diff, permissions, and relevant tests.
+3. Check relevant public model evidence and prepare recommendations with alternatives and unknowns.
+4. Reuse existing answers and collect unresolved preferences/conflicts together.
+5. Merge semantically, preserve local changes, and generate self-contained instructions without maintenance IDs.
+6. Show the concrete diff, exact scope, encoding, backup, recovery, and fallbacks; resolve missing authority.
+7. Apply only authorized changes, verify hashes, diff, overrides, and actual prose, and report write/load state.
 
 See [`workflows/ADOPT.md`](workflows/ADOPT.md) for the detailed contract.
 
@@ -347,7 +363,7 @@ See [`workflows/ADOPT.md`](workflows/ADOPT.md) for the detailed contract.
 | Situation | Runtime behavior | Adoption behavior |
 |---|---|---|
 | New ordinary coding thread | Use the existing runtime policy and current facts | Do not start the interview |
-| First installation in a repository | Inspect, compare, ask only unresolved configuration questions | Use `adopt-agent-policy` or the workflow directly |
+| First guideline installation | Finish relevant configuration, environment, and model checks first | Recommend a complete configuration, collect unresolved choices, default to user-level scope |
 | Primary Agent has browser access | Prefer an authorized execution role when available | Configure role mapping only if the user wants a reusable delegation profile |
 | 4K video frame is 14 MB | Inspect and create a smaller review transfer; retain original | Ask for a persistent media budget only when media workflows are part of the profile |
 | Subagent returns an uncertain diagnosis | Review evidence, issue a bounded retry, then take over if needed | Configure retry preferences only in a reusable delegation profile |
@@ -362,11 +378,11 @@ See [`workflows/ADOPT.md`](workflows/ADOPT.md) for the detailed contract.
 | User declines PowerShell 7 or Git | Adapt to the retained environment and suitable backups | No forced installation or repeated persuasion |
 | README draft relies on the previous chat or unexplained references | Supply necessary context and actual content; check facts and references in reading order | No configuration interview for ordinary writing review |
 
-Interaction boundary cases: reuse an existing choice without re-asking; preserve an allowed necessary-clarification channel when enablement is deferred; verify a requested window is open before dependent work; monitor an existing build without restarting it. Resolve configuration preference separately from authorization to write or restart.
+Interaction boundary cases: reuse existing choices; preserve an allowed clarification channel when enablement is deferred; verify a requested window before dependent work; monitor an existing build without restarting it. Keep preference, write, and restart authority explicit; they can be resolved together.
 
 ## Language and localization
 
-The English and Simplified Chinese reference policies carry the same stable rule IDs and should remain behaviorally equivalent. A target project should normally install one runtime language. A companion translation may be maintained for human review, but duplicating both full policies in one runtime file increases context use and creates translation-drift risk.
+English and Simplified Chinese sources share stable IDs and should remain behaviorally equivalent; installed instructions omit those maintenance IDs. Normally install one runtime language. A companion translation may aid human review, but duplicating both full policies in one file increases context use and translation-drift risk.
 
 ## Validation
 
@@ -377,7 +393,9 @@ pwsh -NoProfile -File ".\scripts\validate-repository.ps1"
 pwsh -NoProfile -File ".\scripts\test-validator.ps1"
 ```
 
-Validation uses the existing PowerShell toolchain, not a requirement that adopting users switch shells. The validator checks text encoding, local links, stable-ID/catalog relations, module references, question coverage, Skill metadata, and installable-folder boundaries. The regression tests exercise malformed packages in temporary copies and do not install anything. Neither proves semantic equivalence or Agent behavior.
+Validation uses the repository's PowerShell toolchain without requiring adopting users to switch shells. It checks encoding, links, source/catalog relations, decision-checklist coverage, Skill metadata, clean policy assets, and source/asset consistency. Regression tests mutate temporary packages without installing anything. Neither proves semantic equivalence or Agent workflow behavior.
+
+After changing bilingual policy sources, maintainers run `pwsh -NoProfile -File ".\scripts\sync-policy-assets.ps1" -Write`, then the checks above. This updates repository assets only; it does not install or modify a user's `AGENTS.md`.
 
 Use [review scenarios](tests/policy-scenarios.md) for a separate behavior-oriented walkthrough or a future isolated forward test. Record which actually ran; do not call a primary-Agent walkthrough an independent execution test.
 
@@ -385,7 +403,7 @@ For prose review, [reading cases](tests/artifact-reading-cases.md) provide compl
 
 ## Status and publication
 
-This repository is a reference package. Adoption is a local user decision. Do not push, open a pull request, merge, release, install, or modify a user's existing `AGENTS.md` merely because the repository contains a newer file. The source repository should be pinned to a reviewed commit or release, and local changes should remain recoverable.
+This repository provides configuration-level guidance; installation and tradeoffs remain the user's decisions. A newer source file does not authorize a push, PR, merge, release, installation, or overwrite of existing instructions. Use an identifiable package/source version and keep local changes recoverable.
 
 ## License
 

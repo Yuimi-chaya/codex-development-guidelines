@@ -1,6 +1,8 @@
 # Stable Rule Catalog
 
-IDs identify behavior rather than exact wording or position. Keep active IDs in both reference languages; preserve deprecated IDs for upgrade comparison without including them in generated runtime policy. Renumbering paragraphs is allowed; changing an ID's meaning requires an explicit migration note.
+IDs identify behavior rather than exact wording or position. Keep active IDs in both reference languages and preserve deprecated IDs for source comparison. All catalog IDs are maintenance metadata: neither active nor deprecated IDs belong in a generated `AGENTS.md`. Ordinary paragraph numbering is allowed; changing an ID's meaning requires an explicit migration note.
+
+The installable Skill bundles clean runtime assets generated from both references by `scripts/sync-policy-assets.ps1 -Write`. The generator removes only rule-prefix tags and preserves behavioral text. Source updates must refresh those assets; package validation checks their consistency. Customized installed policies are compared semantically and do not need IDs or this catalog.
 
 | ID | Rule | Module | Status | Trigger | Behavior |
 |---|---:|---|---|---|---|

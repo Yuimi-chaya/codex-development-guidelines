@@ -4,7 +4,7 @@ This is a small, optional provenance record for later updates. It is not an exec
 
 ## Contents and ownership
 
-Before creating a record, agree on its exact location, visibility, and write scope. It may be private or repository-owned at the user's choice; creating it is separate from policy adoption. Do not persist a transcript, credentials, private network details, unnecessary hardware inventories, or concrete model mappings the user did not request to save.
+Do not create this record by default or ask about it as a prerequisite. If requested, resolve its location, visibility, and write scope in the same configuration proposal. It may be private or repository-owned. Do not persist a transcript, credentials, private network details, unnecessary hardware inventories, or unapproved model mappings.
 
 Useful fields:
 
@@ -14,7 +14,7 @@ Useful fields:
 | Source | Selected repository/path and commit/release; mark uncommitted draft explicitly |
 | Language | Runtime language and any separately maintained companion |
 | Modules | Adopted, conditional, or omitted, with reasons |
-| Decisions | Question ID, value, provenance, scope, and whether explicit or proposed-and-approved |
+| Decisions | Value, provenance, scope, and whether explicit or proposed-and-approved; maintenance IDs may be used here when useful, never required in runtime instructions |
 | Deferred values | Why unknown; exact adopted conditional fallback, without implied permission |
 | Model research, if requested | Exact exposed identity/provider, evidence sources and check date, uncertainty, approved mapping/fallback; distinguish research from selection |
 | Interactive execution | Approved tool/model/context choices, direct-use authority, progress/stop budget, supported media/retention controls and unknowns |
@@ -31,8 +31,8 @@ An illustrative record might state:
 Scope: project
 Target: AGENTS.md
 Source: user-selected local policy checkout, reviewed commit recorded at adoption
-LANGUAGE-01: Simplified Chinese; explicit in the adoption request
-SUBAGENT-01: disabled; existing project instruction, unchanged
+Language: Simplified Chinese; explicit in the adoption request
+Delegation: disabled; existing project instruction, unchanged
 Browser route: structured tool where allowed; otherwise ask for a scoped exception
 Media numeric budget: deferred; inspect size, keep originals, send small review copies
 Writes: policy diff approved; Skill installation not requested

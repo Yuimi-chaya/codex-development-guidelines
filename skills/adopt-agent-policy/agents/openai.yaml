@@ -1,7 +1,7 @@
 interface:
-  display_name: "Adopt Agent Policy"
-  short_description: "Configure Agent policy once, not every thread"
-  default_prompt: "Use $adopt-agent-policy to configure this policy for my environment, reuse known preferences, and show the proposed diff before writing."
+  display_name: "Configure Codex AGENTS.md"
+  short_description: "Inspect first, then recommend Codex instructions"
+  default_prompt: "Use $adopt-agent-policy to configure my Codex AGENTS.md: inspect my environment, relevant settings, and exposed models first, then present recommendations, unresolved choices, and the proposed diff together."
 
 policy:
   allow_implicit_invocation: true

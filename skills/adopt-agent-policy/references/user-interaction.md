@@ -8,7 +8,7 @@ Check which question or reminder tools the current environment exposes, their su
 
 Explain the tradeoff: timely questions can prevent a long task from drifting and make requests for human help visible, but unnecessary prompts interrupt other work. Offer enabling necessary proactive questions/assistance, retaining the current behavior, or deferring the decision. Reuse a stated preference; record unsupported capabilities as such rather than promising them.
 
-Resolve `COMMUNICATION-02` from [interview.md](interview.md). Optional enablement is not consent to write configuration, and declining it does not authorize guessing important facts or bypassing approvals. If declined or unsupported, preserve clear necessary questions through an allowed channel and hold dependent work pending.
+Include the unresolved interaction choice in the consolidated proposal, using the [decision checklist](interview.md) internally. Name any feature write as a distinct operation that can be decided in the same review. Optional enablement is not implicit authority to change configuration, and declining it does not authorize guessing important facts or bypassing approvals. If declined or unsupported, preserve necessary questions through an allowed channel and hold dependent work pending.
 
 ## Runtime behavior to adopt
 

@@ -2,8 +2,13 @@
 
 ## Unreleased
 
+- Define the configuration workflow around Codex user-level `AGENTS.md`, honoring explicit project targets, actual Codex home, and instruction overrides.
+- Replace mode selection and 32 individually prompted topics with proactive read-only discovery, relevant model research, a compact decision checklist, and a consolidated recommendation. Preserve choices and authorization without repetitive confirmations.
+- Bundle bilingual runtime assets so the independently installed Skill can configure instructions without an additional checkout. Remove maintenance IDs and adoption commentary from generated policy; keep catalog IDs in authoring sources.
+- Validate clean assets against source behavior, add packaging regressions, and update bilingual README guidance and configuration scenarios.
+- Check the proposed instruction chain against applicable byte-loading limits; resolve known overflow without silent truncation, content loss, or configuration-limit changes.
 - Add bilingual `COMM-002` for necessary runtime questions and assistance, independent work while awaiting input, confirmation before dependent steps, and no empty/repetitive or progress/apology dialogs.
-- Add optional proactive-interaction preference `COMMUNICATION-02` and a bundled capability-aware procedure with a sourced Codex configuration example, user-selected fallback, and separate configuration/restart authority.
+- Add optional proactive-interaction configuration and a bundled capability-aware procedure with a sourced Codex configuration example, user-selected fallback, and separate configuration/restart authority.
 - Simplify delegation guidance while preserving stable IDs and safety boundaries; make read-only exploration, work division, coordinated pace, and monitoring an existing long build/test explicit.
 - Extend bilingual README guidance, configuration provenance, structural regression checks, and semantic interaction/coordination cases.
 - Strengthen `ARTIFACT-001` to require substantive, supported content rather than drafting instructions or placeholders, and add `ARTIFACT-002` for reading-order prerequisites, clear references, and local example context.
@@ -17,8 +22,8 @@
 - Add `ARTIFACT-001` for reader-appropriate deliverables without unrequested drafting commentary; preserve requested voice, legitimate change/test/risk context, and required disclosure.
 - Expand bilingual rationale and semantic scenarios; validate the bundled model-selection resource and new stable ID without freezing wording or paragraph counts.
 - Separate runtime guidance, modular rationale, and first-adoption configuration. Ordinary threads and read-only reviews do not start the adoption interview.
-- Add the independently installable `adopt-agent-policy` Skill, with bundled adoption/update workflows, a reusable question bank, and an optional non-authoritative provenance record.
-- Reuse explicit preferences rather than asking them again. Quick/standard/full describe interview depth, not weaker or stronger safety profiles.
+- Add the independently installable `adopt-agent-policy` Skill, with bundled workflows, a decision checklist, and an optional non-authoritative provenance record.
+- Reuse explicit preferences rather than asking them again; configuration depth follows the actual request without a mandatory mode selection.
 - Add dedicated browser-routing, environment-resistance, and verification rules while retaining existing stable IDs and the default one-directed-retry boundary.
 - Keep direct-browser fallback and new installations within actual authorization; unavailable subagents or a user-required method do not grant extra permissions.
 - Expand bilingual README guidance and six rationale modules with boundaries, examples, transfer/process costs, recovery completeness, and adoption procedures.

@@ -1,10 +1,10 @@
 # Model Research and User-Selected Roles
 
-Use during deliberate adoption when model recommendations are relevant, a requested detailed model/configuration consultation, or an intentional refresh. Do not run a market survey in every coding thread. A consultation may remain read-only and does not require a policy source unless the user also wants a policy draft. Recommendation, selection, policy writing, benchmarking, and installation are separate decisions.
+On an installation request, inspect the exposed inventory and check relevant public evidence before the consolidated recommendation. Also use for requested model/configuration advice or an intentional refresh, not a market survey in every coding thread. A consultation can remain read-only; the bundled policy assets suffice if a policy draft is also requested. Recommendation, selection, policy writing, benchmarking, and installation have distinct scopes.
 
 ## Start with the exposed inventory
 
-Read the actual provider/harness inventory through permitted tools. Record exact selectable IDs, provider, reasoning controls, per-agent overrides, visual input, tool access, and session-sharing constraints. Do not scan credentials or private configuration to discover hidden models. Public availability does not prove availability in this account or execution role.
+Read the actual provider/harness inventory through permitted tools and relevant non-sensitive settings as described in [discovery.md](discovery.md). Record exact selectable IDs, provider, reasoning controls, per-agent overrides, visual input, tool access, and session-sharing constraints. A configured or cached name is not proof of current selectability. Do not scan credentials to discover hidden models. Public availability does not prove account or role access.
 
 If enumeration is unavailable, use explicitly supplied facts with provenance and label unverified controls. Do not invent a model, select a similar-looking name, or claim that an override occurred. Disclose any permitted harness-default fallback.
 
@@ -51,7 +51,7 @@ Do not run paid probes or benchmarks merely to fill missing cells. Such tests re
 
 ## Let the user decide
 
-Ask for unresolved role/model/reasoning choices and fallback authority using the relevant questions in [interview.md](interview.md). Reuse explicit choices; a rejected recommendation is not a reason to keep persuading or silently substitute a model. Offer a permitted disclosed default or deferred choice when exact selection is unsupported.
+Include unresolved role/model/reasoning choices and fallback authority in the consolidated configuration proposal, using [interview.md](interview.md) internally. Recommend a usable bundle with alternatives rather than asking the user to fill out a role matrix. Reuse explicit choices; a rejected recommendation is not a reason to keep persuading or silently substitute a model. Offer a permitted disclosed default or deferred choice when exact selection is unsupported.
 
 For interactive work, resolve only relevant priorities, direct-use exceptions, and progress/stop limits. A model upgrade does not grant more permissions or reset the stage's retry/resource budget. Retention and media controls remain separate; do not promise that closing an executor deletes its history.
 
